@@ -1,0 +1,100 @@
+﻿
+/* Reset mặc định */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Đặt cho toàn bộ trang */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #f0f2f5;
+}
+
+/* Định dạng cho container */
+.container {
+    background-color: #ffffff;
+    border-radius: 10px; /* Tăng độ bo tròn */
+    padding: 30px; /* Tăng khoảng cách padding */
+    width: 350px; /* Mở rộng chiều rộng */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Tăng độ đổ bóng */
+    text-align: center;
+}
+
+/* Tiêu đề */
+h2 {
+    color: #333;
+    font-size: 24px; /* Tăng kích thước tiêu đề */
+    margin-bottom: 20px;
+    font-weight: bold; /* Làm nổi bật tiêu đề */
+}
+
+/* Định dạng cho mã xác nhận */
+.code h3 {
+    font-size: 18px; /* Tăng kích thước chữ cho mã xác nhận */
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.code input {
+    width: 100%;
+    padding: 12px; /* Tăng khoảng cách padding trong input */
+    border: 1px solid #ccc;
+    border-radius: 5px; /* Tăng độ bo tròn */
+    font-size: 16px; /* Tăng kích thước font */
+    margin-bottom: 20px;
+    transition: border-color 0.3s; /* Thêm hiệu ứng chuyển tiếp */
+}
+
+    .code input:focus {
+        border-color: #007bff; /* Đổi màu viền khi input được chọn */
+        outline: none; /* Xóa outline mặc định */
+    }
+
+/* Định dạng nút xác nhận */
+.button button {
+    width: 100%;
+    padding: 12px; /* Tăng khoảng cách padding cho nút */
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px; /* Tăng độ bo tròn */
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s; /* Thêm hiệu ứng chuyển tiếp */
+}
+
+    .button button:hover {
+        background-color: #0056b3; /* Màu khi hover */
+    }
+
+/* Định dạng cho phần gửi lại mã */
+.resend {
+    font-size: 14px;
+    color: #666;
+    margin-top: 15px;
+    display: flex; /* Sử dụng flex để căn giữa nội dung */
+    justify-content: center; /* Căn giữa nội dung */
+    align-items: center; /* Căn giữa theo chiều dọc */
+}
+
+.resend-button {
+    margin-left: 5px; /* Khoảng cách giữa văn bản và nút */
+    padding: 8px 12px; /* Padding cho nút */
+    background-color: #28a745; /* Màu nền nút */
+    color: #ffffff; /* Màu chữ */
+    border: none; /* Xóa viền */
+    border-radius: 5px; /* Bo tròn các góc */
+    cursor: pointer; /* Con trỏ khi hover */
+    transition: background-color 0.3s; /* Hiệu ứng chuyển tiếp cho màu nền */
+}
+
+    .resend-button:hover {
+        background-color: #218838; /* Màu nền khi hover */
+    }

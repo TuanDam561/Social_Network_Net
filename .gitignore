@@ -1,0 +1,8 @@
+﻿# Bỏ qua thư mục .vs của Visual Studio
+.vs/
+
+obj/
+bin/
+
+ 
+ 

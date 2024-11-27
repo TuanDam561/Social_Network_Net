@@ -1,0 +1,517 @@
+﻿@{
+    ViewData["Title"] = "Tài khoản người dùng";
+    Layout = null;
+    @model Net6_Social_Net.Models.UserProfileViewModel
+
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="~/css/YourAccount.css" rel="stylesheet" />
+    <link href="~/Icon_Plafom/iconWeb.png" rel="icon" />
+    <title>@ViewData["title"]</title>
+
+    <script>
+
+        //MỞ menu BÀI VIẾT
+            function toggleMenu(element) {
+                // Tìm phần tử chứa menu trong thẻ cha của biểu tượng
+                var menu = element.nextElementSibling;
+
+                // Đóng tất cả các menu khác nếu đang mở
+                document.querySelectorAll('.options-menu').forEach(menuItem => {
+                    if (menuItem !== menu) {
+                menuItem.style.display = 'none';
+                    }
+                });
+
+            // Bật hoặc tắt menu hiện tại
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+            }
+
+            // Đóng menu khi nhấp bên ngoài
+            window.onclick = function(event) {
+                if (!event.target.matches('.options-icon')) {
+                document.querySelectorAll('.options-menu').forEach(menu => {
+                    menu.style.display = 'none';
+                });
+                }
+            }
+    </script>
+
+
+
+
+
+    <script>
+
+        // Xác nhận trước khi xóa bài viết
+        function confirmDelete() {
+            return confirm("Bạn chắc chắn muốn xóa bài viết này không?");
+        }
+    </script>
+
+    <script>
+        // Mở modal và điền thông tin bài viết
+        function openEditModal(postId, postContent, postImageUrl, postStatus) {
+            // Đặt giá trị của các trường từ dữ liệu của bài viết
+            document.getElementById('editPostId').value = postId;
+            document.getElementById('editContent').value = postContent;
+            document.getElementById('editStatus').value = postStatus;
+            document.getElementById('editImageFile').value = ''; // Đặt về trống để yêu cầu người dùng chọn ảnh mới nếu muốn
+            // Nếu có ảnh bài viết, hiển thị ảnh trong modal
+            if (postImageUrl) {
+                document.getElementById('imagePreview').src = postImageUrl;
+                document.getElementById('imagePreview').style.display = 'block'; // Hiển thị ảnh lên modal
+            } else {
+                document.getElementById('imagePreview').src = '';
+                document.getElementById('imagePreview').style.display = 'none'; // Nếu không có ảnh, không hiển thị gì
+            }
+
+            // Hiển thị modal
+            document.getElementById('editModal').style.display = 'block';
+        }
+        // Đóng modal
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('editImageFile').addEventListener('change', function (event) {
+                var file = event.target.files[0];  // Lấy file đầu tiên trong danh sách các file được chọn
+                if (file) {
+                    var reader = new FileReader();  // Tạo đối tượng FileReader để đọc file
+                    reader.onload = function (e) {
+                        document.getElementById('imagePreview').src = e.target.result;
+                        document.getElementById('imagePreview').style.display='block'// Cập nhật src của ảnh trong modal
+                    };
+                    reader.readAsDataURL(file);  // Đọc file dưới dạng URL dữ liệu (base64)
+                }
+            });
+        });
+    </script>
+
+    <script>
+        // mở modal chỉnh sửa thông tin
+        function openProfileModal() {
+            document.getElementById('editProfileModal').style.display = 'block';
+        }
+
+        function closeProfileModal() {
+            document.getElementById('editProfileModal').style.display = 'none';
+        }
+
+        // Xem trước ảnh banner và avatar khi người dùng chọn file mới
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('editBanner').addEventListener('change', function (event) {
+                var file = event.target.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        document.getElementById('bannerPreview').src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            document.getElementById('editAvatar').addEventListener('change', function (event) {
+                var file = event.target.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        document.getElementById('avatarPreview').src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+    </script>
+
+    <script>
+                //Nút LOGOUT
+                document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('logout').addEventListener('click', function (event) {
+                var confirmLogout = confirm("Bạn có chắc chắn muốn đăng xuất?");
+                if (!confirmLogout) {
+                    event.preventDefault(); // Ngăn chặn việc chuyển trang nếu người dùng nhấn "Hủy"
+                }
+            });
+        });
+    </script>
+
+    @* Script cho modal tạo bài viết  *@
+    <script>
+        function OpenCreateModal() {
+            document.getElementById("myModal").style.display = "block";
+            }
+
+        function closeModal() {
+            document.getElementById("myModal").style.display = "none";
+        }
+    </script>
+
+
+    <script>
+        //đổi ảnh khi post  bài
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('editImage').addEventListener('change', function (event) {
+                    var file = event.target.files[0];  // Lấy file đầu tiên trong danh sách các file được chọn
+                if (file) {
+                    var reader = new FileReader();  // Tạo đối tượng FileReader để đọc file
+                    reader.onload = function (e) {
+                        document.getElementById('imageppreview').src = e.target.result;  // Cập nhật src của ảnh trong modal
+                            document.getElementById('imageppreview').style.display='block';
+                   };
+                    reader.readAsDataURL(file);  // Đọc file dưới dạng URL dữ liệu (base64)
+                }
+
+            });
+        });
+    </script>
+
+    <style>
+
+        /*css cho cái button chỉnh sửa bài viết*/
+        #buttonEdit {
+         width:100%;
+         font-size: 16px;/* Kích thước chữ */
+         border: none; /* Bỏ viền */
+         background: none; /* Bỏ nền */
+         color: inherit; /* Kế thừa màu sắc của văn bản xung quanh */
+         cursor: pointer; /* Con trỏ chuột khi hover sẽ là pointer */
+         /* padding: 5px 10px; /* Cung cấp khoảng cách bên trong cho nút */
+         text-align: left; /* Căn giữa văn bản */
+         }
+
+        #buttonEdit :hover {
+                 opacity: 0.8;
+             }
+
+        #imageppreview {
+            max-width: 100%; /* Giới hạn kích thước ảnh không vượt quá 100% chiều rộng của modal */
+            max-height: 200px; /* Giới hạn chiều cao của ảnh nếu ảnh quá lớn */
+            margin: 0 auto; /* Căn giữa ảnh trong modal */
+            display: none; /* Đảm bảo ảnh được hiển thị dưới dạng block element */
+            border-radius: 8px; /* Bo tròn góc của ảnh */
+        }
+
+
+    </style>
+
+    <link href="~/css/YourAccount_CreatePost_Modal.css" rel="stylesheet" />
+    <link href="~/css/YourAccount_ModalEditProfile.css" rel="stylesheet" />
+    <link href="~/css/YourAccount_ModalEdit.css" rel="stylesheet" />
+    <link href="~/css/YourAccount_for_Mobile.css" rel="stylesheet" />
+
+</head>
+<body>
+    <div class="home">
+        <div class="logo">
+            <a href="@Url.Action("Index","Home")">
+                <img src="~/Icon_Plafom/454849238_800890952251701_8841246141296174912_n.jpg" alt="Logo Web" />
+            </a>
+
+        </div>
+        <div class="sreachbox">
+            <img src="~/Icon_Plafom/Search-icon.png" alt="Search Icon" class="search-icon" />
+            <input type="search" placeholder="Tìm kiếm" />
+        </div>
+        @*  <select style="text-transform: capitalize;border: none; outline: none;">
+        <option style="text-transform: capitalize;">@Model.User.Username</option>
+        <option>Sửa thông tin</option>
+        <option style="color: red">Đăng xuất</option>
+        </select> *@
+        @if (Model.User.UserId == int.Parse(Context.Session.GetString("UserId")))
+        {
+            <a id="logout" style="text-decoration: none; color: red; font-size: 20px;" asp-action="Logout" asp-controller="Login">Đăng xuất</a>
+        }
+        else
+        {
+            <p style="font-size:20px;color:red; cursor:pointer;">@Model.User.Username</p>
+        }
+    </div>
+    <div class="banner">
+        <div class="bannerprofile">
+
+            @if (!string.IsNullOrEmpty(Model.User.Imagebanner))
+            {
+                <img id="bannerFont" src="@Model.User.Imagebanner" alt="Banner" />
+            }
+            else
+            {
+                <img id="bannerFont" src="~/Banner_Profile/23820a81-56c5-40b1-9222-41016d5f5c28_GYuWrKeWgAApkbp.jpg" alt="Banner" />
+            }
+
+        </div>
+        <div class="avatar">
+            @if (!string.IsNullOrEmpty(Model.User.ProfilePicture))
+            {
+                <img src="@Model.User.ProfilePicture" alt="User Avatar" />
+            }
+            else
+            {
+                <img src="~/Avatar/454849238_800890952251701_8841246141296174912_n.jpg" alt="Banner" />
+            }
+        </div>
+        <div class="username">@Model.User.Username</div>
+    </div>
+    <div class="container">
+        <div class="left">
+            <p style="font-size:30px ;font-weight:bold">Giới thiệu</p>
+            <div class="bio">
+                @Model.User.Bio
+            </div>
+            @{
+                var userrr = Context.Session.GetString("UserId");
+            }
+            @if (Model.User.UserId == int.Parse(userrr) && Model.User.Email != null || Model.User.PhoneNumber != null )
+            {
+                <ul class="Thongtin">
+                    <li>Gmail : @Model.User.Email</li>
+                    <li>@Model.User.PhoneNumber</li>
+                </ul>
+                <p></p>
+            }
+            <p></p>
+            
+            @if (Model.User.UserId == int.Parse(userrr))
+            {
+                <button type="button" onclick="openProfileModal()">Sửa thông tin</button>
+            }
+            else
+            {
+                <button type="button" >Kết bạn</button>
+            }
+
+            <div class="other">một số tính năng sau này bổ sung</div>
+            <div clas="Footer">
+                <a href="#">Chính sách</a>
+                <a href="#">Quyền lợi</a>
+            </div>
+        </div>
+
+        @* Modal chỉnh sửa thông tin tài khoản *@
+        <div id="editProfileModal" class="modal-overlay" style="display: none;">
+            <div class="modals-content">
+                <h2 class="ChinhSua">Chỉnh sửa thông tin cá nhân</h2>
+                <span class="close" onclick="closeProfileModal()">×</span>
+                <form  asp-action="UpdateProfile" asp-controller="YourAccount" method="post" enctype="multipart/form-data">
+                    <!-- Trường ID người dùng (ẩn) -->
+                    <input type="hidden" name="id" value="@Model.User.UserId" />
+                    <!-- Trường Banner -->
+                    @if (!string.IsNullOrEmpty(Model.User.Imagebanner))
+                    {
+                        <img id="bannerPreview" src="@Model.User.Imagebanner" alt="Banner Preview" class="preview-image" />
+                    }
+                    else
+                    {
+                        <img id="bannerPreview" src="~/Banner_Profile/23820a81-56c5-40b1-9222-41016d5f5c28_GYuWrKeWgAApkbp.jpg" alt="Banner" style="width: 90%" />
+                    }
+                    <!-- Trường Avatar -->
+                    @if (!string.IsNullOrEmpty(Model.User.ProfilePicture))
+                    {
+                        <img id="avatarPreview" src="@Model.User.ProfilePicture" alt="Avatar Preview" class="preview-image" style="border-radius: 50%;" />
+                    }
+                    else
+                    {
+                        <img id="avatarPreview" src="~/Avatar/454849238_800890952251701_8841246141296174912_n.jpg" alt="Avatar" style=" border-radius: 50%;" />
+                    }
+                    <p></p>
+                    <label for="editBanner" class="file-label">Chọn ảnh cho Banner</label>
+                    <input type="file" id="editBanner" name="banner" accept="image/*" class="modal-input-file" style="display: none;" />
+
+                    <label for="editAvatar" class="file-label">Chọn ảnh cho Avatar</label>
+                    <input type="file" id="editAvatar" name="avatar" accept="image/*" class="modal-input-file" style="display: none;" />
+                    <p></p>
+                    <!-- Trường Username -->
+                    <label for="editUsername">Tên người dùng:</label>
+                    <input type="text" id="editUsername" name="username" class="modal-input" value="@Model.User.Username" />
+
+                    <!-- Trường Bio -->
+                    <label for="editBio">Tiểu sử:</label>
+                    <textarea id="editBio" name="bio" class="modal-textarea">@Model.User.Bio</textarea>
+                    <!-- Trường Email-->
+                    <label for="editEmail">Gmail</label>
+                    <input type="text" id="editUsername" name="email" class="modal-input" value="@Model.User.Email" disabled />
+                    <!-- Footer chứa nút cập nhật cố định -->
+                    <div class="modal-footer">
+                        <button type="submit" class="modal-saves-button">Cập nhật</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        @* phần bên phải  *@
+        <div class="right">
+            <div class="UpPost">
+                @if (Model.User.UserId == int.Parse(userrr))
+                {
+                    <button id="Createpost" onclick="OpenCreateModal()">Tạo bài viết </button>
+                }
+               
+            </div>
+            <!--Modal tạo bài viết-->
+            <!-- Thêm vào trong phần <body> -->
+            <div id="myModal" class="modal">
+                <div class="modal-contentt">
+                    <span class="close" onclick="closeModal()">&times;</span>
+                    <h2>Đăng bài</h2>
+                    <form asp-action="Post" asp-controller="YourAccount" method="post" enctype="multipart/form-data">
+                        <textarea name="Content" placeholder="Nội dung bài viết"></textarea>
+                        <!-- Thêm combobox chọn trạng thái bài viết -->
+                        <label for="StatusPost">Trạng thái bài viết:</label>
+                        <select name="StatusPost" id="StatusPost">
+                            <option value="Public">Công khai</option>
+                            <option value="Private">Riêng tư</option>
+                        </select>
+                        <img src="" alt="Image Preview" id="imageppreview" />
+                        <input type="file" name="ImageFile" id="editImage" class="modal-input-file" accept="image/*" />
+                        <button id="postBai" type="submit">Đăng bài</button>
+                    </form>
+                </div>
+            </div>
+
+
+            @if (Model.Posts.Any())
+            {
+                foreach (var post in Model.Posts)
+                {
+                    <div class="post-card">
+                        <div class="post-header">
+                            <h3 style="font-size:18px;text-transform: capitalize;">@post.UserName</h3>
+                            <div class="post-options">
+                                @{
+                                    var useidss = Context.Session.GetString("UserId");
+                                }
+                                @if(useidss!=null && Model.User.UserId == int.Parse(useidss))
+                                {
+                                    <span class="options-icon" onclick="toggleMenu(this)">&#8942;</span>
+                                }                           
+                                <div class="options-menu">
+                                    <ul>
+                                        <li style="color:blue">
+                                            <button id="buttonEdit" type="button" style="text-decoration:none" onclick="openEditModal('@post.Id', '@post.Content', '@post.ImageUrl', '@post.Status');">Chỉnh sửa bài viết</button>
+                                        </li>
+                                        <li>
+                                            <!-- Nút xóa bài viết với xác nhận -->
+                                            @* <form asp-action="DeleteyourPosts" asp-controller="YourAccount" method="post" style="display:inline;" onsubmit="return confirmDelete();">
+                                                <input type="hidden" name="id" value="@post.Id" />
+                                                <button type="submit" style="color:red; border:none; background:none; cursor:pointer;font-size:16px">
+                                                    Xóa bài viết
+                                                </button>
+                                            </form> *@
+                                            <form id="deletepost" method="post" style="display:inline;" onsubmit="return confirmDelete();">
+                                                <input type="hidden" name="id" value="@post.Id" />
+                                                <button type="submit" style="color:red; border:none; background:none; cursor:pointer;font-size:16px">
+                                                    Xóa bài viết
+                                                </button>
+                                            </form>
+
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="font-size:14px">@post.CreatedAt.ToString("HH:mm dd/MM/yyyy")</p>
+                        <p style="font-size:14px">@post.Status</p>
+                        <p style="font-size:16px">@post.Content</p>
+                        @if (@post.ImageUrl != null)
+                        {
+                            <img src="@post.ImageUrl" alt="Alternate Text" class="post-image" />
+                        }
+                    </div>
+                }
+            }
+            else
+            {               
+                    <p style="text-align:center;font-size:30px;font-weight:bold">Hiện chưa có bài viết nào.</p>
+            }
+        </div>
+        <!-- Modal chỉnh sửa bài viết -->
+      @*   <div id="editModal" class="modal-overlay">
+            <div class="modal-content">
+                <h2 class="ChinhSua">Chỉnh sửa bài viết</h2>
+                <span class="close" onclick="closeEditModal()">×</span>
+                <form asp-action="UpdatePost" asp-controller="YourAccount" method="post" enctype="multipart/form-data">
+                    <input type="hidden" id="editPostId" name="idpost" />
+
+                    <!-- Trường Content -->
+                    <textarea id="editContent" name="Content" class="modal-textarea"></textarea>
+
+                    <label for="editStatus">Trạng thái:</label>
+                    <select id="editStatus" name="StatusPost" class="modal-select">
+                        <option value="Public">Công khai</option>
+                        <option value="Private">Riêng tư</option>
+                    </select>
+   
+                    <img id="imagePreview" src="" alt="Image Preview">
+                    <input type="file" id="editImageFile" name="ImageFile" accept="image/*" class="modal-input-file" />
+
+                    <!-- Trường StatusPost -->
+                    <div class="modal-buttons">
+                        <button type="submit" class="modal-save-button">Cập nhật</button>
+                    </div>
+                </form>
+            </div>
+        </div> 
+        BẢN CŨ KHÔNG AJAX
+        *@
+        <div id="editModal" class="modal-overlay">
+            <div class="modal-content">
+                <h2 class="ChinhSua">Chỉnh sửa bài viết</h2>
+                <span class="close" onclick="closeEditModal()">×</span>
+                <form id="editPostForm" method="post" enctype="multipart/form-data">
+                    <input type="hidden" id="editPostId" name="idpost" />
+
+                    <!-- Trường Content -->
+                    <textarea id="editContent" name="Content" class="modal-textarea"></textarea>
+
+                    <label for="editStatus">Trạng thái:</label>
+                    <select id="editStatus" name="StatusPost" class="modal-select">
+                        <option value="Public">Công khai</option>
+                        <option value="Private">Riêng tư</option>
+                    </select>
+
+                    <img id="imagePreview" src="" alt="Image Preview">
+                    <input type="file" id="editImageFile" name="ImageFile" accept="image/*" class="modal-input-file" />
+
+                    <!-- Trường StatusPost -->
+                    <div class="modal-buttons">
+                        <button type="button" class="modal-save-button" onclick="submitEditPost()">Cập nhật</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script>
+            function submitEditPost() {
+                var formData = new FormData(document.getElementById("editPostForm"));
+
+                fetch('/YourAccount/UpdatePost', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Cập nhật giao diện người dùng nếu cần
+                            // alert("Cập nhật bài viết thành công!");
+                            closeEditModal();
+                            // Có thể gọi lại hàm để tải lại danh sách bài viết hoặc cập nhật trực tiếp trên giao diện
+                            window.location.reload();
+                        } else {
+                            alert("Lỗi: " + data.error);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+            }
+        </script>
+    </div>
+</body>
+</html>

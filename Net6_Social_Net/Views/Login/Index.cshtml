@@ -1,0 +1,123 @@
+﻿@{
+    ViewData["Title"] = "Đăng nhập"; // Tạo tiêu đề trang
+    Layout=null;
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="@Url.Content("~/css/Login.css")" />
+    <link href="~/Icon_Plafom/iconWeb.png" rel="icon" />
+    <style>
+        .alert {           
+            color: red; /* Màu chữ của alert */
+            border-color: #f5c6cb; /* Màu viền của alert */
+        }
+
+        .google-login-btn {
+            margin-top: 10px;
+            display: inline-flex; /* Hiển thị các phần tử con (hình ảnh và văn bản) ngang hàng */
+            align-items: center; /* Căn giữa hình ảnh và văn bản theo chiều dọc */
+            padding: 10px 20px; /* Khoảng cách bên trong nút */
+            background-color: #4285F4; /* Màu nền giống màu Google */
+            color: white; /* Màu chữ trắng */
+            font-size: 16px; /* Kích thước chữ */
+            text-decoration: none; /* Xóa gạch chân mặc định của thẻ <a> */
+            border-radius: 5px; /* Bo góc cho nút */
+            transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu nền khi hover */
+        }
+
+            .google-login-btn:hover {
+                background-color: #357AE8; /* Màu nền khi hover */
+            }
+
+            .google-login-btn img {
+                width: 24px; /* Kích thước của hình ảnh */
+                height: 24px; /* Kích thước của hình ảnh */
+                margin-right: 10px; /* Khoảng cách giữa hình ảnh và văn bản */
+            }
+            
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Đăng nhập</h2>
+         @* Kiểm tra và hiển thị thông báo lỗi nếu có *@
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-warning">
+                @TempData["Error"]
+            </div>
+        }
+        <form method="post" asp-action="LoginFuntion" asp-controller="Login">
+            @Html.AntiForgeryToken()
+            <div class="email">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="gmail" placeholder="Nhập vào Email" required />
+            </div>
+            <div class="pass">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Nhập vào password" required />
+            </div>
+            <div class="Fogot">
+                <a asp-action="FogotPass" asp-controller="Login">Quên mật khẩu</a>
+            </div>
+            <div class="policy">
+                <input type="checkbox" id="policy" required />
+                <label for="policy">Đồng ý với chính sách <a href="#">Chính sách</a></label>
+            </div>
+            <button id="loginButton" type="submit" style="display: none">Đăng nhập</button>
+
+            <div class="dangky">        
+                Nếu bạn chưa có tài khoản <a asp-controller="Login" asp-action="Register">Đăng ký</a>  
+            </div>        
+        </form>
+        <a asp-action="LoginByGoogle" asp-controller="Login" class="google-login-btn">
+            <img src="~/Icon_Plafom/google-icon.png" alt="Đăng nhập với Google" />
+            <span>Đăng nhập với Google</span>
+        </a>
+       
+    </div>
+     @* <script>
+         // Lấy các phần tử cần thiết
+         const policyCheckbox = document.getElementById("policy");
+         const loginButton = document.getElementById("loginButton");
+
+         // Hàm kiểm tra trạng thái của checkbox
+         function checkCheckbox() {
+             if (policyCheckbox.checked) {
+                 loginButton.disabled = false; // Kích hoạt nút Login nếu checkbox được chọn
+             } else {
+                 loginButton.disabled = true;  // Vô hiệu hóa nút Login nếu checkbox không được chọn
+             }
+         }
+
+         // Gắn sự kiện change cho checkbox
+         policyCheckbox.addEventListener("change", checkCheckbox);
+
+         // Kiểm tra trạng thái checkbox ngay khi tải trang
+         checkCheckbox();
+     </script> *@
+    <script>
+        // Lấy các phần tử cần thiết
+        const policyCheckbox = document.getElementById("policy");
+        const loginButton = document.getElementById("loginButton");
+
+        // Hàm kiểm tra trạng thái của checkbox
+        function checkCheckbox() {
+            if (policyCheckbox.checked) {
+                loginButton.style.display = "block"; // Hiện nút Login nếu checkbox được chọn
+            } else {
+                loginButton.style.display = "none"; // Ẩn nút Login nếu checkbox không được chọn
+            }
+        }
+        // Gắn sự kiện change cho checkbox
+        policyCheckbox.addEventListener("change", checkCheckbox);
+    </script>
+
+</body>
+</html>

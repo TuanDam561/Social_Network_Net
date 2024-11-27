@@ -1,0 +1,130 @@
+﻿/* Reset một số thuộc tính cơ bản */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh; /* Chiều cao toàn màn hình */
+    display: flex; /* Sử dụng Flexbox để căn giữa */
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4; /* Màu nền nhẹ */
+}
+
+/* Container chứa form */
+.Container {
+    background-color: #fff; /* Màu nền trắng cho form */
+    border-radius: 5px; /* Bo góc */
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
+    max-width: 400px; /* Chiều rộng tối đa */
+    width: 100%; /* Chiều rộng tối đa của container */
+    margin: 20px; /* Khoảng cách giữa container và các cạnh của màn hình */
+}
+
+/* Tiêu đề */
+h2 {
+    text-align: center; /* Căn giữa tiêu đề */
+    margin-bottom: 20px; /* Khoảng cách dưới */
+    color: #333; /* Màu chữ */
+}
+
+/* Các trường nhập liệu */
+.Gmail,
+.Pass,
+.ComfirmPass,
+.VerifyCode {
+    margin-bottom: 15px; /* Khoảng cách giữa các trường */
+}
+
+/* Label */
+label {
+    display: block; /* Hiển thị label ở dạng khối */
+    margin-bottom: 5px; /* Khoảng cách dưới */
+    color: #555; /* Màu chữ */
+}
+
+/* Trường nhập liệu */
+input[type="text"],
+input[type="password"] {
+    width: calc(100% - 20px); /* Chiều rộng 100% trừ đi padding */
+    padding: 10px; /* Khoảng cách trong */
+    border: 1px solid #ccc; /* Viền xám nhạt */
+    border-radius: 4px; /* Bo góc */
+}
+
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+        border-color: #66afe9; /* Viền màu xanh khi focus */
+        outline: none; /* Bỏ outline */
+    }
+
+/* Nút gửi mã xác nhận */
+#resendButton {
+    padding: 8px 12px; /* Khoảng cách trong */
+    margin-top: 10px; /* Khoảng cách trên */
+    background-color: #007bff; /* Màu nền xanh */
+    color: white; /* Màu chữ trắng */
+    border: none; /* Bỏ viền */
+    border-radius: 4px; /* Bo góc */
+    cursor: pointer; /* Con trỏ chuột */
+    transition: background-color 0.3s; /* Hiệu ứng chuyển màu */
+    width: 100%; /* Chiều rộng 100% */
+}
+
+    #resendButton:hover {
+        background-color: #0056b3; /* Màu nền khi hover */
+    }
+
+/* Checkbox và label */
+.policy {
+    display: flex; /* Sử dụng Flexbox cho checkbox */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    margin: 15px 0; /* Khoảng cách */
+}
+
+    .policy input[type="checkbox"] {
+        margin-right: 5px; /* Khoảng cách giữa checkbox và label */
+    }
+
+/* Nút Đăng ký */
+#submitButton {
+    background-color: #1687ff; /* Màu nền xanh lá */
+    color: white; /* Màu chữ trắng */
+    border: none; /* Bỏ viền */
+    padding: 12px; /* Khoảng cách trong */
+    border-radius: 4px; /* Bo góc */
+    cursor: pointer; /* Con trỏ chuột */
+    transition: background-color 0.3s; /* Hiệu ứng chuyển màu */
+    width: 100%; /* Chiều rộng 100% */
+    font-size: 16px; /* Kích thước chữ lớn hơn */
+}
+
+    #submitButton:hover {
+        background-color: #0056b3; /* Màu nền khi hover */
+    }
+
+/* Nút Hủy */
+.Cancel {
+    text-align: center; /* Căn giữa */
+    margin-top: 10px; /* Khoảng cách trên */
+}
+
+    .Cancel button {
+        background-color: #dc3545; /* Màu nền đỏ */
+        color: white; /* Màu chữ trắng */
+        border: none; /* Bỏ viền */
+        padding: 12px; /* Khoảng cách trong */
+        border-radius: 4px; /* Bo góc */
+        cursor: pointer; /* Con trỏ chuột */
+        transition: background-color 0.3s; /* Hiệu ứng chuyển màu */
+        width: 100%; /* Chiều rộng 100% */
+        font-size: 16px; /* Kích thước chữ lớn hơn */
+    }
+
+        .Cancel button:hover {
+            background-color: #c82333; /* Màu nền đỏ đậm khi hover */
+        }

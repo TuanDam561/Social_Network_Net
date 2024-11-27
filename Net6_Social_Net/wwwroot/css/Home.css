@@ -1,0 +1,224 @@
+﻿/* Reset mặc định */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #ffffff; /* Màu nền tổng thể */
+}
+
+/* Container chính */
+.container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 100vh;
+}
+
+/* Cột bên trái */
+.left {
+    position: sticky; /* Để giữ cột cố định */
+    top: 0; /* Giữ cột ở vị trí trên cùng khi cuộn */
+    width: 20%;
+    height: 100vh;
+    background-color: #f0f0f0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-right: 1px solid #ddd; /* Thêm đường viền bên phải */
+}
+    /*.left .Logo {
+        text-align: center;*/ /* Căn giữa logo */
+        /*margin-bottom: 20px;*/ /* Khoảng cách dưới logo */
+    /*}
+
+        .left .Logo img {
+            max-width: 50%;*/ /* Đảm bảo ảnh co giãn theo chiều rộng của container */
+            /*height: auto;*/ /* Giữ tỷ lệ ảnh */
+            /*border-radius: 50%;*/ /* Tạo hình tròn cho logo */
+            /*object-fit: cover;*/ /* Đảm bảo ảnh phủ đều vùng logo mà không bị méo */
+        /*}*/
+
+    .left .Funtion {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+    }
+
+        .left .Funtion div {
+            padding: 10px;
+            text-align: center;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            .left .Funtion div:hover {
+                background-color: #d0d0d0;
+            }
+
+.MyAcc {
+    margin-top: auto; /* Đẩy xuống cuối */
+    padding: 10px;
+    background-color: #e0e0e0;
+    text-align: center;
+    border-radius: 5px;
+    width: 100%;
+    
+}
+    .MyAcc a {
+        text-decoration: none;
+    }
+
+/* Cột giữa */
+.mid {
+    flex: 1; /* Chiếm hết không gian còn lại */
+    height: 100vh; /* Đặt chiều cao tối đa để tạo vùng cuộn */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Khoảng cách giữa các phần tử */
+    overflow-y: auto; /* Tạo thanh cuộn dọc khi cần thiết */
+    background-color: #fafafa; /* Màu nền nhẹ cho cột giữa */
+}
+
+    /* Khung tạo bài viết */
+    .mid .CreatePost {
+        padding: 15px;
+        background-color: #ffffff; /* Màu nền trắng cho khung */
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
+    }
+
+/* Khung bài viết */
+.post-item {
+    padding: 15px;
+    background-color: #ffffff; /* Màu nền trắng cho card */
+    border: 1px solid #ddd;
+    border-radius: 10px; /* Bo góc */
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
+    transition: transform 0.2s; /* Hiệu ứng hover */
+}
+
+    .post-item:hover {
+        transform: translateY(-5px); /* Nâng card lên khi hover */
+    }
+
+    .post-item p {
+        font-size: 16px;
+        margin: 10px 0;
+    }
+
+    .post-item img {
+        max-width: 100%;
+        height: auto;
+        margin-top: 10px;
+        border-radius: 5px;
+    }
+
+    .post-item span {
+        font-size: 14px;
+        color: #888;
+    }
+
+/* Cột bên phải */
+.right {
+    position: sticky; /* Để giữ cột cố định */
+    top: 0; /* Giữ cột ở vị trí trên cùng khi cuộn */
+    width: 20%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-left: 1px solid #ddd; /* Thêm đường viền bên trái */
+    background-color: #f9f9f9; /* Màu nền nhẹ cho cột bên phải */
+}
+
+    /* Phần Tìm kiếm */
+.left .Search {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+        .left .Search input[type="search"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px; /* Bo góc tròn */
+            font-size: 14px;
+        }
+
+    /* Phần Footer */
+    .right .Footer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        text-align: center;
+    }
+
+        .right .Footer a {
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+            text-decoration:none;
+        }
+
+            .right .Footer a:hover {
+                text-decoration: underline;             
+            }
+
+/* Cảnh báo thông báo */
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+.alert-success {
+    background-color: #dff0d8;
+    color: #3c763d;
+    border: 1px solid #d0e9c6;
+}
+
+.alert-danger {
+    background-color: #f2dede;
+    color: #a94442;
+    border: 1px solid #ebccd1;
+}
+
+/* css cho logo web đẹp  */
+.container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 100vh;
+}
+
+/*.left {*/
+    /*  width: 200px; 
+            padding: 20px; */
+    /*position: sticky;*/ /* Để giữ cột cố định */
+    /*top: 0;*/ /* Giữ cột ở vị trí trên cùng khi cuộn */
+    /*width: 20%;
+    height: 100vh;
+    background-color: #f0f0f0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-right: 1px solid #ddd;*/ /* Thêm đường viền bên phải */
+/*}*/
+
+  

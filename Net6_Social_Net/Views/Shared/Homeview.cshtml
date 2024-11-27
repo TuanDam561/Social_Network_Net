@@ -1,0 +1,124 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    Layout = null;
+    @model List<PostViewModel>
+
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="~/css/Home.css" rel="stylesheet" />
+    <link href="~/css/ModalHome.css" rel="stylesheet" />
+    <link href="~/css/Kebad_Css_Home.css" rel="stylesheet" />
+    <link href="~/Icon_Plafom/iconWeb.png" rel="icon" />
+    <title>Home Page</title>
+   
+
+    <style>
+        /* css cho logo web đẹp  */
+        .container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            height: 100vh;
+        }
+
+        .left {
+            /*  width: 200px;
+                            padding: 20px; */
+            position: sticky; /* Để giữ cột cố định */
+            top: 0; /* Giữ cột ở vị trí trên cùng khi cuộn */
+            width: 20%;
+            height: 100vh;
+            background-color: #f0f0f0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-right: 1px solid #ddd; /* Thêm đường viền bên phải */
+        }
+
+        .Logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+            .Logo img {
+                max-width: 50%; /* Đảm bảo ảnh co giãn theo chiều rộng của container */
+                height: auto; /* Giữ tỷ lệ ảnh */
+                border-radius: 50%; /* Nếu bạn muốn ảnh có dạng tròn */
+            }
+
+        #imagePreview {
+            max-width: 100%; /* Giới hạn kích thước ảnh không vượt quá 100% chiều rộng của modal */
+            max-height: 200px; /* Giới hạn chiều cao của ảnh nếu ảnh quá lớn */
+            margin: 0 auto; /* Căn giữa ảnh trong modal */
+            display: none; /* Đảm bảo ảnh được hiển thị dưới dạng block element */
+            border-radius: 8px; /* Bo tròn góc của ảnh */
+        }
+
+        #imageppreview {
+            max-width: 100%; /* Giới hạn kích thước ảnh không vượt quá 100% chiều rộng của modal */
+            max-height: 200px; /* Giới hạn chiều cao của ảnh nếu ảnh quá lớn */
+            margin: 0 auto; /* Căn giữa ảnh trong modal */
+            display: none; /* Đảm bảo ảnh được hiển thị dưới dạng block element */
+            border-radius: 8px; /* Bo tròn góc của ảnh */
+        }
+    </style>
+    <link href="~/css/Home_forMobile.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+
+        <div class="left">
+            <div class="Logo">
+                <img src="~/Icon_Plafom/454849238_800890952251701_8841246141296174912_n.jpg" alt="Alternate Text" />
+            </div>
+            <div class="Search">
+                <!-- <span>Tìm kiếm</span> -->
+                <input type="search"
+                       name="Tìm kiếm"
+                       id="Search"
+                       placeholder="Tìm kiếm" />
+            </div>
+            <div class="Funtion">
+                <div class="Home">
+                    <a asp-action="Index" asp-controller="Home" style="text-decoration:none"> Trang chủ</a>
+                </div>
+                <div class="Mess">
+                    <a href="#" style="text-decoration:none">Nhắn tin</a>
+                </div>
+                <div class="Notify">
+                    <a href="#" style="text-decoration:none">Thông báo</a>
+                </div>
+                <div class="Video">
+                    <a href="#" style="text-decoration:none">Video</a>
+                </div>
+            </div>
+            <div class="MyAcc">
+
+                <a asp-action="Index" asp-controller="YourAccount" style="text-decoration:none">Tài khoản của bạn</a>
+
+            </div>
+        </div>
+
+        <div class="mid">
+            @RenderBody()
+           
+        </div>
+
+        <div class="right">
+            <div clas="Footer">
+                <a href="#">Chính sách</a>
+                <a href="#">Quyền lợi</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+

@@ -1,0 +1,100 @@
+﻿@{
+    ViewData["Title"] = "Đăng ký";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/Register.css" />
+    <link href="~/Icon_Plafom/iconWeb.png" rel="icon" />
+    <script>
+        // function disableResendButton() {
+        //     const resendButton = document.getElementById("resendButton");
+        //     resendButton.disabled = true;
+
+        //     let timeLeft = 60;
+        //     resendButton.textContent = `Gửi lại mã (${timeLeft}s)`;
+
+        //     const timer = setInterval(() => {
+        //         timeLeft--;
+        //         resendButton.textContent = `Gửi lại mã (${timeLeft}s)`;
+
+        //         if (timeLeft <= 0) {
+        //             clearInterval(timer);
+        //             resendButton.disabled = false;
+        //             resendButton.textContent = "Gửi lại mã";
+        //         }
+        //     }, 1000);
+        // }
+
+        function toggleSubmitButton() {
+            const policyCheckbox = document.getElementById("policy");
+            const submitButton = document.getElementById("submitButton");
+            submitButton.disabled = !policyCheckbox.checked;
+        }
+    </script>
+
+    <style>
+        .alert {
+            color: red;
+            border-color: #f5c6cb;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="Container">
+        <h2>Đăng ký</h2>
+        @if (TempData["Error"] != null)
+        {
+                <div class="alert alert-warning">
+                @TempData["Error"]
+                </div>
+        }
+        <form method="post" asp-action="RegisterFunction" asp-controller="Login">
+            <div class="Gmail">
+                <label for="Gmail">Email</label>
+                <input type="text" name="email" placeholder="Nhập vào Email" />
+            </div>
+
+            <div class="Pass">
+                <label for="Pass">Mật khẩu</label>
+                <input type="password" name="password" placeholder="Nhập vào mật khẩu" />
+            </div>
+            <div class="ComfirmPass">
+                <label for="ComfirmPass">Xác nhận mật khẩu</label>
+                <input type="password" name="comfirmpass" placeholder="Xác nhận mật khẩu" />
+            </div>
+
+            @* <div class="VerifyCode">
+                <label for="VerifyCode">Mã xác nhận</label>
+                <input type="text" name="verifycode" placeholder="Nhập vào mã xác nhận" />
+                <button id="resendButton" type="button" onclick="disableResendButton()">
+                    Gửi lại mã xác nhận
+                </button>
+            </div> *@
+
+            <div class="policy">
+                <input type="checkbox" id="policy" required onchange="toggleSubmitButton()" />
+                <label for="policy">
+                    Đồng ý với chính sách
+                    <a href="#">Chính sách</a>
+                </label>
+            </div>
+            <div class="Submit">
+                <button id="submitButton" type="submit" disabled> <!-- Đổi thành nút submit -->
+                    Đăng ký
+                </button>
+            </div>
+            <div class="Cancel">
+                <button type="button" onclick="window.location.href='@Url.Action("Index", "Login")'">
+                    Hủy
+                </button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

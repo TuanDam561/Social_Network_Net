@@ -1,0 +1,144 @@
+﻿/* Reset mặc định */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+/* CSS cho form đổi mật khẩu */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+.container {
+    width: 350px;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.2s; /* Hiệu ứng khi hover */
+}
+
+    .container:hover {
+        transform: translateY(-2px); /* Hiệu ứng nâng lên khi hover */
+    }
+
+    .container > div {
+        margin-bottom: 20px; /* Tăng khoảng cách giữa các phần */
+    }
+
+.Title {
+    font-size: 24px; /* Tăng kích thước chữ tiêu đề */
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.container label {
+    display: block;
+    font-size: 14px;
+    color: #666; /* Màu sắc nhạt hơn cho nhãn */
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+.container input[type="text"],
+.container input[type="password"] {
+    width: 100%;
+    padding: 12px; /* Tăng độ dày padding */
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    transition: border-color 0.3s; /* Hiệu ứng chuyển màu biên */
+}
+
+    .container input[type="text"]:focus,
+    .container input[type="password"]:focus {
+        border-color: #007bff; /* Đổi màu viền khi focus */
+        outline: none; /* Xóa viền mặc định */
+    }
+
+/*.Resend {
+    font-size: 14px;
+    color: #666;
+}
+
+    .Resend a {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: bold;*/ /* Tô đậm cho đường dẫn */
+    /*}
+
+        .Resend a:hover {
+            text-decoration: underline;
+        }*/
+
+/* Định dạng cho phần gửi lại mã */
+.resend {
+    font-size: 14px;
+    color: #666;
+    margin-top: 15px;
+    display: flex; /* Sử dụng flex để căn giữa nội dung */
+    justify-content: center; /* Căn giữa nội dung */
+    align-items: center; /* Căn giữa theo chiều dọc */
+}
+
+.resend-button {
+    margin-left: 5px; /* Khoảng cách giữa văn bản và nút */
+    padding: 8px 12px; /* Padding cho nút */
+    background-color: #28a745; /* Màu nền nút */
+    color: #ffffff; /* Màu chữ */
+    border: none; /* Xóa viền */
+    border-radius: 5px; /* Bo tròn các góc */
+    cursor: pointer; /* Con trỏ khi hover */
+    transition: background-color 0.3s; /* Hiệu ứng chuyển tiếp cho màu nền */
+}
+
+    .resend-button:hover {
+        background-color: #218838; /* Màu nền khi hover */
+    }
+
+.Submit button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    background-color: #4caf50; /* Màu xanh lá cho nút xác nhận */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s; /* Hiệu ứng chuyển màu nền */
+}
+
+    .Submit button:hover {
+        background-color: #45a049; /* Màu xanh đậm hơn khi hover */
+    }
+
+/* Thêm khoảng cách giữa nút xác nhận và nút hủy */
+.Cancel {
+    margin-top: 10px; /* Thêm khoảng cách phía trên nút hủy */
+}
+
+    .Cancel button {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        background-color: #949494; /* Màu xám cho nút hủy */
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s; /* Hiệu ứng chuyển màu nền */
+    }
+
+        .Cancel button:hover {
+            background-color: #7d7d7d; /* Màu xám đậm hơn khi hover */
+        }

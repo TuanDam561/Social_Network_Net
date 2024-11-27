@@ -1,0 +1,157 @@
+﻿
+/* Overlay toàn màn hình cho modal */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+/* Nội dung của modal */
+.modals-content {
+    background: white;
+    width: 500px;
+    max-width: 90%;
+    max-height: 80vh;
+    margin: 100px auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    font-family: Arial, sans-serif;
+    position: relative;
+    animation: fadeIn 0.4s ease;
+    overflow-y: auto;
+    padding-bottom: 60px;
+}
+
+    /* Tiêu đề modal */
+    .modals-content h2 {
+        text-align: center;
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+/* Ảnh banner */
+#bannerPreview {
+    width: 100%;
+   /* max-height: 200px;*/
+    margin: 10px auto;
+    display: block;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+/* Ảnh avatar hình tròn nằm trên banner */
+#avatarPreview {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 3px solid white;
+    position: relative;
+    left: 170px; 
+    align-items:center;
+    background-color: #f0f0f0;
+    object-fit: cover;
+}
+@media(max-width: 768px) {
+    #avatarPreview {
+    
+        left: 100px;
+
+    }
+}
+/* Căn chỉnh các input */
+.modal-input, .modal-textarea, .modal-input-file {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+/* Textarea */
+.modal-textarea {
+    height: 100px;
+    resize: none;
+}
+
+/* Footer chứa nút lưu */
+.modal-footer {
+    background-color: white;
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* Nút lưu */
+.modal-saves-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 4px;
+    font-size: 16px;
+    width: 100%;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+    .modal-saves-button:hover {
+        background-color: #0056b3;
+    }
+
+/* Style cho các label của file input */
+/*.file-label {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+    .file-label:hover {
+        background-color: #0056b3;
+    }*/
+/* Căn chỉnh các nút chọn ảnh cho banner và avatar */
+.file-label {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    display: inline-block;
+    margin: 10px 10px 10px 0;
+    text-align: center;
+    width: auto;
+    display: flex;
+    justify-content: center;
+}
+
+    .file-label:hover {
+        background-color: #0056b3;
+    }
+
+    /* Căn chỉnh các nút chọn ảnh (chúng sẽ xuất hiện trong một hàng ngang) */
+    .file-label + .file-label {
+        margin-left: 10px; /* Đảm bảo các nút có khoảng cách với nhau */
+    }
+
+/* Nút sửa banner */
+#editBanner {
+    display: none;
+}
+
+/* Nút sửa avatar */
+#editAvatar {
+    display: none;
+}

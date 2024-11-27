@@ -1,0 +1,59 @@
+﻿@media (max-width: 768px) {
+    /* Các quy tắc khác cho mobile */
+    .container {
+        width: 100%;
+        flex-direction: column; /* Đặt container theo chiều dọc trên màn hình nhỏ */
+        height: auto; /* Đặt chiều cao tự động cho container */
+    }
+
+    .left,
+    .mid,
+    .right {
+        width: 100%; /* Chiếm toàn bộ chiều rộng */
+        height: auto; /* Chiều cao tự động */
+        border: none; /* Loại bỏ đường viền */
+    }
+
+    .left {
+        display: flex;
+        position: static; /* Đặt vị trí thành static để không bị cố định */
+        padding: 15px; /* Điều chỉnh padding nếu cần */
+        flex-wrap: wrap; /* Cho phép các phần tử xuống dòng */
+        justify-content: flex-start; /* Căn trái để các item nằm sát nhau */
+    }
+
+        /* Xếp các item theo chiều ngang */
+        .left .Funtion {
+            display: flex; /* Sử dụng flexbox để xếp các item theo hàng */
+            flex-wrap: wrap; /* Để các item có thể xuống dòng khi không đủ không gian */
+            gap: 10px; /* Khoảng cách giữa các item */
+            margin-bottom: 20px; /* Khoảng cách dưới cùng */
+            justify-content: flex-start; /* Căn trái các item */
+            width: 100%; /* Chiếm toàn bộ chiều rộng */
+        }
+
+            .left .Funtion div {
+                padding: 10px;
+                background-color: #e0e0e0;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+                flex: 1; /* Các item chiếm không gian đều nhau */
+                text-align: center; /* Căn giữa văn bản */
+                min-width: 100px; /* Đặt chiều rộng tối thiểu cho các item */
+            }
+
+                .left .Funtion div:hover {
+                    background-color: #d0d0d0;
+                }
+
+    .mid {
+        padding: 15px; /* Điều chỉnh padding nếu cần */
+        overflow-y: visible; /* Loại bỏ thanh cuộn */
+    }
+
+    .right {
+        position: static; /* Đặt vị trí thành static để không bị cố định */
+        padding: 15px; /* Điều chỉnh padding nếu cần */
+    }
+}

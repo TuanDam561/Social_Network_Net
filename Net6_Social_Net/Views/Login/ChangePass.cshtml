@@ -1,0 +1,93 @@
+﻿@{
+    ViewData["Title"] = "Đổi mật khẩu"; // Tạo tiêu đề trang
+    Layout = null;
+
+    // Lấy email từ session
+    var email = Context.Session.GetString("ForgotMail") ?? string.Empty;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/css/FogotPass_2.css" />
+    <link href="~/Icon_Plafom/iconWeb.png" rel="icon" />
+    <title>@ViewData["Title"]</title>
+    <style>
+        .alert {
+            color: red; /* Màu chữ của alert */
+            border-color: #f5c6cb; /* Màu viền của alert */
+        }
+    </style>
+
+   
+
+    <script>
+        function disapbleBtn() {
+            const resendButton = document.getElementById("resendcode");
+            resendButton.disabled = true;
+
+            let timeLeft = 60;
+            resendButton.textContent = `Gửi lại mã (${timeLeft}s)`;
+
+            const timer = setInterval(() => {
+                timeLeft--;
+                resendButton.textContent = `Gửi lại mã (${timeLeft}s)`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    resendButton.disabled = false;
+                    resendButton.textContent = "Gửi lại mã";
+                }
+            }, 1000);
+        }
+
+    </script>
+
+</head>
+<body>
+    <div class="container">
+        <div class="Title">Đổi mật khẩu</div>
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-warning">
+                @TempData["Error"]
+            </div>
+        }
+        <form method="post" asp-action="ChangePassword" asp-controller="Login">
+            <!-- Thêm thẻ form -->
+            <div class="Email">
+                <label for="Email">Email</label>
+                <input type="text" name="email" id="Email" placeholder="Nhập vào Gmail" value="@email" required />
+            </div>
+            <div class="Verify">
+                <label for="verifyCode">Mã xác nhận</label>
+                <input type="text" name="verifycode" id="verifyCode" placeholder="Nhập vào mã xác nhận" required />
+            </div>
+            <div class="Pass">
+                <label for="NewPassword">Mật khẩu</label>
+                <input type="password" name="password" id="NewPassword" placeholder="Nhập mật khẩu" required />
+            </div>
+            <div class="ConfimPass">
+                <label for="ConfirmPassword">Nhập lại mật khẩu</label>
+                <input type="password" name="confimpass" id="ConfirmPassword" placeholder="Nhập lại mật khẩu" required />
+            </div>
+            <div class="Submit">
+                <button type="submit">Đổi mật khẩu</button>
+            </div>
+            <p></p>
+        </form>
+        <div class="Cancel">
+            
+            <button type="button" id="huy" onclick="window.location.href='@Url.Action("Index", "Login")'">Hủy</button>
+        </div>
+        <div class="resend">
+            Bạn chưa nhận được mã?
+            <form method="post" asp-action="SendVerificationCodeChangePass" asp-controller="Login" style="display:inline;">
+                <button type="submit" class="resend-button">Gửi lại mã</button>
+            </form>
+        </div>   
+        
+    </div>
+</body>
+</html>

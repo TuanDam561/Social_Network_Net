@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "Quên mật khẩu "; // Tạo tiêu đề trang
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/css//FogotPass_1.css" />
+    <link href="~/Icon_Plafom/iconWeb.png" rel="icon" />
+    <title>@ViewData["Title"]</title>
+</head>
+<body>
+    <div class="Container">
+        <form method="post" asp-action="ForgotPassFunction" asp-controller="Login">
+        <div class="Title">Gửi mã xác nhận</div>
+        <div class="Email">
+            <label for="email">Email</label>
+            <input type="text"
+                   name="email"
+                   id="gmail"
+                   placeholder="Nhập vào Email"
+                   required />
+        </div>
+        <div class="Sendcode">
+            <button type="submit">Gửi mã</button>
+        </div>
+        <div class="cancel">
+                <button type="button" onclick="window.location.href='@Url.Action("Index", "Login")'">
+                    Hủy
+                </button>
+        </div>
+        </form>
+    </div>
+</body>
+</html>
+

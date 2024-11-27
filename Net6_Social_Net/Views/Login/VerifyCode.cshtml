@@ -1,0 +1,64 @@
+﻿@{
+    ViewData["Title"] = "Xác thực"; // Tạo tiêu đề trang
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/VerifyCode_Register.css"/>
+    <link href="~/Icon_Plafom/iconWeb.png" rel="icon" />
+   @*  <script>
+        function disapbleBtn() {
+            const resendButton = document.getElementById("resendcode");
+                resendButton.disabled = true;
+
+                let timeLeft = 60;
+                resendButton.textContent = `Gửi lại mã (${timeLeft}s)`;
+
+                const timer = setInterval(() => {
+                    timeLeft--;
+                    resendButton.textContent = `Gửi lại mã (${timeLeft}s)`;
+
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        resendButton.disabled = false;
+                        resendButton.textContent = "Gửi lại mã";
+                    }
+                }, 1000);
+            }
+        
+    </script> *@
+</head>
+<body>
+    <div class="container">
+        <h2>Xác minh tài khoản</h2>
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-warning">
+                @TempData["Error"]
+            </div>
+        }
+        <form method="post" asp-action="VerifyRegister" asp-controller="Login">
+            <div class="code">
+                <h3>Mã xác nhận</h3>
+                <input type="text"
+                       name="verifycode"
+                       placeholder="Nhập vào mã xác nhận" required />
+            </div>
+            <div class="button">
+                <button type="submit">Xác nhận</button>
+            </div>
+        </form>
+            <div class="resend">
+                Bạn chưa nhận được mã?
+                <form method="post" asp-action="SendVerificationCode" asp-controller="Login" style="display:inline;">
+                <button type="submit" class="resend-button" id="resendcode" >Gửi lại mã</button>
+                </form>
+            </div>       
+    </div>
+</body>
+</html>

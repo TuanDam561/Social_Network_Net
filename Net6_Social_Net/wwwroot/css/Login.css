@@ -1,0 +1,133 @@
+﻿/* Reset mặc định */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Căn chỉnh font và nền */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Container chính */
+.container {
+    width: 350px;
+    padding: 25px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+    .container h2 {
+        margin-bottom: 25px;
+        color: #343a40;
+    }
+
+    /* Các input và label */
+    .container label {
+        display: block;
+        text-align: left;
+        margin-bottom: 5px;
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+    .container input[type="email"],
+    .container input[type="password"] {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 15px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        font-size: 15px;
+        color: #495057;
+    }
+
+        .container input[type="email"]::placeholder,
+        .container input[type="password"]::placeholder {
+            font-style: italic;
+            color: #adb5bd;
+        }
+
+    /* Phần Forgot */
+    .container .Fogot {
+        font-size: 14px;
+        color: #6c757d;
+        text-align: left;
+        margin-bottom: 20px;
+    }
+
+        .container .Fogot a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+            .container .Fogot a:hover {
+                text-decoration: underline;
+            }
+
+    /* Phần chính sách */
+    .container .policy {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        font-size: 14px;
+        color: #343a40;
+    }
+
+        .container .policy input {
+            margin-right: 5px;
+        }
+
+        .container .policy label a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+            .container .policy label a:hover {
+                text-decoration: underline;
+            }
+
+    /* Nút Login */
+    .container button {
+        width: 100%;
+        padding: 12px;
+        background-color: #007bff;
+        color: #ffffff;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .container button:hover {
+            background-color: #0056b3;
+        }
+
+    /* Phần Đăng ký */
+    .container .dangky {
+        font-size: 14px;
+        color: #6c757d;
+        text-align: left;
+        margin-top: 15px;
+    }
+
+        .container .dangky a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+            .container .dangky a:hover {
+                text-decoration: underline;
+            }
