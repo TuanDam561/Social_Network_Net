@@ -184,67 +184,6 @@ namespace Social_Network.Controllers
              return RedirectToAction("Index");
          }
 
-      /*   [HttpPost]
-         public async Task<IActionResult> UpdatePost(int idpost, string Content, IFormFile ImageFile, String StatusPost)
-         {
-             var userid = HttpContext.Session.GetString("UserId");
-             if (userid == null)
-             {
-                 TempData["Error"] = "Phiên đăng nhập hết hạn";
-                 return RedirectToAction("Index", "Login");
-             }
-
-             int userss = int.Parse(userid);
-
-             // Tìm bài viết và kiểm tra quyền sở hữu
-             var post = await db.Posts.FindAsync(idpost);
-             if (post == null || post.UserId != userss)
-             {
-                 TempData["Error"] = "Bạn không có quyền cập nhật bài viết này.";
-                 return RedirectToAction("Index");
-             }
-
-             // Cập nhật nội dung và trạng thái
-             post.Content = Content;
-             post.Status = StatusPost;
-             post.UpdatedAt = DateTime.Now;
-
-             // Xử lý cập nhật ảnh (nếu có)
-             if (ImageFile != null && ImageFile.Length > 0)
-             {
-                 // Xóa ảnh cũ nếu có
-                 if (!string.IsNullOrEmpty(post.ImageUrl))
-                 {
-                     var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", post.ImageUrl.TrimStart('/'));
-                     if (System.IO.File.Exists(oldImagePath))
-                     {
-                         System.IO.File.Delete(oldImagePath);  // Xóa ảnh cũ
-                     }
-                 }
-
-
-                 var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Post_Image");
-                 if (!Directory.Exists(uploadPath))
-                 {
-                     Directory.CreateDirectory(uploadPath);
-                 }
-
-                 var fileName = $"{Guid.NewGuid()}_{ImageFile.FileName}";
-                 var filePath = Path.Combine(uploadPath, fileName);
-
-                 using (var stream = new FileStream(filePath, FileMode.Create))
-                 {
-                     await ImageFile.CopyToAsync(stream);
-                 }
-
-                 // Cập nhật đường dẫn ảnh mới
-                 post.ImageUrl = $"/Post_Image/{fileName}";
-             }
-             await db.SaveChangesAsync();
-             TempData["Success"] = "Cập nhật bài viết thành công!";
-             return RedirectToAction("Index");
-         }*/
-
         [HttpPost]
         public async Task<IActionResult> UpdatePost(int idpost, string Content, IFormFile ImageFile, string StatusPost)
         {
@@ -304,11 +243,32 @@ namespace Social_Network.Controllers
             return Json(new { success = true });
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Commnent(int id)
-        //{
-
-        //}
+        [HttpPost]
+        public async Task<IActionResult> DeleteCommnent(int id)
+        {
+            var userss = HttpContext.Session.GetString("UserId");
+            int users=int.Parse(userss);
+            if (users == null)
+            {
+                TempData["Error"] = "Phiên đăng nhập hết hạn";
+                return RedirectToAction("Index", "Login");
+            }
+            var comment = await db.Comments.FindAsync(id);
+            if(comment == null || comment.UserId!=users)
+            {
+                return Json(new { success = false, error = "Bạn không có quyền xóa bình luận này." });
+            }
+            try
+            {
+                db.Comments.Remove(comment);
+                await db.SaveChangesAsync();
+                return Json(new { success = true, message = "Bình luận đã được xóa thành công." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = true, message = "Có lỗi khi xóa bình luận này." });
+            }           
+        }
 
 
 

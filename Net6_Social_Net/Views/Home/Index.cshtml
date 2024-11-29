@@ -28,56 +28,24 @@
 
         // Đóng modal khi nhấn ra ngoài
         window.onclick = function (event) {
+             event.stopPropagation();
             var modal = document.getElementById("myModal");
             if (event.target == modal) {
                 modal.style.display = "none";
             }
         }
     </script>
-
-    @*   Script cho modal chỉnh sửa *@
-    @*  <script>
-       
-         function openEditModal(postId, content, imageUrl, status) {
-             document.getElementById("editModal").style.display = "block";
-             document.getElementById("editPostId").value = postId;
-             document.getElementById("editContent").value = content;
-             document.getElementById("editStatusPost").value = status;
-             document.getElementById("editImageFile").value = '';
-             if (imageUrl) {
-                 document.getElementById("imagePreview").src = imageUrl;
-                 document.getElementById("imagePreview").style.display = 'block';
-             } else {
-                 document.getElementById("imagePreview").src = '';
-                 document.getElementById('imagePreview').style.display = 'none';
-             }
-         }
-
-
-         // Hàm đóng modal chỉnh sửa
-         function closeEditModal() {
-             document.getElementById("editModal").style.display = "none";
-         }
-
-         // Đóng modal khi nhấn ra ngoài
-         window.onclick = function (event) {
-             var modal = document.getElementById("editModal");
-             if (event.target == modal) {
-                 modal.style.display = "none";
-             }
-         }
-     </script> *@
-
-
     <script>
         //mở ra cái dropdow dấu ba chấm mỗi post
         function toggleDropdown(postId) {
+            event.stopPropagation();
             var menu = document.getElementById("dropdown-menu-" + postId);
             menu.style.display = menu.style.display === "block" ? "none" : "block";
         }
 
         // Đóng menu khi nhấn bên ngoài
         window.onclick = function (event) {
+             event.stopPropagation();
             if (!event.target.matches('.dropdown-button')) {
                 var dropdowns = document.getElementsByClassName("dropdown-content");
                 for (var i = 0; i < dropdowns.length; i++) {
@@ -279,7 +247,9 @@
 
  </style>
     <link href="~/css/Home_forMobile.css" rel="stylesheet" />
- 
+   
+  
+
 
 
 </head>
@@ -347,22 +317,22 @@
             <div class="Post">
                 @foreach (var post in Model)
                 {
-                    <div class="post-item" id="post-@post.Id" data-id="@post.Id">
-                        <div class="post-header">
+                    <div class="post-item" id="post-@post.Id" data-id="@post.Id" data-post-id="@post.Id" onclick="openPostModal(this)">
+                        <div class="post-header" >
                             @{
                                 var currentUserId = Context.Session.GetString("UserId");
                             }
                             <div style="display:flex;align-items:center">
                                 <a>
                                     @if (!string.IsNullOrEmpty(post.AvatarUser)){
-                                        <img src="@post.AvatarUser" alt="Avatar" style="border-radius:50%; width:50px;height:50px;object-fit:cover;" />
+                                        <img src="@post.AvatarUser" alt="Avatar" style="border-radius:50%; width:50px;height:50px;object-fit:cover;" onclick="event.stopPropagation()"/>
                                     }
                                     else
                                     {
                                         <img src="~/Avatar/454849238_800890952251701_8841246141296174912_n.jpg" alt="Avatar" style="border-radius:50%; width:50px; height:50px; object-fit:cover; " />
                                     }
                                 </a>
-                                <a id="userName-@post.Id" class="username" style="text-transform: capitalize; margin:10px;font-size:20px; cursor:pointer; text-decoration:none;" href="@Url.Action("Index", "UserAccount",new { id = post.UserId })">@post.UserName</a>
+                                <a id="userName-@post.Id" class="username" style="text-transform: capitalize; margin:10px;font-size:20px; cursor:pointer; text-decoration:none;" href="@Url.Action("Index", "UserAccount",new { id = post.UserId })" onclick="event.stopPropagation()">@post.UserName</a>
                             </div>                          
                             
                             @if (currentUserId != null && Model.FirstOrDefault(p => p.Id == post.Id)?.UserId.ToString() == currentUserId)
@@ -376,7 +346,7 @@
 
                                         <form asp-action="Deletepost" asp-controller="Home" method="post" style="display:inline;">
                                             <input type="hidden" name="id" value="@post.Id" />
-                                            <button type="submit" onclick="return confirm('Bạn có chắc chắn muốn xóa bài viết này không?');" class="delete-button">Xóa bài viết</button>
+                                            <button type="submit" onclick="event.stopPropagation();return confirm('Bạn có chắc chắn muốn xóa bài viết này không?');" class="delete-button">Xóa bài viết</button>
                                         </form>
                                     </div>
                                 </div>
@@ -386,24 +356,23 @@
                         <span>@post.CreatedAt.ToString("HH:mm dd/MM/yyyy")</span>
                         <p></p>
                         <span class="post-status" id="status-@post.Id">@post.Status</span>
-                        <p  data-post-id="@post.Id" onclick="openPostModal(this)" class=" post-content" id="content-@post.Id">@post.Content </p>
+                        <p  class=" post-content" id="content-@post.Id">@post.Content </p>
 
                         @if (!string.IsNullOrEmpty(post.ImageUrl))
                         {
-                            <img data-post-id="@post.Id" onclick="openPostModal(this)" src=" @post.ImageUrl" alt="Hình ảnh bài viết" style="width: auto; height: 25%;" class="center-img" id="image-@post.Id" />
+                            <img  src=" @post.ImageUrl" alt="Hình ảnh bài viết" style="width: auto; height: 25%;" class="center-img" id="image-@post.Id" />
                         }
                         <div id="comments-@post.Id" style="display:none;">
                             @foreach (var comment in post.Comments)
                             {
-                                <div class="comment">
+                                <div class="comment" data-comment-id="@comment.CommentId" data-user-id="@comment.UserId">
                                     <span class="comment-user-name">@comment.UserName</span>
                                     <p class="comment-content">@comment.Content</p>
                                     <p class="comment-created-at">@comment.CreatedAt</p>
+                                    <p class="comment-choose" onclick="deleteComment(@comment.CommentId)">...</p>
                                 </div>
                             }
-                        </div>
-
-                        
+                        </div>                       
                      </div>   
                      //modal comment và đòng bọn 
         <div id="postModal" class="custom-modal" style="display: none;">
@@ -424,7 +393,7 @@
                       <hr />
                       <div id="modalComments">
                           <!-- Bình luận -->
-                          <h6>Bình luận:</h6>                       
+                          <h6 style="font-size:16px; margin-bottom:10px;">Bình luận:</h6>                       
                       </div>
                       <div>
                           <textarea id="commentInput" class="form-control mt-3" rows="2" placeholder="Viết bình luận..."></textarea>
@@ -443,7 +412,40 @@
           </div>
       </div>
                 }
+               
                 
+                <script>
+                    function deleteComment(commentId) {
+                        // Gửi yêu cầu xóa bình luận qua SignalR đến Hub
+                        const userId = parseInt("@Context.Session.GetString("UserId")", 10);
+                        connection.invoke("DeleteComment", commentId,userId)
+                            .then(function () {
+                                console.log("Comment deleted successfully.");
+                            })
+                            .catch(function (err) {
+                                console.error("Error while deleting comment: " + err.toString());
+                            });
+                                // Lắng nghe sự kiện khi xóa bình luận thất bại
+                    connection.on("DeleteCommentFailed", function (errorMessage) {
+                        alert(errorMessage);  // Hiển thị thông báo lỗi
+                    });
+                        // Xóa bình luận khỏi giao diện
+                        const commentDiv = document.querySelector(`[data-comment-id='${commentId}']`);
+                        if (commentDiv) {
+                            commentDiv.remove();  // Xóa bình luận trong modal
+                        }
+
+                        const hiddenCommentDiv = document.querySelector(`[data-comment-id='${commentId}']`);
+                        if (hiddenCommentDiv) {
+                            hiddenCommentDiv.remove();  // Xóa bình luận trong thẻ ẩn
+                        }
+                    
+
+                    }
+                </script>
+               
+
+
                     <script>
                         // Lấy giá trị userId và userName từ session trong ASP.NET Core
                         const userId = "@Context.Session.GetString("UserId")";
@@ -458,33 +460,57 @@
                             .build();
 
                         // Sự kiện nhận bình luận mới từ SignalR
-                        connection.on("ReceiveComment", function (postId, userName, content, createdAt) {
-                            const commentsList = document.getElementById("commentsList");
+                     connection.on("ReceiveComment", function (userId,postId, userName, content, createdAt, commentId) {
+                        const commentsList = document.getElementById("commentsList");
 
-                            // Tạo phần tử bình luận mới và thêm vào DOM
-                            const commentDiv = document.createElement("div");
-                            commentDiv.classList.add("comment");
+                        // Tạo phần tử bình luận mới và thêm vào DOM
+                        const commentDiv = document.createElement("div");
+                        commentDiv.classList.add("comment");
+                        commentDiv.dataset.commentId = commentId;
+                        const userIdSS = parseInt("@Context.Session.GetString("UserId")", 10);
+                        const showDeleteButton = userIdSS == userId;
+                        commentDiv.innerHTML = `
+                            <div style="display: flex; justify-content: space-between;">
+                                <strong>${userName}:</strong> 
+                                ${
+                                showDeleteButton
+                                 ? `<span style="font-size:20px; font-weight:bold;cursor:pointer;" onclick="deleteComment(${commentId})">...</span>`
+                                : ''
+                             }                              
+                            </div>
+                            ${content}
+                            <br>
+                            <span>${new Date(createdAt).toLocaleString()}</span>
+                        `;
 
-                            // Tạo HTML cho mỗi bình luận
-                            commentDiv.innerHTML = `<strong>${userName}:</strong> ${content} <br><span>${new Date(createdAt).toLocaleString()}</span>`;
-
-                            // Thêm bình luận vào danh sách bình luận trong modal
+                        // Kiểm tra nếu commentsList tồn tại
+                        if (commentsList) {
                             commentsList.appendChild(commentDiv);
+                        } else {
+                            console.error("Element with id 'commentsList' not found!");
+                        }
+
                         // Cập nhật thẻ ẩn
                         const hiddenCommentsContainer = document.getElementById(`comments-${postId}`);
                         if (hiddenCommentsContainer) {
                             const hiddenCommentDiv = document.createElement("div");
                             hiddenCommentDiv.classList.add("comment");
+                            hiddenCommentDiv.dataset.commentId = commentId;
                             hiddenCommentDiv.innerHTML = `
                                 <span class="comment-user-name">${userName}</span>
                                 <p class="comment-content">${content}</p>
-                                <p class="comment-created-at">${new Date(createdAt).toLocaleString()}</p>`;
+                                <p class="comment-created-at">${new Date(createdAt).toLocaleString()}</p>
+                                <p class="comment-choose" onclick="deleteComment(${commentId})">...</p>
+                            `;
                             hiddenCommentsContainer.appendChild(hiddenCommentDiv);
+                        } else {
+                            console.error(`Element with id 'comments-${postId}' not found!`);
                         }
-                        });
+                    });
+
                         let currentPostId = null;
                         // Hàm mở modal
-                            function openPostModal(buttonElement) {
+                     function openPostModal(buttonElement) {
                         // Lấy postId từ thuộc tính data-post-id
                             currentPostId = buttonElement.getAttribute("data-post-id");
                             const modal = document.getElementById("postModal");
@@ -521,15 +547,29 @@
                                     const commentUserName = commentElement.querySelector(".comment-user-name").innerText;
                                     const commentContent = commentElement.querySelector(".comment-content").innerText;
                                     const commentCreatedAt = commentElement.querySelector(".comment-created-at").innerText;
-
-
+                                    const commentId = commentElement.getAttribute("data-comment-id");
+                                    const commentUserId = commentElement.getAttribute("data-user-id"); // Lấy userId của bình luận
+                                   const userIdSS = parseInt("@Context.Session.GetString("UserId")", 10);
                                     // Tạo phần tử bình luận mới
                                     const commentDiv = document.createElement("div");
                                     commentDiv.classList.add("comment");
-
+                                    commentDiv.setAttribute("data-comment-id", commentId);  
+                                    
+                                 const showDeleteButton = userIdSS == commentUserId; // Điều kiện hiển thị nút xóa
                                     // Tạo HTML cho mỗi bình luận
-                                    commentDiv.innerHTML = `<strong>${commentUserName}:</strong> ${commentContent} <br><span>${commentCreatedAt}</span>`;
-
+                                 commentDiv.innerHTML =
+                                `<div style="display: flex; justify-content: space-between;">
+                                <strong>${commentUserName}:</strong> 
+                                ${
+                                 showDeleteButton
+                                ? `<span style="font-size:20px; font-weight:bold;cursor:pointer;" onclick="deleteComment(${commentId})">...</span>`
+                                 : ''
+                                    }
+                                </div>
+                                ${commentContent}  
+                                <br>
+                                <span>${commentCreatedAt}</span>
+                                `;
                                     // Thêm bình luận vào danh sách bình luận trong modal
                                     commentsList.appendChild(commentDiv);
                                 });
@@ -581,7 +621,7 @@
                                     return;
                                 }
                               
-                                //const userId = "@Context.Session.GetString("UserId")"; // Lấy userId từ session
+                                // const userId = "@Context.Session.GetString("UserId")"; Lấy userId từ session
                                 const createdAt = new Date().toISOString();
 
                                 console.log("postId:", postId);
@@ -609,6 +649,7 @@
             </div>
              <script>
                  function openEditModal(postId) {
+                    event.stopPropagation();
                      // Xác định bài viết cần chỉnh sửa
                     const postElement = document.querySelector(`.post-item[data-id="${postId}"]`);
 
