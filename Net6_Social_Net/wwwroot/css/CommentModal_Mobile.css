@@ -1,0 +1,75 @@
+﻿@media (max-width: 768px) {
+    body.modal-open {
+        overflow: hidden; /* Ngăn cuộn */
+        height: 100%; /* Giữ chiều cao cố định */
+    }
+
+    /* Modal content cho điện thoại */
+    .custom-modal-content {
+        flex-direction: column; /* Sắp xếp các phần theo chiều dọc */
+        width: 90%; /* Đầy chiều rộng màn hình */
+        height: 90%; /* Đầy chiều cao màn hình */
+        border-radius: 10px; /* Loại bỏ bo góc để phù hợp với màn hình nhỏ */
+        overflow-y: auto; /* Kích hoạt cuộn dọc nếu nội dung vượt quá chiều cao */
+        overflow-x: hidden; /* Ngăn cuộn ngang nếu không cần thiết */
+        position: relative; /* Đảm bảo modal không bị ảnh hưởng bởi vị trí của phần tử khác */
+    }
+
+    /* Modal body */
+    .custom-modal-body {
+        flex-direction: column; /* Sắp xếp phần ảnh và thông tin dọc */
+        height: auto; /* Cho phép chiều cao tự điều chỉnh */
+    }
+
+    /* Phần ảnh (65% trên desktop, toàn bộ chiều rộng trên điện thoại) */
+    .post-image-container {
+        flex: none;
+        width: 100%; /* Đầy chiều rộng màn hình */
+        height: auto; /* Chiều cao tự động */
+        background-color: #000;
+    }
+
+        .post-image-container img {
+            max-width: 100%; /* Đảm bảo ảnh không vượt quá chiều rộng màn hình */
+            max-height: 300px; /* Đặt chiều cao tối đa cho ảnh */
+            object-fit: cover; /* Đảm bảo ảnh hiển thị tốt */
+        }
+
+    /* Phần thông tin bài viết */
+    .post-details-container {
+        flex: none;
+        width: 100%; /* Đầy chiều rộng màn hình */
+        padding: 15px; /* Giảm padding cho phù hợp với màn hình nhỏ */
+        background: #f9f9f9;
+    }
+
+    /* Bình luận và textarea */
+    #modalComments {
+        margin-top: 10px;
+    }
+
+    .form-control {
+        height: 60px; /* Tăng chiều cao textarea trên điện thoại */
+        margin-top: 10px;
+    }
+
+    .btn-primary {
+        width: 100%; /* Nút gửi bình luận chiếm toàn bộ chiều rộng */
+    }
+
+    /* Nút đóng modal */
+    .close-modal {
+        display: flex;
+        top: 15px;
+        right: 20px;
+        font-size: 28px;
+        color: #000000;
+        width: 30px;
+        height: 30px;
+        text-align: center;
+        border-radius: 50%;
+        background: #cdcdcd;
+        align-items: center;
+        justify-content: center;
+    }
+}

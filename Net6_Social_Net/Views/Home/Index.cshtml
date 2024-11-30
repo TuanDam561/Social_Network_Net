@@ -28,7 +28,7 @@
 
         // Đóng modal khi nhấn ra ngoài
         window.onclick = function (event) {
-             event.stopPropagation();
+          
             var modal = document.getElementById("myModal");
             if (event.target == modal) {
                 modal.style.display = "none";
@@ -60,6 +60,7 @@
 
    
     <script>
+        //Xem trước hình ảnh khi chỉnb sửa bài viết
         document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('editImageFile').addEventListener('change', function (event) {
                 var file = event.target.files[0];  // Lấy file đầu tiên trong danh sách các file được chọn
@@ -76,7 +77,7 @@
     </script>
 
      <script>
-         //đổi ảnh khi post  bài 
+         //Xem trước ảnh khi tạo bài viết
          document.addEventListener('DOMContentLoaded', function () {
              document.getElementById('editImage').addEventListener('change', function (event) {
                  var file = event.target.files[0];  // Lấy file đầu tiên trong danh sách các file được chọn
@@ -92,6 +93,7 @@
              });
          });
      </script>
+   
 
 
     <style>
@@ -246,6 +248,7 @@
 
 
  </style>
+    <link href="~/css/CommentModal_Mobile.css" rel="stylesheet" />
     <link href="~/css/Home_forMobile.css" rel="stylesheet" />
    
   
@@ -362,29 +365,33 @@
                         {
                             <img  src=" @post.ImageUrl" alt="Hình ảnh bài viết" style="width: auto; height: 25%;" class="center-img" id="image-@post.Id" />
                         }
+                       
+                       
                         <div id="comments-@post.Id" style="display:none;">
                             @foreach (var comment in post.Comments)
                             {
-                                <div class="comment" data-comment-id="@comment.CommentId" data-user-id="@comment.UserId">
+                                    <div class="comment" data-comment-id="@comment.CommentId" data-user-id="@comment.UserId" data-userpostsub-id="@post.UserId">
                                     <span class="comment-user-name">@comment.UserName</span>
                                     <p class="comment-content">@comment.Content</p>
                                     <p class="comment-created-at">@comment.CreatedAt</p>
-                                    <p class="comment-choose" onclick="deleteComment(@comment.CommentId)">...</p>
+                                    <p class="comment-choose" >...</p>
                                 </div>
                             }
                         </div>                       
-                     </div>   
-                     //modal comment và đòng bọn 
-        <div id="postModal" class="custom-modal" style="display: none;">
-          <div class="custom-modal-content">
-              <div class="custom-modal-body">
-                  <!-- Phần ảnh (65%) -->
-                  <div class="post-image-container">
-                      <img id="modalImage" src="" alt="Hình ảnh bài viết" />
-                  </div>
-                  <!-- Phần thông tin bài viết (35%) -->
-                  <div class="post-details-container">
-                      <div id="modalPostInfo">
+                    </div>                 
+                
+           
+                 //modal comment và đổng bọn 
+                         <div id="postModal" class="custom-modal" style="display: none;">
+                              <div class="custom-modal-content">
+                                 <div class="custom-modal-body">
+                                     <!-- Phần ảnh (65%) -->
+                                 <div class="post-image-container">
+                                     <img id="modalImage" src="" alt="Hình ảnh bài viết" />
+                                 </div>
+                                 <!-- Phần thông tin bài viết (35%) -->
+                                   <div class="post-details-container">
+                                   <div id="modalPostInfo">
                           <h5 id="modalUserName"></h5>
                           <p id="modalCreatedAt" class="text-muted"></p>
                           <p id="modalContent"></p>
@@ -402,33 +409,31 @@
 
                       </div>
                       <div id="commentsList">
-                            <!-- Các bình luận sẽ được thêm vào đây -->
-                             
+                            <!-- Các bình luận sẽ được thêm vào đây -->                            
                       </div>
                   </div>
+                 </div>
+                  <!-- Nút đóng -->
+               <span class="close-modal" onclick="closeModalds()">×</span>
               </div>
-              <!-- Nút đóng -->
-              <span class="close-modal" onclick="closeModalds()">×</span>
-          </div>
-      </div>
-                }
-               
-                
+         </div>
                 <script>
                     function deleteComment(commentId) {
                         // Gửi yêu cầu xóa bình luận qua SignalR đến Hub
                         const userId = parseInt("@Context.Session.GetString("UserId")", 10);
-                        connection.invoke("DeleteComment", commentId,userId)
+                        connection.invoke("DeleteComment", commentId, userId)
                             .then(function () {
                                 console.log("Comment deleted successfully.");
                             })
                             .catch(function (err) {
                                 console.error("Error while deleting comment: " + err.toString());
                             });
-                                // Lắng nghe sự kiện khi xóa bình luận thất bại
-                    connection.on("DeleteCommentFailed", function (errorMessage) {
-                        alert(errorMessage);  // Hiển thị thông báo lỗi
-                    });
+
+                        // Lắng nghe sự kiện khi xóa bình luận thất bại
+                        connection.on("DeleteCommentFailed", function (errorMessage) {
+                            alert(errorMessage);  // Hiển thị thông báo lỗi
+                        });
+
                         // Xóa bình luận khỏi giao diện
                         const commentDiv = document.querySelector(`[data-comment-id='${commentId}']`);
                         if (commentDiv) {
@@ -439,13 +444,9 @@
                         if (hiddenCommentDiv) {
                             hiddenCommentDiv.remove();  // Xóa bình luận trong thẻ ẩn
                         }
-                    
-
                     }
                 </script>
-               
-
-
+                }
                     <script>
                         // Lấy giá trị userId và userName từ session trong ASP.NET Core
                         const userId = "@Context.Session.GetString("UserId")";
@@ -460,7 +461,7 @@
                             .build();
 
                         // Sự kiện nhận bình luận mới từ SignalR
-                     connection.on("ReceiveComment", function (userId,postId, userName, content, createdAt, commentId) {
+                     connection.on("ReceiveComment", function (userId, userpost,postId, userName, content, createdAt, commentId) {
                         const commentsList = document.getElementById("commentsList");
 
                         // Tạo phần tử bình luận mới và thêm vào DOM
@@ -469,11 +470,14 @@
                         commentDiv.dataset.commentId = commentId;
                         const userIdSS = parseInt("@Context.Session.GetString("UserId")", 10);
                         const showDeleteButton = userIdSS == userId;
+                        const showDeletpostUserr = userIdSS==userpost;
+
+                        var showicondeletee=showDeleteButton || showDeletpostUserr;
                         commentDiv.innerHTML = `
                             <div style="display: flex; justify-content: space-between;">
                                 <strong>${userName}:</strong> 
                                 ${
-                                showDeleteButton
+                                showicondeletee
                                  ? `<span style="font-size:20px; font-weight:bold;cursor:pointer;" onclick="deleteComment(${commentId})">...</span>`
                                 : ''
                              }                              
@@ -496,11 +500,13 @@
                             const hiddenCommentDiv = document.createElement("div");
                             hiddenCommentDiv.classList.add("comment");
                             hiddenCommentDiv.dataset.commentId = commentId;
+                            hiddenCommentDiv.dataset.userId = userId;
+                            hiddenCommentDiv.dataset.userpostsubId = userpost;
                             hiddenCommentDiv.innerHTML = `
                                 <span class="comment-user-name">${userName}</span>
                                 <p class="comment-content">${content}</p>
                                 <p class="comment-created-at">${new Date(createdAt).toLocaleString()}</p>
-                                <p class="comment-choose" onclick="deleteComment(${commentId})">...</p>
+                                <p class="comment-choose" >...</p>
                             `;
                             hiddenCommentsContainer.appendChild(hiddenCommentDiv);
                         } else {
@@ -511,12 +517,13 @@
                         let currentPostId = null;
                         // Hàm mở modal
                      function openPostModal(buttonElement) {
+                         document.body.classList.add("modal-open"); // Ngăn cuộn
                         // Lấy postId từ thuộc tính data-post-id
                             currentPostId = buttonElement.getAttribute("data-post-id");
                             const modal = document.getElementById("postModal");
 
                         // Gửi yêu cầu tham gia nhóm
-                        connection.invoke("JoinPostGroup", parseInt(currentPostId, 10))
+                             connection.invoke("JoinPostGroup", parseInt(currentPostId, 10))
                             .catch(function (err) {
                                 console.error("Failed to join group:", err.toString());
                             });
@@ -548,23 +555,30 @@
                                     const commentContent = commentElement.querySelector(".comment-content").innerText;
                                     const commentCreatedAt = commentElement.querySelector(".comment-created-at").innerText;
                                     const commentId = commentElement.getAttribute("data-comment-id");
+
                                     const commentUserId = commentElement.getAttribute("data-user-id"); // Lấy userId của bình luận
+                                    
+                                    const postUserId=commentElement.getAttribute("data-userpostsub-id");
+
                                    const userIdSS = parseInt("@Context.Session.GetString("UserId")", 10);
                                     // Tạo phần tử bình luận mới
                                     const commentDiv = document.createElement("div");
                                     commentDiv.classList.add("comment");
                                     commentDiv.setAttribute("data-comment-id", commentId);  
                                     
-                                 const showDeleteButton = userIdSS == commentUserId; // Điều kiện hiển thị nút xóa
+                                 const showDeleteButton = userIdSS == commentUserId 
+                                 const showDeletUserPost= userIdSS == postUserId;
+                                 const showDeleteIcon = showDeleteButton || showDeletUserPost;
                                     // Tạo HTML cho mỗi bình luận
                                  commentDiv.innerHTML =
                                 `<div style="display: flex; justify-content: space-between;">
                                 <strong>${commentUserName}:</strong> 
                                 ${
-                                 showDeleteButton
+                                 showDeleteIcon
                                 ? `<span style="font-size:20px; font-weight:bold;cursor:pointer;" onclick="deleteComment(${commentId})">...</span>`
                                  : ''
                                     }
+                                   
                                 </div>
                                 ${commentContent}  
                                 <br>
@@ -580,6 +594,7 @@
 
                         // Hàm đóng modal
                         function closeModalds() {
+                            document.body.classList.remove("modal-open"); // Cho phép cuộn lại
                             const modal = document.getElementById("postModal");
                             modal.style.display = "none";
 
@@ -644,8 +659,6 @@
                             return console.error(err.toString());
                         });
                     </script>
-
-                
             </div>
              <script>
                  function openEditModal(postId) {
@@ -673,7 +686,7 @@
                          if (image) {
                              imagePreview.src = image;
                              imagePreview.style.display = "block"; // Hiển thị ảnh
-                          } else {
+                          } else {                         
                            imagePreview.style.display = "none"; // Ẩn ảnh nếu không có
                             }
                               // Hiển thị modal
@@ -706,8 +719,9 @@
                     </form>
                 </div>
             </div>
+           
             <script>
-                function submitEditPost() {
+                                function submitEditPost() {
                     var formData = new FormData(document.getElementById("editPostForm"));
 
                     fetch('/Home/UpdatePost', {
@@ -721,34 +735,43 @@
                                 var newContent = document.getElementById('editContent').value;
                                 var newStatus = document.getElementById('editStatusPost').value;
 
-                               // Cập nhật nội dung và trạng thái bài viết trong giao diện
+                                // Cập nhật nội dung và trạng thái bài viết trong giao diện
                                 document.querySelector(`#content-${postId}`).innerText = newContent;
                                 document.querySelector(`#status-${postId}`).innerText = newStatus;
 
-                               // Cập nhật hình ảnh nếu có
+                                // Cập nhật hình ảnh nếu có
                                 var newImageUrl = document.getElementById('imagePreview').src;
                                 if (newImageUrl) {
-                                    document.querySelector(`#image-${postId}`).src = newImageUrl;
+                                    var imgElement = document.querySelector(`#image-${postId}`);
+                                    if (imgElement) {
+                                        // Nếu thẻ img đã tồn tại, cập nhật src
+                                        imgElement.src = newImageUrl;
+                                    } else {
+                                        // Nếu thẻ img chưa tồn tại, tạo thẻ img mới và chèn vào DOM
+                                        var postElement = document.querySelector(`#post-${postId}`);
+                                        if (postElement) {
+                                            var newImgElement = document.createElement('img');
+                                            newImgElement.src = newImageUrl;
+                                            newImgElement.alt = "Hình ảnh bài viết";
+                                            newImgElement.style.width = "auto";
+                                            newImgElement.style.height = "25%";
+                                            newImgElement.className = "center-img";
+                                            newImgElement.id = `image-${postId}`;
+                                            postElement.appendChild(newImgElement);
+                                        }
+                                    }
                                 }
 
-                               // Kiểm tra trạng thái mới của bài viết, nếu là Private thì ẩn bài viết
+                                // Kiểm tra trạng thái mới của bài viết, nếu là Private thì ẩn bài viết
                                 var postElement = document.querySelector(`#post-${postId}`);
                                 if (newStatus === "Private") {
-                                    postElement.style.display = "none";  //Ẩn bài viết nếu trạng thái là Private
+                                    postElement.style.display = "none";  // Ẩn bài viết nếu trạng thái là Private
                                 } else {
                                     postElement.style.display = "block"; // Hiển thị lại bài viết nếu trạng thái là Public
                                 }
 
-                                //Cập nhật lại nội dung modal nếu modal đang mở
-
-                                // if (document.getElementById("editModal").style.display === "block") {
-                                //     document.getElementById("editContent").value = newContent; Cập nhật nội dung
-                                //     document.getElementById("editStatusPost").value = newStatus; Cập nhật trạng thái
-                                // }
-
-                               // alert("Cập nhật bài viết thành công!");
+                                // alert("Cập nhật bài viết thành công!");
                                 closeEditModal();
-                                
                             } else {
                                 alert("Lỗi: " + data.error);
                             }
@@ -756,8 +779,9 @@
                         .catch((error) => {
                             console.error('Error:', error);
                         });
-                }             
-            </script>           
+                }
+
+            </script>
         </div>
 
         <div class="right">
@@ -767,12 +791,8 @@
             </div>
         </div>
     </div>
-
-
 </body>
 </html>
-
-
 
 @* <script>
                         // Hàm mở modal

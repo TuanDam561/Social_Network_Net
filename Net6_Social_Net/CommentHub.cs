@@ -35,7 +35,10 @@
                                        .Where(u => u.UserId == userId)
                                        .Select(u => u.Username)
                                        .FirstOrDefault();
-
+                var userpost=_context.Posts
+                                       .Where(u => u.PostId == postId)
+                                       .Select(u => u.UserId)
+                                       .FirstOrDefault();
                 if (userName == null)
                 {
                     // Nếu không tìm thấy người dùng, sử dụng tên mặc định
@@ -55,7 +58,7 @@
                 await _context.SaveChangesAsync();
                 var commentId = comment.CommentId;
                 // Gửi bình luận và tên người dùng qua SignalR đến nhóm tương ứng
-                await Clients.Group($"Post-{postId}").SendAsync("ReceiveComment",userId, postId, userName, content, createdAt, commentId);
+                await Clients.Group($"Post-{postId}").SendAsync("ReceiveComment",userId, userpost, postId, userName, content, createdAt, commentId);
             }
             catch (Exception ex)
             {
@@ -78,11 +81,11 @@
                 }
 
                 // Kiểm tra xem userId trong bình luận có khớp với userId trong session không
-                if (comment.UserId != userId)
+           /*     if (comment.UserId != userId)
                 {
                     // Nếu không khớp, gửi thông báo không cho phép xóa bình luận
                     throw new UnauthorizedAccessException("Bạn không có quyền xóa bình luận này.");
-                }
+                }*/
 
                 // Xóa bình luận khỏi cơ sở dữ liệu
                 _context.Comments.Remove(comment);

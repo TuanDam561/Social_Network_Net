@@ -360,14 +360,7 @@
                                         <li style="color:blue">
                                             <button id="buttonEdit" type="button" style="text-decoration:none" onclick="openEditModal('@post.Id', '@post.Content', '@post.ImageUrl', '@post.Status');">Chỉnh sửa bài viết</button>
                                         </li>
-                                        <li>
-                                            <!-- Nút xóa bài viết với xác nhận -->
-                                            @*  <form asp-action="DeleteyourPosts" asp-controller="YourAccount" method="post" style="display:inline;" onsubmit="return confirmDelete();">
-                                                 <input type="hidden" name="id" value="@post.Id" />
-                                                 <button type="submit" style="color:red; border:none; background:none; cursor:pointer;font-size:16px">
-                                                     Xóa bài viết
-                                                 </button>
-                                             </form> *@
+                                        <li>                  
                                             <form id="deletepostform" method="post" style="display:inline;" onsubmit="return deletpost();">
                                                 <input type="hidden" name="id" value="@post.Id" />
                                                 <button type="submit" style="color:red; border:none; background:none; cursor:pointer;font-size:16px">
@@ -421,34 +414,7 @@
             {
                 <p style="text-align:center;font-size:30px;font-weight:bold">Hiện tại bạn chưa có bài viết nào.</p>
             }
-        </div>
-        <!-- Modal chỉnh sửa bài viết -->
-    @*     <div id="editModal" class="modal-overlay">
-            <div class="modal-content">
-                <h2 class="ChinhSua">Chỉnh sửa bài viết</h2>
-                <span class="close" onclick="closeEditModal()">×</span>
-                <form asp-action="UpdatePost" asp-controller="YourAccount" method="post" enctype="multipart/form-data">
-                    <input type="hidden" id="editPostId" name="idpost" />
-
-                    <!-- Trường Content -->
-                    <textarea id="editContent" name="Content" class="modal-textarea"></textarea>
-
-                    <label for="editStatus">Trạng thái:</label>
-                    <select id="editStatus" name="StatusPost" class="modal-select">
-                        <option value="Public">Công khai</option>
-                        <option value="Private">Riêng tư</option>
-                    </select>
-                    
-                    <img id="imagePreview" src="" alt="Image Preview">
-                    <input type="file" id="editImageFile" name="ImageFile" accept="image/*" class="modal-input-file" />
-
-                    <!-- Trường StatusPost -->                   
-                    <div class="modal-buttons">
-                        <button type="submit" class="modal-save-button">Cập nhật</button>
-                    </div>
-                </form>
-            </div>
-        </div> *@
+        </div>  
         <!-- Modal chỉnh sửa bài viết -->
         <div id="editModal" class="modal-overlay">
             <div class="modal-content">

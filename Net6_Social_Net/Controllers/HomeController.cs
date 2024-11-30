@@ -14,42 +14,67 @@ namespace Social_Network.Controllers
     {
        private SocialNetworkContext db=new SocialNetworkContext();
 
+        /*  public async Task<IActionResult> Index()
+          {
+              var userId = HttpContext.Session.GetString("UserId");
+              if (userId == null)
+              {
+                  TempData["Error"] = "Vui lòng đăng nhập hoặc đăng ký";
+                  return RedirectToAction("Index", "Login");
+              }
+              var postsQuery = db.Posts
+                  .Include(p => p.User) // Quan hệ giữa Post và User
+                  .Include(p => p.Comments) // Quan hệ giữa Post và Comment
+                      .ThenInclude(c => c.User) // Nếu Comment có quan hệ với User
+                  .Where(p => p.Status == "Public") // Lọc bài viết public
+                  .OrderByDescending(p => p.CreatedAt)
+                  .Select(p => new PostViewModel
+                  {
+                      Id = p.PostId,
+                      UserId = p.UserId,
+                      Content = p.Content,
+                      ImageUrl = p.ImageUrl,
+                      CreatedAt = p.CreatedAt ?? DateTime.Now,
+                      Status = p.Status,
+                      UserName = p.User.Username,
+                      UpdatedAt = p.UpdatedAt ?? DateTime.Now,
+                      AvatarUser = p.User.ProfilePicture,
+
+                      Comments = p.Comments
+                       .Where(c => c.PostId ==p.PostId)
+                       .OrderBy(c => c.CreatedAt) // Sắp xếp bình luận theo thời gian tạo
+                       .Select(c => new CommentViewModel
+                       {
+                           CommentId = c.CommentId,
+                           PostId = c.PostId,
+                           UserId = c.UserId,
+                           Content = c.Content,
+                           CreatedAt = c.CreatedAt ?? DateTime.Now,
+                           UserName = c.User.Username,
+                           AvatarUser = c.User.ProfilePicture
+                       }).ToList()
+                  });
+
+              var postsList = await postsQuery.ToListAsync();
+              return View(postsList);
+          }*/
         public async Task<IActionResult> Index()
         {
+            // Lấy UserId từ Session
             var userId = HttpContext.Session.GetString("UserId");
             if (userId == null)
             {
+                // Nếu chưa đăng nhập, chuyển hướng về trang Login
                 TempData["Error"] = "Vui lòng đăng nhập hoặc đăng ký";
                 return RedirectToAction("Index", "Login");
             }
-            /*
-                        // Truy vấn lấy bài viết
-                        var postsQuery = db.Posts
-                            .Include(p => p.User)  // Giả sử bạn có quan hệ giữa Post và User
-                            .Include(p=> p.Comments)
-                            .Where(p => p.Status == "Public")  // Chỉ lấy bài viết có trạng thái là public
-                            .OrderByDescending(p => p.CreatedAt)
-                            .Select(p => new PostViewModel
-                            {
-                                Id = p.PostId,
-                                UserId = p.UserId,
-                                Content = p.Content,
-                                ImageUrl = p.ImageUrl,
-                                CreatedAt = p.CreatedAt ?? DateTime.Now,
-                                Status = p.Status,
-                                UserName = p.User.Username, // Lấy tên người dùng từ quan hệ
-                                UpdatedAt = p.UpdatedAt ?? DateTime.Now, // Thêm UpdatedAt để sắp xếp
-                                AvatarUser = p.User.ProfilePicture,
 
-                            });
-
-                        var postsList = await postsQuery.ToListAsync();  // Lấy dữ liệu từ cơ sở dữ liệu*/
+            // Truy vấn bài viết với các mối quan hệ liên quan
             var postsQuery = db.Posts
-                .Include(p => p.User) // Quan hệ giữa Post và User
-                .Include(p => p.Comments) // Quan hệ giữa Post và Comment
-                    .ThenInclude(c => c.User) // Nếu Comment có quan hệ với User
+                .Include(p => p.User) // Bao gồm thông tin người dùng
+                .Include(p => p.Comments) // Bao gồm bình luận
+                    .ThenInclude(c => c.User) // Bao gồm thông tin người dùng của bình luận
                 .Where(p => p.Status == "Public") // Lọc bài viết public
-                .OrderByDescending(p => p.CreatedAt)
                 .Select(p => new PostViewModel
                 {
                     Id = p.PostId,
@@ -63,20 +88,29 @@ namespace Social_Network.Controllers
                     AvatarUser = p.User.ProfilePicture,
 
                     Comments = p.Comments
-                     .Where(c => c.PostId ==p.PostId)
-                     .OrderBy(c => c.CreatedAt) // Sắp xếp bình luận theo thời gian tạo
-                     .Select(c => new CommentViewModel
-                     {
-                         CommentId = c.CommentId,
-                         PostId = c.PostId,
-                         UserId = c.UserId,
-                         Content = c.Content,
-                         CreatedAt = c.CreatedAt ?? DateTime.Now,
-                         UserName = c.User.Username,
-                         AvatarUser = c.User.ProfilePicture
-                     }).ToList()
+                        .OrderBy(c => c.CreatedAt) // Sắp xếp bình luận theo thời gian tạo
+                        .Select(c => new CommentViewModel
+                        {
+                            CommentId = c.CommentId,
+                            PostId = c.PostId,
+                            UserId = c.UserId,
+                            Content = c.Content,
+                            CreatedAt = c.CreatedAt ?? DateTime.Now,
+                            UserName = c.User.Username,
+                            AvatarUser = c.User.ProfilePicture
+                        }).ToList()
                 });
+
+            // Chuyển dữ liệu sang danh sách và xử lý thêm
             var postsList = await postsQuery.ToListAsync();
+
+            // Sắp xếp: Ưu tiên bài viết mới đăng trong vòng 1 giờ, sau đó xáo trộn danh sách
+            postsList = postsList
+                .OrderByDescending(p => p.CreatedAt > DateTime.Now.AddHours(-1)) // Bài viết mới đăng trong 1 giờ lên đầu
+                .ThenBy(p => Guid.NewGuid()) // Xáo trộn bài viết còn lại
+                .ToList();
+
+            // Trả về danh sách bài viết cho View
             return View(postsList);
         }
 
@@ -242,36 +276,6 @@ namespace Social_Network.Controllers
 
             return Json(new { success = true });
         }
-
-        [HttpPost]
-        public async Task<IActionResult> DeleteCommnent(int id)
-        {
-            var userss = HttpContext.Session.GetString("UserId");
-            int users=int.Parse(userss);
-            if (users == null)
-            {
-                TempData["Error"] = "Phiên đăng nhập hết hạn";
-                return RedirectToAction("Index", "Login");
-            }
-            var comment = await db.Comments.FindAsync(id);
-            if(comment == null || comment.UserId!=users)
-            {
-                return Json(new { success = false, error = "Bạn không có quyền xóa bình luận này." });
-            }
-            try
-            {
-                db.Comments.Remove(comment);
-                await db.SaveChangesAsync();
-                return Json(new { success = true, message = "Bình luận đã được xóa thành công." });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = true, message = "Có lỗi khi xóa bình luận này." });
-            }           
-        }
-
-
-
     }
 }
 
