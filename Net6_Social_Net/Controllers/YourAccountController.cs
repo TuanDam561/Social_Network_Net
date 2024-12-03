@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Net6_Social_Net.Data;
 using Net6_Social_Net.Models;
+using Net7_Social_Net.Models;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
@@ -14,10 +15,66 @@ namespace Social_Network.Controllers
         public YourAccountController(SocialNetworkContext context)
         {
             db = context;
-        }    
+        }
+        /* public async Task<IActionResult> Index()
+         {
+
+             var useId = HttpContext.Session.GetString("UserId");
+
+             if (useId == null)
+             {
+                 TempData["Error"] = "Vui lòng đăng nhập hoặc đăng ký";
+                 return RedirectToAction("Index", "Login");
+             }
+
+             int parsedUserId = int.Parse(useId);
+
+             // Lấy thông tin người dùng
+             var user = await db.Users
+                                 .Where(u => u.UserId == parsedUserId)
+                                 .Select(u => new AccountModel
+                                 {
+                                     UserId = u.UserId,
+                                     Username = u.Username,
+                                     Email = u.Email,
+                                     PhoneNumber = u.PhoneNumber,
+                                     ProfilePicture = u.ProfilePicture,
+                                     Bio = u.Bio,
+                                     CreatedAt = u.CreatedAt,
+                                     Imagebanner = u.Imagebanner,
+                                     Role = u.Role,
+                                 })
+                                 .FirstOrDefaultAsync();
+
+             // Lấy danh sách bài viết
+             var posts = await db.Posts
+                                 .Where(p => p.UserId == parsedUserId) // Chỉ lấy bài viết của người dùng này
+                                 .Include(p => p.User)
+                                 .OrderByDescending(p => p.CreatedAt)
+                                 .Select(p => new PostViewModel
+                                 {
+                                     Id = p.PostId,
+                                     UserId = p.UserId,
+                                     Content = p.Content,
+                                     ImageUrl = p.ImageUrl,
+                                     CreatedAt = p.CreatedAt ?? DateTime.Now,
+                                     Status = p.Status,
+                                     UserName = p.User.Username
+                                 })
+                                 .ToListAsync();
+
+             // Tạo ViewModel
+             var viewModel = new UserProfileViewModel
+             {
+                 User = user,
+                 Posts = posts
+             };
+
+             return View(viewModel);
+         }*/
+
         public async Task<IActionResult> Index()
         {
-
             var useId = HttpContext.Session.GetString("UserId");
 
             if (useId == null)
@@ -45,22 +102,39 @@ namespace Social_Network.Controllers
                                 })
                                 .FirstOrDefaultAsync();
 
-            // Lấy danh sách bài viết
+            // Truy vấn bài viết với các mối quan hệ liên quan
             var posts = await db.Posts
-                                .Where(p => p.UserId == parsedUserId) // Chỉ lấy bài viết của người dùng này
-                                .Include(p => p.User)
-                                .OrderByDescending(p => p.CreatedAt)
-                                .Select(p => new PostViewModel
-                                {
-                                    Id = p.PostId,
-                                    UserId = p.UserId,
-                                    Content = p.Content,
-                                    ImageUrl = p.ImageUrl,
-                                    CreatedAt = p.CreatedAt ?? DateTime.Now,
-                                    Status = p.Status,
-                                    UserName = p.User.Username
-                                })
-                                .ToListAsync();
+                .Where(p => p.UserId == parsedUserId) // Chỉ lấy bài viết của người dùng này
+                .Include(p => p.User) // Bao gồm thông tin người dùng
+                .Include(p => p.Comments) // Bao gồm bình luận
+                    .ThenInclude(c => c.User) // Bao gồm thông tin người dùng của bình luận
+                .OrderByDescending(p => p.CreatedAt)
+                .Select(p => new PostViewModel
+                {
+                    Id = p.PostId,
+                    UserId = p.UserId,
+                    Content = p.Content,
+                    ImageUrl = p.ImageUrl,
+                    CreatedAt = p.CreatedAt ?? DateTime.Now,
+                    Status = p.Status,
+                    UserName = p.User.Username,
+                    UpdatedAt = p.UpdatedAt ?? DateTime.Now,
+                    AvatarUser = p.User.ProfilePicture,
+
+                    Comments = p.Comments
+                        .OrderBy(c => c.CreatedAt) // Sắp xếp bình luận theo thời gian tạo
+                        .Select(c => new CommentViewModel
+                        {
+                            CommentId = c.CommentId,
+                            PostId = c.PostId,
+                            UserId = c.UserId,
+                            Content = c.Content,
+                            CreatedAt = c.CreatedAt ?? DateTime.Now,
+                            UserName = c.User.Username,
+                            AvatarUser = c.User.ProfilePicture
+                        }).ToList()
+                })
+                .ToListAsync();
 
             // Tạo ViewModel
             var viewModel = new UserProfileViewModel
@@ -72,48 +146,7 @@ namespace Social_Network.Controllers
             return View(viewModel);
         }
 
-        [HttpPost]
-    /*    public async Task<IActionResult> DeleteyourPosts(int id)
-        {
-            var userid = HttpContext.Session.GetString("UserId");
-            int userss = int.Parse(userid);
-            if (userid == null)
-            {
-                TempData["Error"] = "Phiên đăng nhập hết hạn";
-                return RedirectToAction("Index", "Login");
-            }
-            // Tìm bài viết theo id
-            var post = await db.Posts.FindAsync(id);
-            if (post == null)
-            {
-                TempData["Error"] = "Bài viết không tồn tại.";
-                return RedirectToAction("Index");
-            }
-            // Kiểm tra quyền sở hữu bài viết
-            if (post.UserId != userss)
-            {
-                TempData["Error"] = "Bạn không có quyền xóa bài viết này.";
-                return RedirectToAction("Index");
-            }
-            // Xóa ảnh nếu có
-            if (!string.IsNullOrEmpty(post.ImageUrl))
-            {
-                // Đường dẫn đầy đủ đến ảnh trong thư mục wwwroot
-                var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", post.ImageUrl.TrimStart('/'));
 
-                // Kiểm tra xem tệp ảnh có tồn tại không trước khi xóa
-                if (System.IO.File.Exists(imagePath))
-                {
-                    System.IO.File.Delete(imagePath); // Xóa tệp ảnh
-                }
-            }
-            // Xóa bài viết
-            db.Posts.Remove(post);
-            await db.SaveChangesAsync();
-
-            TempData["Success"] = "Đã xóa bài viết thành công!";
-            return RedirectToAction("Index");
-        }*/
 
         [HttpPost]
         public async Task<IActionResult> DeleteyourPosts(int id)
@@ -155,67 +188,7 @@ namespace Social_Network.Controllers
         }
 
 
-        /*    [HttpPost]
-            public async Task<IActionResult> UpdatePost(int idpost, string Content, IFormFile ImageFile, String StatusPost)
-            {
-                var userid = HttpContext.Session.GetString("UserId");
-                if (userid == null)
-                {
-                    TempData["Error"] = "Phiên đăng nhập hết hạn";
-                    return RedirectToAction("Index", "Login");
-                }
-
-                int userss = int.Parse(userid);
-
-                // Tìm bài viết và kiểm tra quyền sở hữu
-                var post = await db.Posts.FindAsync(idpost);
-                if (post == null || post.UserId != userss)
-                {
-                    TempData["Error"] = "Bạn không có quyền cập nhật bài viết này.";
-                    return RedirectToAction("Index");
-                }
-
-                // Cập nhật nội dung và trạng thái
-                post.Content = Content;
-                post.Status = StatusPost;
-                post.UpdatedAt = DateTime.Now;
-
-                // Xử lý cập nhật ảnh (nếu có)
-                if (ImageFile != null && ImageFile.Length > 0)
-                {
-                    // Xóa ảnh cũ nếu có
-                    if (!string.IsNullOrEmpty(post.ImageUrl))
-                    {
-                        var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", post.ImageUrl.TrimStart('/'));
-                        if (System.IO.File.Exists(oldImagePath))
-                        {
-                            System.IO.File.Delete(oldImagePath); // Xóa ảnh cũ
-                        }
-                    }
-
-                    var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Post_Image");
-                    if (!Directory.Exists(uploadPath))
-                    {
-                        Directory.CreateDirectory(uploadPath);
-                    }
-
-                    var fileName = $"{Guid.NewGuid()}_{ImageFile.FileName}";
-                    var filePath = Path.Combine(uploadPath, fileName);
-
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await ImageFile.CopyToAsync(stream);
-                    }
-
-                    // Cập nhật đường dẫn ảnh mới
-                    post.ImageUrl = $"/Post_Image/{fileName}";
-                }
-
-                await db.SaveChangesAsync();
-
-                TempData["Success"] = "Cập nhật bài viết thành công!";
-                return RedirectToAction("Index");
-            }*/
+      
         [HttpPost]
         public async Task<IActionResult> UpdatePost(int idpost, string Content, IFormFile ImageFile, String StatusPost)
         {

@@ -8,15 +8,32 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Thêm dịch vụ SignalR
 builder.Services.AddSignalR();
-
 // Thêm dịch vụ MVC
 builder.Services.AddControllersWithViews();
 
 // Cấu hình DbContext với chuỗi kết nối từ appsettings.json
-builder.Services.AddDbContext<SocialNetworkContext>(options =>
+/*builder.Services.AddDbContext<SocialNetworkContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")!);
+});*/
+builder.Services.AddDbContext<SocialNetworkContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Đăng nhập với Google
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+}).AddCookie()
+.AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
+{
+    options.ClientId = builder.Configuration.GetSection("GoogleKeys:ClientId").Value!;
+    options.ClientSecret = builder.Configuration.GetSection("GoogleKeys:ClientSecret").Value!;
 });
+
+
+
 
 // Cấu hình bộ nhớ cache cho Session
 builder.Services.AddDistributedMemoryCache();
@@ -29,18 +46,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true; // Đảm bảo cookie session được gửi trong mọi tình huống
 });
 
-// Đăng nhập với Google
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-}).AddCookie()
-.AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
-{
-    options.ClientId = builder.Configuration.GetSection("GoogleKeys:ClientId").Value;
-    options.ClientSecret = builder.Configuration.GetSection("GoogleKeys:ClientSecret").Value;
-});
+
 
 var app = builder.Build();
 
@@ -63,7 +69,7 @@ app.UseSession();
 app.UseAuthorization();
 
 // Đăng ký SignalR Hub
-app.MapHub<CommentHub>("/commentHub");  
+app.MapHub<CommentHub>("/commentHub");
 
 // Định nghĩa route mặc định
 app.MapControllerRoute(

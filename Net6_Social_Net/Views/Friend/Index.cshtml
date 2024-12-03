@@ -1,0 +1,143 @@
+﻿
+ @using Net7_Social_Net.Models
+
+@{
+    ViewData["Title"] = "Bạn bè";
+    Layout = null;
+    @model List<FriendViewModel>
+
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="Friend.css" />
+    <link href="~/Icon_Plafom/iconWeb.png" rel="icon" />
+    <title>@ViewData["Title"]</title>
+    <link href="~/css/FriendCss.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="home">
+        <div class="logo">
+            <a href="@Url.Action("Index","Home")">
+                <img src="~/Icon_Plafom/454849238_800890952251701_8841246141296174912_n.jpg"
+                     alt="Logo Web" />
+            </a>         
+        </div>
+        <div class="sreachbox">
+            <div class="search-wrapper">
+                <input type="search" placeholder="Tìm kiếm" />
+                <img src="~/Icon_Plafom/Search-icon.png"
+                     alt="Search Icon"
+                     class="search-icon" />
+            </div>
+        </div>
+        <div>Đăng xuất</div>
+    </div>
+    <div class="container">
+        <!-- Phần bên trái -->
+        <div class="left">
+            <div class="search-bar">
+                <input type="text" placeholder="Tìm kiếm bạn bè" />
+                <button>🔍</button>
+            </div>
+
+            <!-- Hiển thị danh sách bạn bè -->
+            @foreach (var friend in Model.Where(m => m.Status == "Friend"))
+            {
+                <div class="card">
+                   @if(friend.ProfilePicture==null){
+                        <img src="~/Avatar/454849238_800890952251701_8841246141296174912_n.jpg" alt="Avatar" />
+                   }
+                   else{
+                        <img src="@friend.ProfilePicture" alt="Avatar" />
+                   }
+                   
+                    <div class="info">
+                        <div class="name">@friend.Username</div>
+                        <div class="status">Bio: @friend.Bio</div>
+                    </div>
+                </div>
+            }
+        </div>
+        <!-- Phần bên phải -->
+        <div class="right">
+            <h2>Lời mời kết bạn <a href="#" class="view-all">Xem tất cả</a></h2>
+            <div class="friend-request">
+                @foreach (var pendingRequest in Model.Where(m => m.Status == "Pending"))
+                {
+                    <div class="card" id="pending-@pendingRequest.FriendID">
+                        @if (pendingRequest.ProfilePicture == null)
+                        {
+                            <img src="~/Avatar/454849238_800890952251701_8841246141296174912_n.jpg" alt="Avatar" />
+                        }
+                        else
+                        {
+                            <img src="@pendingRequest.ProfilePicture" alt="Avatar" />
+                        }
+                        <div class="info">
+                            <div class="name">@pendingRequest.Username</div>
+                            <div class="actions">
+                                <button class="accept" data-id="@pendingRequest.FriendID">Xác nhận</button>
+                                <button class="decline" data-id="@pendingRequest.FriendID">Xóa</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <script>
+            $(document).ready(function () {
+                // Xử lý nút "Xác nhận"
+                $(".accept").click(function () {
+                    const friendId = $(this).data("id");
+
+                    $.ajax({
+                        url: '/Friend/AcceptRequest',
+                        type: 'POST',
+                        data: { friendId: friendId },
+                        success: function (response) {
+                            // Xóa thẻ bên phải
+                            $(`#pending-${friendId}`).remove();
+
+                            // Thêm thẻ mới vào danh sách bạn bè bên trái
+                            $(".left").append(`
+                                <div class="card">
+                                    <img src="${response.profilePicture || '~/Avatar/454849238_800890952251701_8841246141296174912_n.jpg'}" alt="Avatar" />
+                                    <div class="info">
+                                        <div class="name">${response.username}</div>
+                                        <div class="status">Bio: ${response.bio || 'Chưa có thông tin'}</div>
+                                    </div>
+                                </div>
+                            `);
+                        },
+                        error: function (err) {
+                            alert("Đã xảy ra lỗi! Vui lòng thử lại.");
+                        }
+                    });
+                });
+
+                // Xử lý nút "Xóa"
+                $(".decline").click(function () {
+                    const friendId = $(this).data("id");
+
+                    $.ajax({
+                        url: '/Friend/DeclineRequest',
+                        type: 'POST',
+                        data: { friendId: friendId },
+                        success: function () {
+                            // Xóa thẻ bên phải
+                            $(`#pending-${friendId}`).remove();
+                        },
+                        error: function (err) {
+                            alert("Đã xảy ra lỗi! Vui lòng thử lại.");
+                        }
+                    });
+                });
+            });
+        </script>
+    </div>
+</body>
+</html>

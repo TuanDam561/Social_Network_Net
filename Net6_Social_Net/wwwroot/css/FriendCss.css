@@ -1,0 +1,217 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Đảm bảo tính toán kích thước chính xác */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.home {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #f1f1f1;
+    border-bottom: 1px solid #ccc;
+}
+
+.logo img {
+    height: 50px;
+    width: auto;
+    border-radius: 50%;
+}
+
+.sreachbox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-wrapper {
+    position: relative;
+    width: 600px;
+}
+
+    .search-wrapper input[type="search"] {
+        width: 100%;
+        padding: 8px 40px 8px 12px; /* Chừa khoảng cho icon */
+        border: 1px solid #ccc;
+        border-radius: 20px;
+        font-size: 14px;
+    }
+
+    .search-wrapper .search-icon {
+        position: absolute;
+        right: 12px; /* Căn chỉnh icon bên phải */
+        top: 50%;
+        transform: translateY(-50%);
+        height: 20px;
+        width: 20px;
+        pointer-events: none; /* Để không ảnh hưởng khi nhấp vào input */
+    }
+
+/* Container chính */
+.container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Bên trái */
+.left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Thanh tìm kiếm */
+.search-bar {
+    display: flex;
+    gap: 10px;
+}
+
+    .search-bar input {
+        flex: 1;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .search-bar button {
+        padding: 8px 12px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+        .search-bar button:hover {
+            background-color: #0056b3;
+        }
+
+/* Card bên trái */
+.left .card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+    .left .card img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+    }
+
+    .left .card .info {
+        flex: 1;
+    }
+
+        .left .card .info .name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .left .card .info .status {
+            color: #555;
+            font-size: 14px;
+        }
+
+/* Bên phải */
+.right {
+    flex: 2;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+    .right h2 {
+        font-size: 20px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .right .view-all {
+        color: #007bff;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+        .right .view-all:hover {
+            text-decoration: underline;
+        }
+
+/* Card bên phải */
+.friend-request {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+    .friend-request .card {
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        padding: 10px;
+        width: calc(25% - 15px); /* Card chiếm 1/4 chiều rộng */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+        .friend-request .card img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        .friend-request .card .info .name {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .friend-request .card .actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+            .friend-request .card .actions button {
+                padding: 6px 12px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 14px;
+            }
+
+            .friend-request .card .actions .accept {
+                background-color: #007bff;
+                color: white;
+            }
+
+                .friend-request .card .actions .accept:hover {
+                    background-color: #0056b3;
+                }
+
+            .friend-request .card .actions .decline {
+                background-color: #ccc;
+                color: #333;
+            }
+
+                .friend-request .card .actions .decline:hover {
+                    background-color: #999;
+                }

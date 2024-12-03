@@ -12,33 +12,36 @@
     <link href="~/css/YourAccount.css" rel="stylesheet" />
     <link href="~/Icon_Plafom/iconWeb.png" rel="icon" />
     <title>@ViewData["title"]</title>
+    <!-- Thêm jQuery từ CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
 
         //MỞ menu BÀI VIẾT
-            function toggleMenu(element) {
-                // Tìm phần tử chứa menu trong thẻ cha của biểu tượng
-                var menu = element.nextElementSibling;
+        function toggleMenu(element) {
+        event.stopPropagation();
+        // Tìm phần tử chứa menu trong thẻ cha của biểu tượng
+        var menu = element.nextElementSibling;
 
-                // Đóng tất cả các menu khác nếu đang mở
-                document.querySelectorAll('.options-menu').forEach(menuItem => {
-                    if (menuItem !== menu) {
-                menuItem.style.display = 'none';
-                    }
-                });
+        // Đóng tất cả các menu khác nếu đang mở
+        document.querySelectorAll('.options-menu').forEach(menuItem => {
+        if (menuItem !== menu) {
+        menuItem.style.display = 'none';
+        }
+        });
 
-            // Bật hoặc tắt menu hiện tại
-            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-            }
+        // Bật hoặc tắt menu hiện tại
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
 
-            // Đóng menu khi nhấp bên ngoài
-            window.onclick = function(event) {
-                if (!event.target.matches('.options-icon')) {
-                document.querySelectorAll('.options-menu').forEach(menu => {
-                    menu.style.display = 'none';
-                });
-                }
-            }
+        // Đóng menu khi nhấp bên ngoài
+        window.onclick = function(event) {
+        if (!event.target.matches('.options-icon')) {
+        document.querySelectorAll('.options-menu').forEach(menu => {
+        menu.style.display = 'none';
+        });
+        }
+        }
     </script>
 
 
@@ -49,108 +52,109 @@
 
         // Xác nhận trước khi xóa bài viết
         function confirmDelete() {
-            return confirm("Bạn chắc chắn muốn xóa bài viết này không?");
+        return confirm("Bạn chắc chắn muốn xóa bài viết này không?");
         }
     </script>
 
     <script>
         // Mở modal và điền thông tin bài viết
         function openEditModal(postId, postContent, postImageUrl, postStatus) {
-            // Đặt giá trị của các trường từ dữ liệu của bài viết
-            document.getElementById('editPostId').value = postId;
-            document.getElementById('editContent').value = postContent;
-            document.getElementById('editStatus').value = postStatus;
-            document.getElementById('editImageFile').value = ''; // Đặt về trống để yêu cầu người dùng chọn ảnh mới nếu muốn
-            // Nếu có ảnh bài viết, hiển thị ảnh trong modal
-            if (postImageUrl) {
-                document.getElementById('imagePreview').src = postImageUrl;
-                document.getElementById('imagePreview').style.display = 'block'; // Hiển thị ảnh lên modal
-            } else {
-                document.getElementById('imagePreview').src = '';
-                document.getElementById('imagePreview').style.display = 'none'; // Nếu không có ảnh, không hiển thị gì
-            }
+        event.stopPropagation();
+        // Đặt giá trị của các trường từ dữ liệu của bài viết
+        document.getElementById('editPostId').value = postId;
+        document.getElementById('editContent').value = postContent;
+        document.getElementById('editStatus').value = postStatus;
+        document.getElementById('editImageFile').value = ''; // Đặt về trống để yêu cầu người dùng chọn ảnh mới nếu muốn
+        // Nếu có ảnh bài viết, hiển thị ảnh trong modal
+        if (postImageUrl) {
+        document.getElementById('imagePreview').src = postImageUrl;
+        document.getElementById('imagePreview').style.display = 'block'; // Hiển thị ảnh lên modal
+        } else {
+        document.getElementById('imagePreview').src = '';
+        document.getElementById('imagePreview').style.display = 'none'; // Nếu không có ảnh, không hiển thị gì
+        }
 
-            // Hiển thị modal
-            document.getElementById('editModal').style.display = 'block';
+        // Hiển thị modal
+        document.getElementById('editModal').style.display = 'block';
         }
         // Đóng modal
         function closeEditModal() {
-            document.getElementById('editModal').style.display = 'none';
+        document.getElementById('editModal').style.display = 'none';
         }
     </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('editImageFile').addEventListener('change', function (event) {
-                var file = event.target.files[0];  // Lấy file đầu tiên trong danh sách các file được chọn
-                if (file) {
-                    var reader = new FileReader();  // Tạo đối tượng FileReader để đọc file
-                    reader.onload = function (e) {
-                        document.getElementById('imagePreview').src = e.target.result;
-                        document.getElementById('imagePreview').style.display='block'// Cập nhật src của ảnh trong modal
-                    };
-                    reader.readAsDataURL(file);  // Đọc file dưới dạng URL dữ liệu (base64)
-                }
-            });
+        document.getElementById('editImageFile').addEventListener('change', function (event) {
+        var file = event.target.files[0];  // Lấy file đầu tiên trong danh sách các file được chọn
+        if (file) {
+        var reader = new FileReader();  // Tạo đối tượng FileReader để đọc file
+        reader.onload = function (e) {
+        document.getElementById('imagePreview').src = e.target.result;
+        document.getElementById('imagePreview').style.display='block'// Cập nhật src của ảnh trong modal
+        };
+        reader.readAsDataURL(file);  // Đọc file dưới dạng URL dữ liệu (base64)
+        }
+        });
         });
     </script>
 
     <script>
         // mở modal chỉnh sửa thông tin
         function openProfileModal() {
-            document.getElementById('editProfileModal').style.display = 'block';
+        document.getElementById('editProfileModal').style.display = 'block';
         }
 
         function closeProfileModal() {
-            document.getElementById('editProfileModal').style.display = 'none';
+        document.getElementById('editProfileModal').style.display = 'none';
         }
 
         // Xem trước ảnh banner và avatar khi người dùng chọn file mới
         document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('editBanner').addEventListener('change', function (event) {
-                var file = event.target.files[0];
-                if (file) {
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        document.getElementById('bannerPreview').src = e.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
+        document.getElementById('editBanner').addEventListener('change', function (event) {
+        var file = event.target.files[0];
+        if (file) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+        document.getElementById('bannerPreview').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+        }
+        });
 
-            document.getElementById('editAvatar').addEventListener('change', function (event) {
-                var file = event.target.files[0];
-                if (file) {
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        document.getElementById('avatarPreview').src = e.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
+        document.getElementById('editAvatar').addEventListener('change', function (event) {
+        var file = event.target.files[0];
+        if (file) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+        document.getElementById('avatarPreview').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+        }
+        });
         });
     </script>
 
     <script>
-                //Nút LOGOUT
-                document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('logout').addEventListener('click', function (event) {
-                var confirmLogout = confirm("Bạn có chắc chắn muốn đăng xuất?");
-                if (!confirmLogout) {
-                    event.preventDefault(); // Ngăn chặn việc chuyển trang nếu người dùng nhấn "Hủy"
-                }
-            });
+        //Nút LOGOUT
+        document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('logout').addEventListener('click', function (event) {
+        var confirmLogout = confirm("Bạn có chắc chắn muốn đăng xuất?");
+        if (!confirmLogout) {
+        event.preventDefault(); // Ngăn chặn việc chuyển trang nếu người dùng nhấn "Hủy"
+        }
+        });
         });
     </script>
 
     @* Script cho modal tạo bài viết  *@
     <script>
         function OpenCreateModal() {
-            document.getElementById("myModal").style.display = "block";
-            }
+        document.getElementById("myModal").style.display = "block";
+        }
 
         function closeModal() {
-            document.getElementById("myModal").style.display = "none";
+        document.getElementById("myModal").style.display = "none";
         }
     </script>
 
@@ -158,18 +162,18 @@
     <script>
         //đổi ảnh khi post  bài
         document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('editImage').addEventListener('change', function (event) {
-                    var file = event.target.files[0];  // Lấy file đầu tiên trong danh sách các file được chọn
-                if (file) {
-                    var reader = new FileReader();  // Tạo đối tượng FileReader để đọc file
-                    reader.onload = function (e) {
-                        document.getElementById('imageppreview').src = e.target.result;  // Cập nhật src của ảnh trong modal
-                            document.getElementById('imageppreview').style.display='block';
-                   };
-                    reader.readAsDataURL(file);  // Đọc file dưới dạng URL dữ liệu (base64)
-                }
+        document.getElementById('editImage').addEventListener('change', function (event) {
+        var file = event.target.files[0];  // Lấy file đầu tiên trong danh sách các file được chọn
+        if (file) {
+        var reader = new FileReader();  // Tạo đối tượng FileReader để đọc file
+        reader.onload = function (e) {
+        document.getElementById('imageppreview').src = e.target.result;  // Cập nhật src của ảnh trong modal
+        document.getElementById('imageppreview').style.display='block';
+        };
+        reader.readAsDataURL(file);  // Đọc file dưới dạng URL dữ liệu (base64)
+        }
 
-            });
+        });
         });
     </script>
 
@@ -177,30 +181,130 @@
 
         /*css cho cái button chỉnh sửa bài viết*/
         #buttonEdit {
-         width:100%;
-         font-size: 16px;/* Kích thước chữ */
-         border: none; /* Bỏ viền */
-         background: none; /* Bỏ nền */
-         color: inherit; /* Kế thừa màu sắc của văn bản xung quanh */
-         cursor: pointer; /* Con trỏ chuột khi hover sẽ là pointer */
-         /* padding: 5px 10px; /* Cung cấp khoảng cách bên trong cho nút */
-         text-align: left; /* Căn giữa văn bản */
-         }
+        width:100%;
+        font-size: 16px;/* Kích thước chữ */
+        border: none; /* Bỏ viền */
+        background: none; /* Bỏ nền */
+        color: inherit; /* Kế thừa màu sắc của văn bản xung quanh */
+        cursor: pointer; /* Con trỏ chuột khi hover sẽ là pointer */
+        /* padding: 5px 10px; /* Cung cấp khoảng cách bên trong cho nút */
+        text-align: left; /* Căn giữa văn bản */
+        }
 
         #buttonEdit :hover {
-                 opacity: 0.8;
-             }
+        opacity: 0.8;
+        }
 
         #imageppreview {
-            max-width: 100%; /* Giới hạn kích thước ảnh không vượt quá 100% chiều rộng của modal */
-            max-height: 200px; /* Giới hạn chiều cao của ảnh nếu ảnh quá lớn */
-            margin: 0 auto; /* Căn giữa ảnh trong modal */
-            display: none; /* Đảm bảo ảnh được hiển thị dưới dạng block element */
-            border-radius: 8px; /* Bo tròn góc của ảnh */
+        max-width: 100%; /* Giới hạn kích thước ảnh không vượt quá 100% chiều rộng của modal */
+        max-height: 200px; /* Giới hạn chiều cao của ảnh nếu ảnh quá lớn */
+        margin: 0 auto; /* Căn giữa ảnh trong modal */
+        display: none; /* Đảm bảo ảnh được hiển thị dưới dạng block element */
+        border-radius: 8px; /* Bo tròn góc của ảnh */
         }
 
 
     </style>
+
+    @* modal comment *@
+    <style>
+        /* Modal overlay */
+        .custom-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Nền tối */
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        }
+
+        /* Modal content */
+        .custom-modal-content {
+        background: #fff;
+        width: 90%;
+        height: 90%;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        }
+
+        /* Modal body */
+        .custom-modal-body {
+        display: flex;
+        height: 100%;
+        }
+
+        /* Phần ảnh (65%) */
+        .post-image-container {
+        flex: 65%;
+        background-color: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        }
+
+        .post-image-container img {
+        max-width: 100%;
+        max-height: 100%;
+        }
+
+        /* Phần thông tin (35%) */
+        .post-details-container {
+        flex: 35%;
+        padding: 20px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        background: #f9f9f9;
+        }
+
+        /* Nút đóng */
+        .close-modal {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        color: #000;
+        cursor: pointer;
+        }
+
+        /* Cuộn nội dung */
+        #modalComments {
+        margin-top: 20px;
+        }
+
+        .comment {
+        border-bottom: 1px solid #ddd;
+        padding: 10px 0;
+        }
+
+        .form-control {
+        width: 100%;
+        height: 50px;
+        resize: none;
+        }
+
+        .btn-primary {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+        background-color: #0056b3;
+        }
+
+    </style>
+    <link href="~/css/CommentModal_Mobile.css" rel="stylesheet" />
 
     <link href="~/css/YourAccount_CreatePost_Modal.css" rel="stylesheet" />
     <link href="~/css/YourAccount_ModalEditProfile.css" rel="stylesheet" />
@@ -220,7 +324,7 @@
             <img src="~/Icon_Plafom/Search-icon.png" alt="Search Icon" class="search-icon" />
             <input type="search" placeholder="Tìm kiếm" />
         </div>
-        @*  <select style="text-transform: capitalize;border: none; outline: none;">
+        @* <select style="text-transform: capitalize;border: none; outline: none;">
         <option style="text-transform: capitalize;">@Model.User.Username</option>
         <option>Sửa thông tin</option>
         <option style="color: red">Đăng xuất</option>
@@ -277,15 +381,129 @@
                 <p></p>
             }
             <p></p>
-            
+
             @if (Model.User.UserId == int.Parse(userrr))
             {
                 <button type="button" onclick="openProfileModal()">Sửa thông tin</button>
             }
             else
             {
-                <button type="button" >Kết bạn</button>
+                <div id="friend-action">
+                    <button id="btn-add-friend" type="button" onclick="addFriend()">Kết bạn</button>
+                    <p></p>
+                    <button id="btn-cancel-friend" type="button" style="background: #caced1; display: none;" onclick="cancelFriendRequest()">Hủy kết bạn</button>
+                </div>
             }
+            
+           
+
+
+            <script>
+                // Lấy friendId từ session (bạn có thể sử dụng phương thức này nếu bạn truyền được dữ liệu từ server)
+                const friendId = @Model.User.UserId; // Dữ liệu từ server
+
+                // Hàm xử lý khi nhấn nút "Kết bạn"
+                function addFriend() {
+                    $.ajax({
+                        url: '/UserAccount/AddFriend',  // Gọi API để gửi yêu cầu kết bạn
+                        type: 'POST',
+                        data: { friendId: friendId },
+                        success: function (response) {
+                            if (response.status === "success") {
+                                // Cập nhật giao diện khi gửi yêu cầu thành công
+                                $('#btn-add-friend').text('Đang chờ').prop('disabled', true);
+                                $('#btn-cancel-friend').show();  // Hiển thị nút "Hủy kết bạn"
+                            } else {
+                                alert(response.message);  // Hiển thị thông báo lỗi
+                            }
+                        },
+                        error: function () {
+                            alert("Đã xảy ra lỗi, vui lòng thử lại.");
+                            console.error("Đã xảy ra lỗi, vui lòng thử lại.");
+                        }
+                    });
+                }
+
+                // Hàm xử lý khi nhấn nút "Hủy kết bạn" trong trạng thái "Pending"
+                function cancelFriendRequest() {
+                    $.ajax({
+                        url: '/UserAccount/CancelFriendRequest',  // Gọi API để hủy yêu cầu kết bạn
+                        type: 'POST',
+                        data: { friendId: friendId },
+                        success: function (response) {
+                            if (response.status === "success") {
+                                // Cập nhật giao diện khi hủy yêu cầu thành công
+                                $('#btn-add-friend').text('Kết bạn').prop('disabled', false);
+                                $('#btn-cancel-friend').hide();  // Ẩn nút "Hủy kết bạn"
+                            } else {
+                               // alert(response.message);  // Hiển thị thông báo lỗi
+                            }
+                        },
+                        error: function () {
+                            alert("Đã xảy ra lỗi, vui lòng thử lại.");
+                        }
+                    });
+                }
+
+                // Hàm xử lý khi nhấn nút "Hủy kết bạn" trong trạng thái "Bạn bè"
+                function removeFriend() {
+                    $.ajax({
+                        url: '/UserAccount/RemoveFriend',  // API hủy kết bạn (cần thêm API này trong controller)
+                        type: 'POST',
+                        data: { friendId: friendId },
+                        success: function (response) {
+                            if (response.status === "success") {
+                                // Cập nhật giao diện khi hủy kết bạn thành công
+                                $('#btn-add-friend').text('Kết bạn').prop('disabled', false);
+                                $('#btn-cancel-friend').hide();  // Ẩn nút "Hủy kết bạn"
+                            } else {
+                                // Không cần hiển thị alert nếu không có lỗi
+                            }
+                        },
+                        error: function () {
+                            alert("Đã xảy ra lỗi khi hủy kết bạn.");
+                        }
+                    });
+                }
+
+                // Hàm để kiểm tra trạng thái yêu cầu kết bạn khi người dùng truy cập trang
+                $(document).ready(function () {
+                    $.ajax({
+                        url: '/UserAccount/GetFriendStatus',  // Gọi API để lấy trạng thái yêu cầu kết bạn
+                        type: 'GET',
+                        data: { friendId: friendId },
+                        success: function (response) {
+                            if (response.friendStatus === "Pending") {
+                                // Nếu trạng thái là "Pending" (Đang chờ)
+                                $('#btn-add-friend').text('Đang chờ').prop('disabled', true);
+                                $('#btn-cancel-friend').show();
+                                // Thêm sự kiện "Hủy kết bạn" cho trạng thái "Pending"
+                                $('#btn-cancel-friend').off('click').on('click', cancelFriendRequest);
+                            }
+                            else if(response.friendStatus === "Friend"){
+                                // Nếu trạng thái là "Friend" (Bạn bè)
+                                $('#btn-add-friend').text('Bạn bè').prop('disabled', true);
+                                $('#btn-cancel-friend').show();
+                                // Thêm sự kiện "Hủy kết bạn" cho trạng thái "Friend"
+                                $('#btn-cancel-friend').text('Hủy kết bạn').off('click').on('click', removeFriend);
+                            }
+                            else {
+                                // Nếu không có yêu cầu kết bạn
+                                $('#btn-add-friend').text('Kết bạn').prop('disabled', false);
+                                $('#btn-cancel-friend').hide();
+                            }
+                        },
+                        error: function () {
+                            alert("Đã xảy ra lỗi khi tải trạng thái yêu cầu kết bạn.");
+                        }
+                    });
+                });
+            </script>
+
+
+       
+
+
 
             <div class="other">một số tính năng sau này bổ sung</div>
             <div clas="Footer">
@@ -353,7 +571,7 @@
                 {
                     <button id="Createpost" onclick="OpenCreateModal()">Tạo bài viết </button>
                 }
-               
+
             </div>
             <!--Modal tạo bài viết-->
             <!-- Thêm vào trong phần <body> -->
@@ -381,86 +599,380 @@
             {
                 foreach (var post in Model.Posts)
                 {
-                    <div class="post-card">
+                    <div class="post-card" data-id="@post.Id" data-post-id="@post.Id" onclick="openPostModal(this)">
                         <div class="post-header">
-                            <h3 style="font-size:18px;text-transform: capitalize;">@post.UserName</h3>
+                            <h3 id="userName-@post.Id" style="font-size:18px;text-transform: capitalize;">@post.UserName</h3>
                             <div class="post-options">
                                 @{
-                                    var useidss = Context.Session.GetString("UserId");
+                                    var usserss = Context.Session.GetString("UserId");
+                                    int usess = int.Parse(usserss);
                                 }
-                                @if(useidss!=null && Model.User.UserId == int.Parse(useidss))
-                                {
+                                @if(usess==post.UserId){
                                     <span class="options-icon" onclick="toggleMenu(this)">&#8942;</span>
-                                }                           
+                                }                             
                                 <div class="options-menu">
                                     <ul>
                                         <li style="color:blue">
                                             <button id="buttonEdit" type="button" style="text-decoration:none" onclick="openEditModal('@post.Id', '@post.Content', '@post.ImageUrl', '@post.Status');">Chỉnh sửa bài viết</button>
                                         </li>
                                         <li>
-                                            <!-- Nút xóa bài viết với xác nhận -->
-                                            @* <form asp-action="DeleteyourPosts" asp-controller="YourAccount" method="post" style="display:inline;" onsubmit="return confirmDelete();">
+                                            <form id="deletepostform" method="post" style="display:inline;" onsubmit="return deletpost();" onclick="event.stopPropagation()">
                                                 <input type="hidden" name="id" value="@post.Id" />
-                                                <button type="submit" style="color:red; border:none; background:none; cursor:pointer;font-size:16px">
-                                                    Xóa bài viết
-                                                </button>
-                                            </form> *@
-                                            <form id="deletepost" method="post" style="display:inline;" onsubmit="return confirmDelete();">
-                                                <input type="hidden" name="id" value="@post.Id" />
-                                                <button type="submit" style="color:red; border:none; background:none; cursor:pointer;font-size:16px">
+                                                <button type="submit" style="color:red; border:none; background:none; cursor:pointer;font-size:16px;width:100%; text-align:left">
                                                     Xóa bài viết
                                                 </button>
                                             </form>
+                                            <script>
+                                                function deletpost() {
+                                                    event.stopPropagation();
+                                                    if (!confirm("Bạn có chắc chắn muốn xóa bài viết này không?")) {
+                                                        return false; // Nếu người dùng không đồng ý xóa, dừng hàm tại đây
+                                                   }
 
+                                                   var formData = new FormData(document.getElementById("deletepostform"));
+
+                                                      fetch('/YourAccount/DeleteyourPosts', {
+                                                      method: 'POST',
+                                                      body: formData
+                                                       })
+                                                     .then(response => response.json())
+                                                      .then(data => {
+                                                     if (data.success) {
+                                                         //alert("Xóa bài viết thành công");
+                                                        // Tải lại trang hoặc cập nhật giao diện tùy ý
+                                                        window.location.reload();
+                                                        } else {
+                                                               alert("Lỗi: " + data.error);
+                                                              }
+                                                               })
+                                                   .catch((error) => {
+                                                      console.error('Error:', error);
+                                                      });
+                                                     return false; // Ngăn chặn form submit theo cách mặc định
+                                                         }
+                                            </script>
                                         </li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
-                        <p style="font-size:14px">@post.CreatedAt.ToString("HH:mm dd/MM/yyyy")</p>
-                        <p style="font-size:14px">@post.Status</p>
-                        <p style="font-size:16px">@post.Content</p>
+                        <p id="createdAt-@post.Id" style="font-size:14px">@post.CreatedAt.ToString("HH:mm dd/MM/yyyy")</p>
+                        <p id="status-@post.Id" style="font-size:14px">@post.Status</p>
+                        <p id="content-@post.Id" style="font-size:16px">@post.Content</p>
                         @if (@post.ImageUrl != null)
                         {
-                            <img src="@post.ImageUrl" alt="Alternate Text" class="post-image" />
+                            <img id="image-@post.Id" src="@post.ImageUrl" alt="Alternate Text" class="post-image" />
                         }
+                        <div id="comments-@post.Id" style="display:none;">
+                            @foreach (var comment in post.Comments)
+                            {
+                                <div class="comment" data-comment-id="@comment.CommentId" data-user-id="@comment.UserId" data-userpostsub-id="@post.UserId">
+                                    <span class="comment-user-name">@comment.UserName</span>
+                                    <p class="comment-content">@comment.Content</p>
+                                    <p class="comment-created-at">@comment.CreatedAt</p>
+                                </div>
+                            }
+                        </div>
                     </div>
+
                 }
+                //modal comment và đổng bọn
+                <div id="postModal" class="custom-modal" style="display: none;">
+                    <div class="custom-modal-content">
+                        <div class="custom-modal-body">
+                            <!-- Phần ảnh (65%) -->
+                            <div class="post-image-container">
+                                <img id="modalImage" src="" alt="Hình ảnh bài viết" />
+                            </div>
+                            <!-- Phần thông tin bài viết (35%) -->
+                            <div class="post-details-container">
+                                <div id="modalPostInfo">
+                                    <h5 id="modalUserName"></h5>
+                                    <p id="modalCreatedAt" class="text-muted"></p>
+                                    <p id="modalContent"></p>
+                                    <span id="modalStatus" class="badge"></span>
+                                </div>
+                                <hr />
+                                <div id="modalComments">
+                                    <!-- Bình luận -->
+                                    <h6 style="font-size:16px; margin-bottom:10px;">Bình luận:</h6>
+                                </div>
+                                <div>
+                                    <textarea id="commentInput" class="form-control mt-3" rows="2" placeholder="Viết bình luận..."></textarea>
+                                    <button id="submitComment" class="btn-primary" style="width:100%;border-radius:5px;" onclick="submitComment()">Gửi</button>
+                                </div>
+                                <div id="commentsList">
+                                    <!-- Các bình luận sẽ được thêm vào đây -->
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Nút đóng -->
+                        <span class="close-modal" onclick="closeModalds()">×</span>
+                    </div>
+                </div>
+
+                <script>
+                    function deleteComment(commentId) {
+                        // Hiển thị hộp thoại xác nhận
+                        const isConfirmed = confirm("Bạn có chắc chắn muốn xóa bình luận này không?");
+                        if (!isConfirmed) {
+                            return; // Nếu người dùng không đồng ý, thoát hàm
+                        }else{
+                              // Gửi yêu cầu xóa bình luận qua SignalR đến Hub
+                        const userId = parseInt("@Context.Session.GetString("UserId")", 10);
+                        connection.invoke("DeleteComment", commentId, userId)
+                            .then(function () {
+                                console.log("Comment deleted successfully.");
+                            })
+                            .catch(function (err) {
+                                console.error("Error while deleting comment: " + err.toString());
+                            });
+
+                        // Lắng nghe sự kiện khi xóa bình luận thất bại
+                        connection.on("DeleteCommentFailed", function (errorMessage) {
+                            alert(errorMessage);  // Hiển thị thông báo lỗi
+                        });
+
+                        // Xóa bình luận khỏi giao diện
+                        const commentDiv = document.querySelector(`[data-comment-id='${commentId}']`);
+                        if (commentDiv) {
+                            commentDiv.remove();  // Xóa bình luận trong modal
+                        }
+
+                        const hiddenCommentDiv = document.querySelector(`[data-comment-id='${commentId}']`);
+                        if (hiddenCommentDiv) {
+                            hiddenCommentDiv.remove();  // Xóa bình luận trong thẻ ẩn
+                        }
+
+                        }
+
+
+                    }
+                </script>
+
             }
             else
-            {               
-                    <p style="text-align:center;font-size:30px;font-weight:bold">Hiện chưa có bài viết nào.</p>
+            {
+                <p style="text-align:center;font-size:30px;font-weight:bold">Hiện tại bạn chưa có bài viết nào.</p>
             }
+
+            <script>
+                // Lấy giá trị userId và userName từ session trong ASP.NET Core
+                const userId = "@Context.Session.GetString("UserId")";
+                const userName = "@Context.Session.GetString("UserName")";
+            </script>
+
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/3.1.16/signalr.min.js"></script>
+            <script>
+                    // Khởi tạo kết nối SignalR
+                    const connection = new signalR.HubConnectionBuilder()
+                        .withUrl("/commentHub") // Địa chỉ của SignalR Hub
+                        .build();
+
+                    // Sự kiện nhận bình luận mới từ SignalR
+                 connection.on("ReceiveComment", function (userId, userpost,postId, userName, content, createdAt, commentId) {
+                    const commentsList = document.getElementById("commentsList");
+
+                    // Tạo phần tử bình luận mới và thêm vào DOM
+                    const commentDiv = document.createElement("div");
+                    commentDiv.classList.add("comment");
+                    commentDiv.dataset.commentId = commentId;
+                    const userIdSS = parseInt("@Context.Session.GetString("UserId")", 10);
+                    const showDeleteButton = userIdSS == userId;
+                    const showDeletpostUserr = userIdSS==userpost;
+
+                    var showicondeletee=showDeleteButton || showDeletpostUserr;
+                    commentDiv.innerHTML = `
+                        <div style="display: flex; justify-content: space-between;">
+                            <strong>${userName}:</strong>
+                            ${
+                            showicondeletee
+                             ? `<span style="font-size:20px; font-weight:bold;cursor:pointer;" onclick="deleteComment(${commentId})">...</span>`
+                            : ''
+                         }
+                        </div>
+                        ${content}
+                        <br>
+                        <span>${new Date(createdAt).toLocaleString()}</span>
+                    `;
+
+                    // Kiểm tra nếu commentsList tồn tại
+                    if (commentsList) {
+                        commentsList.appendChild(commentDiv);
+                    } else {
+                        console.error("Element with id 'commentsList' not found!");
+                    }
+
+                    // Cập nhật thẻ ẩn
+                    const hiddenCommentsContainer = document.getElementById(`comments-${postId}`);
+                    if (hiddenCommentsContainer) {
+                        const hiddenCommentDiv = document.createElement("div");
+                        hiddenCommentDiv.classList.add("comment");
+                        hiddenCommentDiv.dataset.commentId = commentId;
+                        hiddenCommentDiv.dataset.userId = userId;
+                        hiddenCommentDiv.dataset.userpostsubId = userpost;
+                        hiddenCommentDiv.innerHTML = `
+                            <span class="comment-user-name">${userName}</span>
+                            <p class="comment-content">${content}</p>
+                            <p class="comment-created-at">${new Date(createdAt).toLocaleString()}</p>
+                            <p class="comment-choose" >...</p>
+                        `;
+                        hiddenCommentsContainer.appendChild(hiddenCommentDiv);
+                    } else {
+                        console.error(`Element with id 'comments-${postId}' not found!`);
+                    }
+                });
+
+                    let currentPostId = null;
+                    // Hàm mở modal
+                 function openPostModal(buttonElement) {
+                     document.body.classList.add("modal-open"); // Ngăn cuộn
+                    // Lấy postId từ thuộc tính data-post-id
+                        currentPostId = buttonElement.getAttribute("data-post-id");
+                        const modal = document.getElementById("postModal");
+
+                    // Gửi yêu cầu tham gia nhóm
+                         connection.invoke("JoinPostGroup", parseInt(currentPostId, 10))
+                        .catch(function (err) {
+                            console.error("Failed to join group:", err.toString());
+                        });
+
+                        // Lấy dữ liệu từ DOM dựa trên ID bài viết
+                    const content = document.getElementById(`content-${currentPostId}`).innerText;
+                    const status = document.getElementById(`status-${currentPostId}`).innerText;
+                    const imageUrl = document.getElementById(`image-${currentPostId}`)?.src || "";
+                    const createdAt = document.getElementById(`createdAt-${currentPostId}`)?.innerText || "";
+                    const userName = document.getElementById(`userName-${currentPostId}`)?.innerText || "Người dùng";
+
+                        // Đổ dữ liệu vào modal
+                        document.getElementById("modalContent").innerText = content;
+                        document.getElementById("modalStatus").innerText = status;
+                        document.getElementById("modalImage").src = imageUrl;
+                        document.getElementById("modalCreatedAt").innerText = createdAt;
+                        document.getElementById("modalUserName").innerText = userName;
+
+                        // Lấy các bình luận của bài viết
+                        const commentsContainer = document.getElementById(`comments-${currentPostId}`);
+                        const commentsList = document.getElementById("commentsList");
+                        commentsList.innerHTML = ""; // Xóa các bình luận cũ
+
+                        // Duyệt qua các bình luận và hiển thị trong modal
+                        if (commentsContainer) {
+                            const comments = commentsContainer.querySelectorAll(".comment");
+                            comments.forEach(function (commentElement) {
+                                const commentUserName = commentElement.querySelector(".comment-user-name").innerText;
+                                const commentContent = commentElement.querySelector(".comment-content").innerText;
+                                const commentCreatedAt = commentElement.querySelector(".comment-created-at").innerText;
+                                const commentId = commentElement.getAttribute("data-comment-id");
+
+                                const commentUserId = commentElement.getAttribute("data-user-id"); // Lấy userId của bình luận
+
+                                const postUserId=commentElement.getAttribute("data-userpostsub-id");
+
+                               const userIdSS = parseInt("@Context.Session.GetString("UserId")", 10);
+                                // Tạo phần tử bình luận mới
+                                const commentDiv = document.createElement("div");
+                                commentDiv.classList.add("comment");
+                                commentDiv.setAttribute("data-comment-id", commentId);
+
+                             const showDeleteButton = userIdSS == commentUserId
+                             const showDeletUserPost= userIdSS == postUserId;
+                             const showDeleteIcon = showDeleteButton || showDeletUserPost;
+                                // Tạo HTML cho mỗi bình luận
+                             commentDiv.innerHTML =
+                            `<div style="display: flex; justify-content: space-between;">
+                            <strong>${commentUserName}:</strong>
+                            ${
+                             showDeleteIcon
+                            ? `<span style="font-size:20px; font-weight:bold;cursor:pointer;" onclick="deleteComment(${commentId})">...</span>`
+                             : ''
+                                }
+
+                            </div>
+                            ${commentContent}
+                            <br>
+                            <span>${commentCreatedAt}</span>
+                            `;
+                                // Thêm bình luận vào danh sách bình luận trong modal
+                                commentsList.appendChild(commentDiv);
+                            });
+                        }
+                        // Hiển thị modal
+                        modal.style.display = "flex";
+                    }
+
+                    // Hàm đóng modal
+                    function closeModalds() {
+                        document.body.classList.remove("modal-open"); // Cho phép cuộn lại
+                        const modal = document.getElementById("postModal");
+                        modal.style.display = "none";
+
+                    if (currentPostId !== null) {
+                        // Gửi yêu cầu rời nhóm
+                        connection.invoke("LeavePostGroup", parseInt(currentPostId, 10))
+                            .catch(function (err) {
+                                console.error("Failed to leave group:", err.toString());
+                            });
+                    }
+                    // Reset postId
+                    currentPostId = null;
+                    }
+
+                    // Hàm gửi bình luận
+                    function submitComment() {
+                        const commentInput = document.getElementById("commentInput");
+
+                        if (commentInput) {
+                            const commentContent = commentInput.value.trim();
+                            if (commentContent === "") {
+                                alert("Vui lòng nhập bình luận!");
+                                return;
+                            }
+                        // Chuyển currentPostId từ chuỗi sang số nguyên
+                        const postId = parseInt(currentPostId, 10);
+
+                        // Kiểm tra nếu postId không hợp lệ
+                        if (isNaN(postId)) {
+                            console.error("Invalid postId");
+                            return;
+                        }
+                            // Lấy userId từ session và chuyển đổi thành int
+                            const userId = parseInt("@Context.Session.GetString("UserId")", 10);
+
+                            // Kiểm tra nếu userId hợp lệ
+                            if (isNaN(userId)) {
+                                console.error("Invalid userId");
+                                return;
+                            }
+
+                            // const userId = "@Context.Session.GetString("UserId")"; Lấy userId từ session
+                            const createdAt = new Date().toISOString();
+
+                            console.log("postId:", postId);
+                            console.log("userId:", userId);
+                            console.log("commentContent:", commentContent);
+                            console.log("createdAt:", createdAt);
+
+                            // Gửi bình luận qua SignalR đến Hub
+                            connection.invoke("SendComment", postId, userId, commentContent, createdAt)
+                                .catch(function (err) {
+                                    return console.error(err.toString());
+                                });
+
+                            // Xóa giá trị trong ô nhập liệu sau khi gửi
+                            commentInput.value = "";
+                        }
+                    }
+                    // Kết nối SignalR khi trang được tải
+                    connection.start().catch(function (err) {
+                        return console.error(err.toString());
+                    });
+            </script>
+
+            @*   Hết modal anh em và đồng bọn *@
         </div>
-        <!-- Modal chỉnh sửa bài viết -->
-      @*   <div id="editModal" class="modal-overlay">
-            <div class="modal-content">
-                <h2 class="ChinhSua">Chỉnh sửa bài viết</h2>
-                <span class="close" onclick="closeEditModal()">×</span>
-                <form asp-action="UpdatePost" asp-controller="YourAccount" method="post" enctype="multipart/form-data">
-                    <input type="hidden" id="editPostId" name="idpost" />
-
-                    <!-- Trường Content -->
-                    <textarea id="editContent" name="Content" class="modal-textarea"></textarea>
-
-                    <label for="editStatus">Trạng thái:</label>
-                    <select id="editStatus" name="StatusPost" class="modal-select">
-                        <option value="Public">Công khai</option>
-                        <option value="Private">Riêng tư</option>
-                    </select>
-   
-                    <img id="imagePreview" src="" alt="Image Preview">
-                    <input type="file" id="editImageFile" name="ImageFile" accept="image/*" class="modal-input-file" />
-
-                    <!-- Trường StatusPost -->
-                    <div class="modal-buttons">
-                        <button type="submit" class="modal-save-button">Cập nhật</button>
-                    </div>
-                </form>
-            </div>
-        </div> 
-        BẢN CŨ KHÔNG AJAX
-        *@
+      
+        
         <div id="editModal" class="modal-overlay">
             <div class="modal-content">
                 <h2 class="ChinhSua">Chỉnh sửa bài viết</h2>

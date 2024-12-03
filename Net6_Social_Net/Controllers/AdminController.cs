@@ -32,7 +32,7 @@ namespace Social_Network.Controllers
 
             if (user.Role != "Admin")
             {
-                TempData["Error"] = "Khỏi vào";
+                TempData["Error"] = "Sao vào được đây!?";
                 HttpContext.Session.Clear();
                 return RedirectToAction("Index", "Login");
             }

@@ -14,50 +14,7 @@ namespace Social_Network.Controllers
     {
        private SocialNetworkContext db=new SocialNetworkContext();
 
-        /*  public async Task<IActionResult> Index()
-          {
-              var userId = HttpContext.Session.GetString("UserId");
-              if (userId == null)
-              {
-                  TempData["Error"] = "Vui lòng đăng nhập hoặc đăng ký";
-                  return RedirectToAction("Index", "Login");
-              }
-              var postsQuery = db.Posts
-                  .Include(p => p.User) // Quan hệ giữa Post và User
-                  .Include(p => p.Comments) // Quan hệ giữa Post và Comment
-                      .ThenInclude(c => c.User) // Nếu Comment có quan hệ với User
-                  .Where(p => p.Status == "Public") // Lọc bài viết public
-                  .OrderByDescending(p => p.CreatedAt)
-                  .Select(p => new PostViewModel
-                  {
-                      Id = p.PostId,
-                      UserId = p.UserId,
-                      Content = p.Content,
-                      ImageUrl = p.ImageUrl,
-                      CreatedAt = p.CreatedAt ?? DateTime.Now,
-                      Status = p.Status,
-                      UserName = p.User.Username,
-                      UpdatedAt = p.UpdatedAt ?? DateTime.Now,
-                      AvatarUser = p.User.ProfilePicture,
-
-                      Comments = p.Comments
-                       .Where(c => c.PostId ==p.PostId)
-                       .OrderBy(c => c.CreatedAt) // Sắp xếp bình luận theo thời gian tạo
-                       .Select(c => new CommentViewModel
-                       {
-                           CommentId = c.CommentId,
-                           PostId = c.PostId,
-                           UserId = c.UserId,
-                           Content = c.Content,
-                           CreatedAt = c.CreatedAt ?? DateTime.Now,
-                           UserName = c.User.Username,
-                           AvatarUser = c.User.ProfilePicture
-                       }).ToList()
-                  });
-
-              var postsList = await postsQuery.ToListAsync();
-              return View(postsList);
-          }*/
+      
         public async Task<IActionResult> Index()
         {
             // Lấy UserId từ Session
