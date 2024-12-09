@@ -250,8 +250,9 @@
         }
 
         .post-image-container img {
-        max-width: 100%;
-        max-height: 100%;
+        width: 100%;
+        height: 100%;
+        object-fit:contain;
         }
 
         /* Phần thông tin (35%) */
@@ -318,7 +319,6 @@
             <a href="@Url.Action("Index","Home")">
                 <img src="~/Icon_Plafom/454849238_800890952251701_8841246141296174912_n.jpg" alt="Logo Web" />
             </a>
-
         </div>
         <div class="sreachbox">
             <img src="~/Icon_Plafom/Search-icon.png" alt="Search Icon" class="search-icon" />
@@ -394,14 +394,10 @@
                     <button id="btn-cancel-friend" type="button" style="background: #caced1; display: none;" onclick="cancelFriendRequest()">Hủy kết bạn</button>
                 </div>
             }
-            
-           
-
 
             <script>
                 // Lấy friendId từ session (bạn có thể sử dụng phương thức này nếu bạn truyền được dữ liệu từ server)
-                const friendId = @Model.User.UserId; // Dữ liệu từ server
-
+                const friendId = @Model.User.UserId; // Dữ liệu từ server             
                 // Hàm xử lý khi nhấn nút "Kết bạn"
                 function addFriend() {
                     $.ajax({
@@ -414,7 +410,8 @@
                                 $('#btn-add-friend').text('Đang chờ').prop('disabled', true);
                                 $('#btn-cancel-friend').show();  // Hiển thị nút "Hủy kết bạn"
                             } else {
-                                alert(response.message);  // Hiển thị thông báo lỗi
+                                //alert(response.message);  // Hiển thị thông báo lỗi
+                                 console.log(response.message);
                             }
                         },
                         error: function () {
@@ -437,6 +434,7 @@
                                 $('#btn-cancel-friend').hide();  // Ẩn nút "Hủy kết bạn"
                             } else {
                                // alert(response.message);  // Hiển thị thông báo lỗi
+                                 console.log(response.message);
                             }
                         },
                         error: function () {
@@ -444,7 +442,6 @@
                         }
                     });
                 }
-
                 // Hàm xử lý khi nhấn nút "Hủy kết bạn" trong trạng thái "Bạn bè"
                 function removeFriend() {
                     $.ajax({
@@ -458,6 +455,7 @@
                                 $('#btn-cancel-friend').hide();  // Ẩn nút "Hủy kết bạn"
                             } else {
                                 // Không cần hiển thị alert nếu không có lỗi
+                                  console.log(response.message);
                             }
                         },
                         error: function () {
@@ -465,21 +463,37 @@
                         }
                     });
                 }
-
-                // Hàm để kiểm tra trạng thái yêu cầu kết bạn khi người dùng truy cập trang
+               // Hàm để kiểm tra trạng thái yêu cầu kết bạn khi người dùng truy cập trang
+               
+                var friendIDD=parseInt('@Model.User.UserId',10);
+                 
                 $(document).ready(function () {
                     $.ajax({
-                        url: '/UserAccount/GetFriendStatus',  // Gọi API để lấy trạng thái yêu cầu kết bạn
+                        url: '/UserAccount/GetFriendStatus',// Gọi API để lấy trạng thái yêu cầu kết bạn
                         type: 'GET',
                         data: { friendId: friendId },
                         success: function (response) {
-                            if (response.friendStatus === "Pending") {
-                                // Nếu trạng thái là "Pending" (Đang chờ)
-                                $('#btn-add-friend').text('Đang chờ').prop('disabled', true);
-                                $('#btn-cancel-friend').show();
-                                // Thêm sự kiện "Hủy kết bạn" cho trạng thái "Pending"
-                                $('#btn-cancel-friend').off('click').on('click', cancelFriendRequest);
+                             var friendlyID=parseInt(response.friendInfo.userId,10);
+                            if( friendIDD=== friendlyID && response.friendStatus==="Pending"){
+
+                                 $('#btn-add-friend').text('Chấp nhận lời mời');
+                                 $('#btn-cancel-friend').show();
+                                    const friendId = @Model.User.UserId; // Dữ liệu từ server
+                                    $('#btn-add-friend').off('click').on('click', function () {
+                                        AcceptRequest(friendId); // Gọi hàm AcceptRequest
+                                    });
+
+                                    $('#btn-cancel-friend').off('click').on('click', function () {
+                                        DeclineRequest(friendId); // Gọi hàm DeclineRequest
+                                    });
                             }
+                             else if(response.friendStatus === "Pending"){
+                                 // Nếu trạng thái là "Pending" (Đang chờ)
+                                 $('#btn-add-friend').text('Đang chờ').prop('disabled', true);
+                                 $('#btn-cancel-friend').show();
+                                 // Thêm sự kiện "Hủy kết bạn" cho trạng thái "Pending"
+                                 // $('#btn-cancel-friend').off('click').on('click', cancelFriendRequest);
+                              }
                             else if(response.friendStatus === "Friend"){
                                 // Nếu trạng thái là "Friend" (Bạn bè)
                                 $('#btn-add-friend').text('Bạn bè').prop('disabled', true);
@@ -497,13 +511,50 @@
                             alert("Đã xảy ra lỗi khi tải trạng thái yêu cầu kết bạn.");
                         }
                     });
-                });
+                } );
+
+                 // Hàm xử lý "Chấp nhận lời mời"
+                function AcceptRequest(friendId) {
+                    $.ajax({
+                        url: '/UserAccount/AcceptFriendRequest',  // API chấp nhận kết bạn
+                        type: 'POST',
+                        data: { friendId: friendId },
+                        success: function (response) {
+                            if (response.status === "success") {
+                                // Cập nhật giao diện khi chấp nhận thành công
+                                $('#btn-add-friend').text('Bạn bè').prop('disabled', true);
+                                $('#btn-cancel-friend').text('Hủy kết bạn').off('click').on('click', removeFriend).show();
+                            } else {
+                                console.log(response.message); // Thông báo lỗi từ server
+                            }
+                        },
+                        error: function () {
+                            alert("Đã xảy ra lỗi khi chấp nhận lời mời.");
+                        }
+                    });
+                }
+
+                // Hàm xử lý "Từ chối lời mời"
+                function DeclineRequest(friendId) {
+                    $.ajax({
+                        url: '/UserAccount/DeclineFriendRequest',  // API từ chối kết bạn
+                        type: 'POST',
+                        data: { friendId: friendId },
+                        success: function (response) {
+                            if (response.status === "success") {
+                                // Cập nhật giao diện khi từ chối thành công
+                                $('#btn-add-friend').text('Kết bạn').prop('disabled', false);
+                                $('#btn-cancel-friend').hide();
+                            } else {
+                                console.log(response.message); // Thông báo lỗi từ server
+                            }
+                        },
+                        error: function () {
+                            alert("Đã xảy ra lỗi khi từ chối lời mời.");
+                        }
+                    });
+                }
             </script>
-
-
-       
-
-
 
             <div class="other">một số tính năng sau này bổ sung</div>
             <div clas="Footer">
@@ -574,7 +625,6 @@
 
             </div>
             <!--Modal tạo bài viết-->
-            <!-- Thêm vào trong phần <body> -->
             <div id="myModal" class="modal">
                 <div class="modal-contentt">
                     <span class="close" onclick="closeModal()">&times;</span>
@@ -601,7 +651,7 @@
                 {
                     <div class="post-card" data-id="@post.Id" data-post-id="@post.Id" onclick="openPostModal(this)">
                         <div class="post-header">
-                            <h3 id="userName-@post.Id" style="font-size:18px;text-transform: capitalize;">@post.UserName</h3>
+                            <h3 id="userName-@post.Id" data-userr-id="@post.UserId" style="font-size:18px;text-transform: capitalize;">@post.UserName</h3>
                             <div class="post-options">
                                 @{
                                     var usserss = Context.Session.GetString("UserId");
@@ -687,10 +737,11 @@
                             <!-- Phần thông tin bài viết (35%) -->
                             <div class="post-details-container">
                                 <div id="modalPostInfo">
-                                    <h5 id="modalUserName"></h5>
-                                    <p id="modalCreatedAt" class="text-muted"></p>
-                                    <p id="modalContent"></p>
-                                    <span id="modalStatus" class="badge"></span>
+                                    <a id="modalUserName" style="text-decoration:none; font-size:20px;font-weight:bold"></a>
+                                    <p id="modalCreatedAt" class="text-muted" style="font-size:15px; color: #9c9c9c;"></p>
+                                    <span id="modalStatus" class="badge" style="font-size:15px;color: #9c9c9c;"></span>
+                                    <p id="modalContent" style="font-size:25px"></p>
+
                                 </div>
                                 <hr />
                                 <div id="modalComments">
@@ -784,7 +835,10 @@
                     var showicondeletee=showDeleteButton || showDeletpostUserr;
                     commentDiv.innerHTML = `
                         <div style="display: flex; justify-content: space-between;">
-                            <strong>${userName}:</strong>
+                            
+                         <a style="text-transform: capitalize; font-weight:bold;font-size:16px; cursor:pointer; text-decoration:none;" href="/UserAccount/Index?id=${userId}">
+                                        ${userName}
+                         </a>
                             ${
                             showicondeletee
                              ? `<span style="font-size:20px; font-weight:bold;cursor:pointer;" onclick="deleteComment(${commentId})">...</span>`
@@ -795,7 +849,7 @@
                         <br>
                         <span>${new Date(createdAt).toLocaleString()}</span>
                     `;
-
+                    // <strong>${userName}:</strong>
                     // Kiểm tra nếu commentsList tồn tại
                     if (commentsList) {
                         commentsList.appendChild(commentDiv);
@@ -840,16 +894,46 @@
                         // Lấy dữ liệu từ DOM dựa trên ID bài viết
                     const content = document.getElementById(`content-${currentPostId}`).innerText;
                     const status = document.getElementById(`status-${currentPostId}`).innerText;
-                    const imageUrl = document.getElementById(`image-${currentPostId}`)?.src || "";
+                  //  const imageUrl = document.getElementById(`image-${currentPostId}`)?.src || "";
+
+                    const imageElement = document.getElementById(`image-${currentPostId}`); // Lấy thẻ img
+                    const imageUrl = imageElement ? imageElement.src : ""; // Kiểm tra xem thẻ img có tồn tại không
+
                     const createdAt = document.getElementById(`createdAt-${currentPostId}`)?.innerText || "";
-                    const userName = document.getElementById(`userName-${currentPostId}`)?.innerText || "Người dùng";
+                   // const userName = document.getElementById(`userName-${currentPostId}`)?.innerText || "Người dùng";
+
+                   // Lấy username và userid từ thẻ tương ứng
+                        const userNameElement = document.getElementById(`userName-${currentPostId}`);
+                        const userName = userNameElement?.innerText || "Người dùng"; // Tên người dùng
+                        const commentUserId = userNameElement?.getAttribute("data-userr-id"); // Lấy userId từ thuộc tính data
 
                         // Đổ dữ liệu vào modal
                         document.getElementById("modalContent").innerText = content;
                         document.getElementById("modalStatus").innerText = status;
-                        document.getElementById("modalImage").src = imageUrl;
+                       // document.getElementById("modalImage").src = imageUrl;
                         document.getElementById("modalCreatedAt").innerText = createdAt;
-                        document.getElementById("modalUserName").innerText = userName;
+                      //  document.getElementById("modalUserName").innerText = userName;
+
+                       const modalUserName = document.getElementById("modalUserName");
+                            modalUserName.innerText = userName;
+                            if (commentUserId) {
+                                modalUserName.href = `/UserAccount/Index?id=${commentUserId}`;
+                            } else {
+                                modalUserName.removeAttribute("href"); // Nếu không có userId, xóa href
+                            }
+
+                      // Xử lý ảnh
+                        const modalImageContainer = document.querySelector(".post-image-container");
+                        const modalImage = document.getElementById("modalImage");
+
+                        if (imageUrl) {
+                            modalImage.src = imageUrl; // Gán URL hình ảnh
+                            modalImageContainer.style.display = "block"; // Hiển thị container ảnh
+                        } else {
+                            modalImage.src="/Icon_Plafom/454849238_800890952251701_8841246141296174912_n.jpg";
+                            modalImageContainer.style.display = "block"; // Ẩn container nếu không có ảnh
+                        }
+                      
 
                         // Lấy các bình luận của bài viết
                         const commentsContainer = document.getElementById(`comments-${currentPostId}`);
@@ -881,7 +965,10 @@
                                 // Tạo HTML cho mỗi bình luận
                              commentDiv.innerHTML =
                             `<div style="display: flex; justify-content: space-between;">
-                            <strong>${commentUserName}:</strong>
+                            
+                             <a style="text-transform: capitalize; font-weight:bold;font-size:16px; cursor:pointer; text-decoration:none;" href="/UserAccount/Index?id=${commentUserId}">
+                                        ${commentUserName}
+                            </a>
                             ${
                              showDeleteIcon
                             ? `<span style="font-size:20px; font-weight:bold;cursor:pointer;" onclick="deleteComment(${commentId})">...</span>`
@@ -897,6 +984,7 @@
                                 commentsList.appendChild(commentDiv);
                             });
                         }
+                        // <strong>${commentUserName}:</strong>
                         // Hiển thị modal
                         modal.style.display = "flex";
                     }

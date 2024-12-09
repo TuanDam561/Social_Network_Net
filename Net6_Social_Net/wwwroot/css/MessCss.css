@@ -1,0 +1,210 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Đảm bảo tính toán kích thước chính xác */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.home {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #f1f1f1;
+    border-bottom: 1px solid #ccc;
+}
+
+.logo img {
+    height: 50px;
+    width: auto;
+    border-radius: 50%;
+}
+
+.sreachbox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-wrapper {
+    position: relative;
+    width: 600px;
+}
+
+    .search-wrapper input[type="search"] {
+        width: 100%;
+        padding: 8px 40px 8px 12px; /* Chừa khoảng cho icon */
+        border: 1px solid #ccc;
+        border-radius: 20px;
+        font-size: 14px;
+    }
+
+    .search-wrapper .search-icon {
+        position: absolute;
+        right: 12px; /* Căn chỉnh icon bên phải */
+        top: 50%;
+        transform: translateY(-50%);
+        height: 20px;
+        width: 20px;
+        pointer-events: none; /* Để không ảnh hưởng khi nhấp vào input */
+    }
+
+.container {
+    display: flex;
+    flex: 1;
+    overflow: hidden; /* Đảm bảo phần bên trong không vượt quá chiều cao */
+}
+
+.right {
+    width: 30%;
+    background-color: #ffffff;
+    border-right: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    overflow-y: auto; /* Cuộn nếu nội dung vượt quá */
+}
+
+.sreach {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+    .sreach input {
+        flex: 1;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px 0 0 4px;
+    }
+
+    .sreach button {
+        padding: 8px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 0 4px 4px 0;
+        cursor: pointer;
+    }
+
+        .sreach button:hover {
+            background-color: #0056b3;
+        }
+
+.user ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.user li {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+}
+
+    .user li:hover {
+        background-color: #f0f0f0;
+    }
+
+.left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+}
+
+.inforuser {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: space-between;
+}
+
+.messenger {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto; /* Cuộn tin nhắn khi nội dung vượt quá */
+}
+
+.inputmess {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+    background-color: #f9f9f9;
+    position: sticky; /* Cố định vị trí */
+    bottom: 0;
+}
+
+    .inputmess input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+        .inputmess input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+    .inputmess button {
+        padding: 10px 15px;
+        margin-left: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+        .inputmess button:hover {
+            background-color: #0056b3;
+        }
+
+.Card-friend {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 10px; /* Khoảng cách giữa các card */
+    transition: background-color 0.3s, transform 0.3s; /* Hiệu ứng hover */
+    cursor: pointer;
+    background-color: #f9f9f9;
+}
+
+    .Card-friend:hover {
+        background-color: #f0f8ff;
+        transform: scale(1.02); /* Phóng to nhẹ khi hover */
+    }
+
+    .Card-friend img {
+        height: 50px;
+        width: 50px;
+        border-radius: 50%; /* Avatar hình tròn */
+        margin-right: 10px; /* Khoảng cách giữa ảnh và tên */
+        object-fit: cover; /* Đảm bảo ảnh không bị méo */
+        border: 2px solid #007bff; /* Viền xung quanh avatar */
+    }
+
+    .Card-friend a {
+        font-size: 16px;
+        color: #333;
+        text-decoration: none; /* Loại bỏ gạch chân */
+        font-weight: bold;
+        transition: color 0.3s; /* Hiệu ứng hover */
+    }
+
+        .Card-friend a:hover {
+            color: #007bff; /* Đổi màu chữ khi hover */
+        }

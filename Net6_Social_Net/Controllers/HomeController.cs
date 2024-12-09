@@ -5,12 +5,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Net6_Social_Net.Data;
 using Net6_Social_Net.Models;
+using Net7_Social_Net.Controllers;
 using Net7_Social_Net.Models;
 using System.Diagnostics;
 
 namespace Social_Network.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
        private SocialNetworkContext db=new SocialNetworkContext();
 

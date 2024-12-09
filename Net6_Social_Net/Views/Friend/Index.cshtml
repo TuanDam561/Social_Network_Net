@@ -34,7 +34,12 @@
                      class="search-icon" />
             </div>
         </div>
-        <div>Đăng xuất</div>
+        <a id="logout" onclick="return confirmLogout()"  style="text-decoration: none; color: red; font-size: 20px;" asp-action="Logout" asp-controller="Login">Đăng xuất</a>
+        <script>
+            function confirmLogout() {
+                return confirm("Bạn có chắc chắn muốn đăng xuất?");
+            }
+        </script>
     </div>
     <div class="container">
         <!-- Phần bên trái -->
@@ -49,18 +54,50 @@
             {
                 <div class="card">
                    @if(friend.ProfilePicture==null){
+
                         <img src="~/Avatar/454849238_800890952251701_8841246141296174912_n.jpg" alt="Avatar" />
                    }
                    else{
                         <img src="@friend.ProfilePicture" alt="Avatar" />
-                   }
-                   
+                   }                   
                     <div class="info">
-                        <div class="name">@friend.Username</div>
+                        <div class="name" >
+                            <a style="text-transform: capitalize; margin:10px;font-size:20px; cursor:pointer; text-decoration:none;" href="@Url.Action("Index", "UserAccount",new { id = friend.FriendID })"> @friend.Username</a>
+                        </div>
                         <div class="status">Bio: @friend.Bio</div>
+                    </div>
+                    <div class="actions">
+                        <button class="decline" data-id="@friend.FriendID" style=" border-radius: 5px; background: #ccc; height: 40px; border: none; width: 80px; ">Hủy kết bạn </button>
                     </div>
                 </div>
             }
+            <script>
+                  function attachDeclineEvent() {
+                    $(".decline").off("click").on("click", function () {
+                        const friendId = $(this).data("id");
+
+                        if (confirm("Bạn có chắc chắn muốn hủy kết bạn?")) {
+                            $.ajax({
+                                url: '/Friend/Unfriend',
+                                type: 'POST',
+                                data: { friendId: friendId },
+                                success: function () {
+                                    // Xóa thẻ bên trái
+                                    $(`.card:has(button[data-id="${friendId}"])`).remove();
+                                },
+                                error: function (err) {
+                                   // alert("Đã xảy ra lỗi! Vui lòng thử lại.");
+                                }
+                            });
+                        }
+                    });
+                }
+                // Gọi hàm attachDeclineEvent() khi trang tải xong
+                $(document).ready(function () {
+                    attachDeclineEvent();
+                });
+
+            </script>
         </div>
         <!-- Phần bên phải -->
         <div class="right">
@@ -78,7 +115,10 @@
                             <img src="@pendingRequest.ProfilePicture" alt="Avatar" />
                         }
                         <div class="info">
-                            <div class="name">@pendingRequest.Username</div>
+                            <div class="name">
+                               @*  @pendingRequest.Username *@
+                                <a style="text-transform: capitalize; margin:10px;font-size:20px; cursor:pointer; text-decoration:none;" href="@Url.Action("Index", "UserAccount",new { id = @pendingRequest.FriendID })"> @pendingRequest.Username</a>
+                            </div>
                             <div class="actions">
                                 <button class="accept" data-id="@pendingRequest.FriendID">Xác nhận</button>
                                 <button class="decline" data-id="@pendingRequest.FriendID">Xóa</button>
@@ -89,35 +129,44 @@
             </div>
         </div>
         <script>
-            $(document).ready(function () {
-                // Xử lý nút "Xác nhận"
-                $(".accept").click(function () {
-                    const friendId = $(this).data("id");
+            $(document).ready(function () {            
+               $(".accept").click(function () {
+                const friendId = $(this).data("id");
 
-                    $.ajax({
-                        url: '/Friend/AcceptRequest',
-                        type: 'POST',
-                        data: { friendId: friendId },
-                        success: function (response) {
-                            // Xóa thẻ bên phải
-                            $(`#pending-${friendId}`).remove();
+                $.ajax({
+                    url: '/Friend/AcceptRequest',
+                    type: 'POST',
+                    data: { friendId: friendId },
+                    success: function (response) {
+                        // Xóa thẻ bên phải
+                        $(`#pending-${friendId}`).remove();                   
+                       const newCard = `
+                          <div class="card">
+                              <img src="${response.profilePicture || '/Avatar/454849238_800890952251701_8841246141296174912_n.jpg'}" alt="Avatar" />
+                              <div class="info">
+                                  <div class="name">
+                                    <a style="text-transform: capitalize; margin:10px; font-size:20px; cursor:pointer; text-decoration:none;" href="/UserAccount/Index?id=${response.friendId}">
+                                        ${response.username}
+                                   </a>
+                                  </div>
+                             <div class="status">Bio: ${response.bio || 'Chưa có thông tin'}</div>
+                         </div>
+                             <div class="actions">
+                                 <button class="decline" data-id="${response.friendId}" style="border-radius: 5px; background: #ccc; height: 40px; border: none; width: 80px;">Hủy kết bạn</button>
+                            </div>
+                        </div>
+                       `;
+                        $(".left").append(newCard);
 
-                            // Thêm thẻ mới vào danh sách bạn bè bên trái
-                            $(".left").append(`
-                                <div class="card">
-                                    <img src="${response.profilePicture || '~/Avatar/454849238_800890952251701_8841246141296174912_n.jpg'}" alt="Avatar" />
-                                    <div class="info">
-                                        <div class="name">${response.username}</div>
-                                        <div class="status">Bio: ${response.bio || 'Chưa có thông tin'}</div>
-                                    </div>
-                                </div>
-                            `);
-                        },
-                        error: function (err) {
-                            alert("Đã xảy ra lỗi! Vui lòng thử lại.");
-                        }
-                    });
+                        // Gắn lại sự kiện cho nút "Hủy kết bạn" mới
+                        attachDeclineEvent();
+                    },
+                    error: function (err) {
+                        alert("Đã xảy ra lỗi! Vui lòng thử lại.");
+                    }
                 });
+            });
+
 
                 // Xử lý nút "Xóa"
                 $(".decline").click(function () {
@@ -132,7 +181,7 @@
                             $(`#pending-${friendId}`).remove();
                         },
                         error: function (err) {
-                            alert("Đã xảy ra lỗi! Vui lòng thử lại.");
+                         //   alert("Đã xảy ra lỗi! Vui lòng thử lại.");
                         }
                     });
                 });
@@ -141,3 +190,6 @@
     </div>
 </body>
 </html>
+
+
+

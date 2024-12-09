@@ -19,16 +19,10 @@ namespace Social_Network.Controllers
         public IActionResult Index()
         {
             return View();
-        }
+        }    
         [HttpPost]
         public async Task<IActionResult> LoginFuntion(string gmail, string password)
         {
-            ////Cho admin vào 
-            //if (gmail == "admin123@gmail.com" && password == "123")
-            //{
-            //    TempData["Admin"] = "Xin chào admin";
-            //    return RedirectToAction("Index", "Admin");
-            //}
             // Kiểm tra nếu gmail hoặc password là null hoặc trống
             if (string.IsNullOrEmpty(gmail) || string.IsNullOrEmpty(password))
             {
@@ -48,27 +42,33 @@ namespace Social_Network.Controllers
             // Kiểm tra mật khẩu với hash đã lưu trong cơ sở dữ liệu
             if (BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
             {
-                // Nếu mật khẩu đúng, đặt giá trị vào session
+                // Lưu trạng thái đăng nhập vào Session
                 HttpContext.Session.SetString("UserId", user.UserId.ToString());
                 HttpContext.Session.SetString("UserName", user.Username);
-                //lưu lần đăng nhập gần nhất
-                user.LastLogin= DateTime.Now;
-                await db.SaveChangesAsync();    
+
+                // Lưu cookie để giữ trạng thái đăng nhập
+                var cookieOptions = new CookieOptions
+                {
+                    Expires = DateTime.Now.AddDays(7), // Cookie tồn tại trong 7 ngày
+                    HttpOnly = true,                   // Ngăn script truy cập cookie
+                    Secure = true                      // Chỉ gửi cookie qua HTTPS
+                };
+
+                Response.Cookies.Append("UserId", user.UserId.ToString(), cookieOptions);
+                Response.Cookies.Append("UserName", user.Username, cookieOptions);
+
+                // Lưu lần đăng nhập gần nhất
+                user.LastLogin = DateTime.Now;
+                await db.SaveChangesAsync();
+
                 return RedirectToAction("Index", "Home"); // Chuyển hướng đến trang chính hoặc trang khác
             }
-            /* else
-             {
-                 TempData["Error"] = "Sai mật khẩu";
-                 return View("Index");
-             }*/
-            
-           
 
             // Nếu mật khẩu không đúng, hiển thị thông báo lỗi
-            TempData["Error"] ="Thông tin đăng nhập không chính xác.";
+            TempData["Error"] = "Thông tin đăng nhập không chính xác.";
             return View("Index");
-           
         }
+
         public IActionResult Register()
         {
             return View();
@@ -367,6 +367,9 @@ namespace Social_Network.Controllers
                 TempData["Error"] = "Phiên đăng nhập đã hết hạn!";
                 return RedirectToAction("Index", "Login"); // Redirect đến trang login
             }
+            // Xóa cookie
+            Response.Cookies.Delete("UserId");
+            Response.Cookies.Delete("UserName");
 
             // Xóa tất cả session liên quan đến người dùng
             HttpContext.Session.Clear();
@@ -383,6 +386,7 @@ namespace Social_Network.Controllers
                     RedirectUri = Url.Action("GoogleResponse")
                 });
         }
+      
         public async Task<IActionResult> GoogleResponse()
         {
             // Xác thực người dùng từ cookie sau khi Google trả về thông tin
@@ -407,7 +411,6 @@ namespace Social_Network.Controllers
 
             // Lấy email từ claims (Google trả về)
             var emailClaim = claims?.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-         
 
             if (string.IsNullOrEmpty(emailClaim))
             {
@@ -444,9 +447,27 @@ namespace Social_Network.Controllers
                 // await SendPasswordToUserEmail(emailClaim, randomPassword);
             }
 
-            // Cập nhật session sau khi đăng nhập thành công
+            // Cập nhật LastLogin
+            user.LastLogin = DateTime.Now;
+            await db.SaveChangesAsync();
+
+            // Cập nhật session
             HttpContext.Session.SetString("UserId", user.UserId.ToString());
             HttpContext.Session.SetString("UserName", user.Username);
+
+            // Lưu thông tin vào cookie
+            Response.Cookies.Append("UserId", user.UserId.ToString(), new CookieOptions
+            {
+                Expires = DateTime.Now.AddDays(7), // Cookie hết hạn sau 7 ngày
+                HttpOnly = true,                   // Ngăn script truy cập cookie
+                Secure = true
+            });
+            Response.Cookies.Append("UserName", user.Username, new CookieOptions
+            {
+                Expires = DateTime.Now.AddDays(7), // Cookie hết hạn sau 7 ngày
+                HttpOnly = true,                   // Ngăn script truy cập cookie
+                Secure = true
+            });
 
             TempData["success"] = "Đăng nhập thành công";
             return RedirectToAction("Index", "Home");

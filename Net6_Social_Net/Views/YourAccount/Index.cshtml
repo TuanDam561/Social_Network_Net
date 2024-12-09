@@ -243,8 +243,11 @@
         }
 
             .post-image-container img {
-                max-width: 100%;
-                max-height: 100%;
+                /* max-width: 100%; */
+                /* max-height: 100%; */
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
             }
 
         /* Phần thông tin (35%) */
@@ -452,9 +455,9 @@
             {
                 foreach (var post in Model.Posts)
                 {
-                            <div class="post-card" data-id="@post.Id" data-post-id="@post.Id" onclick="openPostModal(this)">
+                       <div class="post-card" data-id="@post.Id" data-post-id="@post.Id" onclick="openPostModal(this)">
                         <div class="post-header">
-                            <h3 id="userName-@post.Id" style="font-size:18px;text-transform: capitalize;">@post.UserName</h3>
+                            <h3 id="userName-@post.Id" data-userr-id="@post.UserId" style="font-size:18px;text-transform: capitalize;">@post.UserName</h3>
                             <div class="post-options">
                                 <span class="options-icon" onclick="toggleMenu(this)">&#8942;</span>
                                 <div class="options-menu">
@@ -534,10 +537,11 @@
                             <!-- Phần thông tin bài viết (35%) -->
                             <div class="post-details-container">
                                 <div id="modalPostInfo">
-                                    <h5 id="modalUserName"></h5>
-                                    <p id="modalCreatedAt" class="text-muted"></p>
-                                    <p id="modalContent"></p>
-                                    <span id="modalStatus" class="badge"></span>
+                                    <a id="modalUserName" style="text-decoration:none; font-size:20px;font-weight:bold"></a>
+                                    <p id="modalCreatedAt" class="text-muted" style="font-size:15px; color: #9c9c9c;"></p>
+                                    <span id="modalStatus" class="badge" style="font-size:15px;color: #9c9c9c;"></span>
+                                    <p id="modalContent" style="font-size:25px"></p>
+                                   
                                 </div>
                                 <hr />
                                 <div id="modalComments">
@@ -631,7 +635,9 @@
                     var showicondeletee=showDeleteButton || showDeletpostUserr;
                     commentDiv.innerHTML = `
                         <div style="display: flex; justify-content: space-between;">
-                            <strong>${userName}:</strong>
+                        <a style="text-transform: capitalize; font-weight:bold;font-size:16px; cursor:pointer; text-decoration:none;" href="/UserAccount/Index?id=${userId}">
+                               ${userName}
+                        </a>
                             ${
                             showicondeletee
                              ? `<span style="font-size:20px; font-weight:bold;cursor:pointer;" onclick="deleteComment(${commentId})">...</span>`
@@ -687,16 +693,43 @@
                         // Lấy dữ liệu từ DOM dựa trên ID bài viết
                     const content = document.getElementById(`content-${currentPostId}`).innerText;
                     const status = document.getElementById(`status-${currentPostId}`).innerText;
-                    const imageUrl = document.getElementById(`image-${currentPostId}`)?.src || "";
+
+                    const imageElement = document.getElementById(`image-${currentPostId}`); // Lấy thẻ img
+                    const imageUrl = imageElement ? imageElement.src : ""; // Kiểm tra xem thẻ img có tồn tại không
+
                     const createdAt = document.getElementById(`createdAt-${currentPostId}`)?.innerText || "";
-                    const userName = document.getElementById(`userName-${currentPostId}`)?.innerText || "Người dùng";
+                    // const userName = document.getElementById(`userName-${currentPostId}`)?.innerText || "Người dùng";
+
+                    // Lấy username và userid từ thẻ tương ứng
+                    const userNameElement = document.getElementById(`userName-${currentPostId}`);
+                    const userName = userNameElement?.innerText || "Người dùng"; // Tên người dùng
+                    const commentUserId = userNameElement?.getAttribute("data-userr-id"); // Lấy userId từ thuộc tính data
 
                         // Đổ dữ liệu vào modal
                         document.getElementById("modalContent").innerText = content;
                         document.getElementById("modalStatus").innerText = status;
-                        document.getElementById("modalImage").src = imageUrl;
                         document.getElementById("modalCreatedAt").innerText = createdAt;
-                        document.getElementById("modalUserName").innerText = userName;
+                        //document.getElementById("modalUserName").innerText = userName;
+
+                        const modalUserName = document.getElementById("modalUserName");
+                        modalUserName.innerText = userName;
+                        if (commentUserId) {
+                            modalUserName.href = `/UserAccount/Index?id=${commentUserId}`;
+                        } else {
+                            modalUserName.removeAttribute("href"); // Nếu không có userId, xóa href
+                        }
+
+                         // Xử lý ảnh
+                        const modalImageContainer = document.querySelector(".post-image-container");
+                        const modalImage = document.getElementById("modalImage");
+
+                        if (imageUrl) {
+                            modalImage.src = imageUrl; // Gán URL hình ảnh
+                            modalImageContainer.style.display = "block"; // Hiển thị container ảnh
+                        } else {
+                            modalImage.src="/Icon_Plafom/454849238_800890952251701_8841246141296174912_n.jpg";
+                            modalImageContainer.style.display = "block"; // Ẩn container nếu không có ảnh
+                        }
 
                         // Lấy các bình luận của bài viết
                         const commentsContainer = document.getElementById(`comments-${currentPostId}`);
@@ -728,7 +761,9 @@
                                 // Tạo HTML cho mỗi bình luận
                              commentDiv.innerHTML =
                             `<div style="display: flex; justify-content: space-between;">
-                            <strong>${commentUserName}:</strong>
+                                <a style="text-transform: capitalize; font-weight:bold;font-size:16px; cursor:pointer; text-decoration:none;" href="/UserAccount/Index?id=${commentUserId}">
+                                    ${commentUserName}
+                                </a>
                             ${
                              showDeleteIcon
                             ? `<span style="font-size:20px; font-weight:bold;cursor:pointer;" onclick="deleteComment(${commentId})">...</span>`

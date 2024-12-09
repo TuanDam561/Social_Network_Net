@@ -180,6 +180,38 @@ namespace Net6_Social_Net.Controllers
             }
         }
 
+        /* public async Task<IActionResult> GetFriendStatus(int friendId)
+         {
+             // Lấy UserId từ session
+             var userIdStr = HttpContext.Session.GetString("UserId");
+             if (string.IsNullOrEmpty(userIdStr))
+             {
+                 return Json(new { status = "error", message = "Vui lòng đăng nhập" });
+             }
+
+             int userId = int.Parse(userIdStr);
+
+             // Tìm yêu cầu kết bạn giữa userId và friendId (hoặc ngược lại)
+             var friendRequest = await db.Friends
+                 .FirstOrDefaultAsync(f => (f.UserId == userId && f.FriendId == friendId)
+                                        || (f.UserId == friendId && f.FriendId == userId));
+
+             if (friendRequest == null)
+             {
+                 // Nếu không tìm thấy yêu cầu kết bạn, trả về trạng thái "none"
+                 return Json(new { status = "success", message = "Kết bạn", friendStatus = "none" });
+             }
+
+             // Kiểm tra trạng thái của yêu cầu kết bạn
+             if (friendRequest.Status == "Friend")
+             {
+                 // Nếu trạng thái là "Friend", trả về "Bạn bè"
+                 return Json(new { status = "success", message = "Bạn bè", friendStatus = "Friend" });
+             }
+
+             // Nếu yêu cầu kết bạn đang chờ hoặc có trạng thái khác, trả về "Đang chờ"
+             return Json(new { status = "success", message = "Đang chờ", friendStatus = friendRequest.Status });
+         }*/
         public async Task<IActionResult> GetFriendStatus(int friendId)
         {
             // Lấy UserId từ session
@@ -193,25 +225,53 @@ namespace Net6_Social_Net.Controllers
 
             // Tìm yêu cầu kết bạn giữa userId và friendId (hoặc ngược lại)
             var friendRequest = await db.Friends
-                .FirstOrDefaultAsync(f => (f.UserId == userId && f.FriendId == friendId)
-                                       || (f.UserId == friendId && f.FriendId == userId));
+                .Where(f => (f.UserId == userId && f.FriendId == friendId)
+                         || (f.UserId == friendId && f.FriendId == userId))
+                .Select(f => new
+                {
+                    UserId = f.UserId,
+                    FriendId = f.FriendId,
+                    Status = f.Status,
+                    CreatedAt = f.CreatedAt
+                })
+                .FirstOrDefaultAsync();
 
             if (friendRequest == null)
             {
                 // Nếu không tìm thấy yêu cầu kết bạn, trả về trạng thái "none"
-                return Json(new { status = "success", message = "Kết bạn", friendStatus = "none" });
+                return Json(new
+                {
+                    status = "success",
+                    message = "Kết bạn",
+                    friendStatus = "none",
+                    friendInfo = new { UserId = userId, FriendId = friendId }
+                });
             }
 
             // Kiểm tra trạng thái của yêu cầu kết bạn
             if (friendRequest.Status == "Friend")
             {
                 // Nếu trạng thái là "Friend", trả về "Bạn bè"
-                return Json(new { status = "success", message = "Bạn bè", friendStatus = "Friend" });
+                return Json(new
+                {
+                    status = "success",
+                    message = "Bạn bè",
+                    friendStatus = "Friend",
+                    friendInfo = new { friendRequest.UserId, friendRequest.FriendId, friendRequest.CreatedAt }
+                });
             }
 
             // Nếu yêu cầu kết bạn đang chờ hoặc có trạng thái khác, trả về "Đang chờ"
-            return Json(new { status = "success", message = "Đang chờ", friendStatus = friendRequest.Status });
+            return Json(new
+            {
+                status = "success",
+                message = "Đang chờ",
+                friendStatus = friendRequest.Status,
+                friendInfo = new { friendRequest.UserId, friendRequest.FriendId, friendRequest.CreatedAt }
+            });
         }
+
+
 
         [HttpPost]
         public async Task<IActionResult> RemoveFriend(int friendId)
@@ -240,9 +300,68 @@ namespace Net6_Social_Net.Controllers
             return Json(new { status = "success", message = "Đã hủy kết bạn" });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> AcceptFriendRequest(int friendId)
+        {
+            var userIdStr = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdStr))
+            {
+                return Json(new { status = "error", message = "Vui lòng đăng nhập" });
+            }
 
+            int userId = int.Parse(userIdStr);
 
+            var friendRequest = await db.Friends
+                .FirstOrDefaultAsync(f => f.UserId == friendId && f.FriendId == userId && f.Status == "Pending");
 
+            if (friendRequest == null)
+            {
+                return Json(new { status = "error", message = "Không tìm thấy lời mời kết bạn" });
+            }
 
+            try
+            {
+                friendRequest.Status = "Friend"; // Cập nhật trạng thái thành "Friend"
+                db.Friends.Update(friendRequest);
+                await db.SaveChangesAsync();
+
+                return Json(new { status = "success", message = "Đã chấp nhận lời mời kết bạn" });
+            }
+            catch (Exception)
+            {
+                return Json(new { status = "error", message = "Đã xảy ra lỗi, vui lòng thử lại sau" });
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeclineFriendRequest(int friendId)
+        {
+            var userIdStr = HttpContext.Session.GetString("UserId");
+            if (string.IsNullOrEmpty(userIdStr))
+            {
+                return Json(new { status = "error", message = "Vui lòng đăng nhập" });
+            }
+
+            int userId = int.Parse(userIdStr);
+
+            var friendRequest = await db.Friends
+                .FirstOrDefaultAsync(f => f.UserId == friendId && f.FriendId == userId && f.Status == "Pending");
+
+            if (friendRequest == null)
+            {
+                return Json(new { status = "error", message = "Không tìm thấy lời mời kết bạn" });
+            }
+
+            try
+            {
+                db.Friends.Remove(friendRequest); // Xóa lời mời kết bạn
+                await db.SaveChangesAsync();
+
+                return Json(new { status = "success", message = "Đã từ chối lời mời kết bạn" });
+            }
+            catch (Exception)
+            {
+                return Json(new { status = "error", message = "Đã xảy ra lỗi, vui lòng thử lại sau" });
+            }
+        }
     }
 }

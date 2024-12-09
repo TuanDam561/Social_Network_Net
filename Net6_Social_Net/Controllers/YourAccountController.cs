@@ -16,63 +16,7 @@ namespace Social_Network.Controllers
         {
             db = context;
         }
-        /* public async Task<IActionResult> Index()
-         {
-
-             var useId = HttpContext.Session.GetString("UserId");
-
-             if (useId == null)
-             {
-                 TempData["Error"] = "Vui lòng đăng nhập hoặc đăng ký";
-                 return RedirectToAction("Index", "Login");
-             }
-
-             int parsedUserId = int.Parse(useId);
-
-             // Lấy thông tin người dùng
-             var user = await db.Users
-                                 .Where(u => u.UserId == parsedUserId)
-                                 .Select(u => new AccountModel
-                                 {
-                                     UserId = u.UserId,
-                                     Username = u.Username,
-                                     Email = u.Email,
-                                     PhoneNumber = u.PhoneNumber,
-                                     ProfilePicture = u.ProfilePicture,
-                                     Bio = u.Bio,
-                                     CreatedAt = u.CreatedAt,
-                                     Imagebanner = u.Imagebanner,
-                                     Role = u.Role,
-                                 })
-                                 .FirstOrDefaultAsync();
-
-             // Lấy danh sách bài viết
-             var posts = await db.Posts
-                                 .Where(p => p.UserId == parsedUserId) // Chỉ lấy bài viết của người dùng này
-                                 .Include(p => p.User)
-                                 .OrderByDescending(p => p.CreatedAt)
-                                 .Select(p => new PostViewModel
-                                 {
-                                     Id = p.PostId,
-                                     UserId = p.UserId,
-                                     Content = p.Content,
-                                     ImageUrl = p.ImageUrl,
-                                     CreatedAt = p.CreatedAt ?? DateTime.Now,
-                                     Status = p.Status,
-                                     UserName = p.User.Username
-                                 })
-                                 .ToListAsync();
-
-             // Tạo ViewModel
-             var viewModel = new UserProfileViewModel
-             {
-                 User = user,
-                 Posts = posts
-             };
-
-             return View(viewModel);
-         }*/
-
+        
         public async Task<IActionResult> Index()
         {
             var useId = HttpContext.Session.GetString("UserId");

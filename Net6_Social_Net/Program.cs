@@ -41,7 +41,7 @@ builder.Services.AddDistributedMemoryCache();
 // Cấu hình Session với thời gian timeout và thuộc tính cookie
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromDays(30); // Thời gian hết hạn của session
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Thời gian hết hạn của session
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true; // Đảm bảo cookie session được gửi trong mọi tình huống
 });
@@ -70,11 +70,11 @@ app.UseAuthorization();
 
 // Đăng ký SignalR Hub
 app.MapHub<CommentHub>("/commentHub");
-
+app.MapHub<ChatHub>("/chathub");
 // Định nghĩa route mặc định
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Login}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
 

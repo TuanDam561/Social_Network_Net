@@ -3,13 +3,13 @@
     Layout = null;
 
     @model List<PostViewModel>
-}
+    }
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
+
     <link href="~/css/Home.css" rel="stylesheet" />
     <link href="~/css/ModalHome.css" rel="stylesheet" />
     <link href="~/css/Kebad_Css_Home.css" rel="stylesheet" />
@@ -18,239 +18,242 @@
     @* Script cho modal tạo bài viết  *@
     <script>
         function openModal() {
-            document.getElementById("myModal").style.display = "block";
+        document.getElementById("myModal").style.display = "block";
         }
 
         function closeModal() {
-            document.getElementById("myModal").style.display = "none";
+        document.getElementById("myModal").style.display = "none";
         }
 
         // Đóng modal khi nhấn ra ngoài
         window.onclick = function (event) {
-          
-            var modal = document.getElementById("myModal");
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
+
+        var modal = document.getElementById("myModal");
+        if (event.target == modal) {
+        modal.style.display = "none";
+        }
         }
     </script>
     <script>
         //mở ra cái dropdow dấu ba chấm mỗi post
         function toggleDropdown(postId) {
-            event.stopPropagation();
-            var menu = document.getElementById("dropdown-menu-" + postId);
-            menu.style.display = menu.style.display === "block" ? "none" : "block";
+        event.stopPropagation();
+        var menu = document.getElementById("dropdown-menu-" + postId);
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
         }
 
         // Đóng menu khi nhấn bên ngoài
         window.onclick = function (event) {
-             event.stopPropagation();
-            if (!event.target.matches('.dropdown-button')) {
-                var dropdowns = document.getElementsByClassName("dropdown-content");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.style.display === "block") {
-                        openDropdown.style.display = "none";
-                    }
-                }
-            }
+        event.stopPropagation();
+        if (!event.target.matches('.dropdown-button')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        for (var i = 0; i < dropdowns.length; i++) {
+        var openDropdown = dropdowns[i];
+        if (openDropdown.style.display === "block") {
+        openDropdown.style.display = "none";
+        }
+        }
+        }
         }
     </script>
 
-   
+
     <script>
         //Xem trước hình ảnh khi chỉnb sửa bài viết
         document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('editImageFile').addEventListener('change', function (event) {
-                var file = event.target.files[0];  // Lấy file đầu tiên trong danh sách các file được chọn
-                if (file) {
-                    var reader = new FileReader();  // Tạo đối tượng FileReader để đọc file
-                    reader.onload = function (e) {
-                        document.getElementById('imagePreview').src = e.target.result;  // Cập nhật src của ảnh trong modal
-                        document.getElementById('imagePreview').style.display = 'block';
-                    };
-                    reader.readAsDataURL(file);  // Đọc file dưới dạng URL dữ liệu (base64)
-                }
-            });
+        document.getElementById('editImageFile').addEventListener('change', function (event) {
+        var file = event.target.files[0];  // Lấy file đầu tiên trong danh sách các file được chọn
+        if (file) {
+        var reader = new FileReader();  // Tạo đối tượng FileReader để đọc file
+        reader.onload = function (e) {
+        document.getElementById('imagePreview').src = e.target.result;  // Cập nhật src của ảnh trong modal
+        document.getElementById('imagePreview').style.display = 'block';
+        };
+        reader.readAsDataURL(file);  // Đọc file dưới dạng URL dữ liệu (base64)
+        }
+        });
         });
     </script>
 
-     <script>
-         //Xem trước ảnh khi tạo bài viết
-         document.addEventListener('DOMContentLoaded', function () {
-             document.getElementById('editImage').addEventListener('change', function (event) {
-                 var file = event.target.files[0];  // Lấy file đầu tiên trong danh sách các file được chọn
-                 if (file) {
-                     var reader = new FileReader();  // Tạo đối tượng FileReader để đọc file
-                     reader.onload = function (e) {
-                         document.getElementById('imageppreview').src = e.target.result;  // Cập nhật src của ảnh trong modal
-                         document.getElementById('imageppreview').style.display='block';
-                    };
-                     reader.readAsDataURL(file);  // Đọc file dưới dạng URL dữ liệu (base64)
-                 }
-                
-             });
-         });
-     </script>
-   
+    <script>
+        //Xem trước ảnh khi tạo bài viết
+        document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('editImage').addEventListener('change', function (event) {
+        var file = event.target.files[0];  // Lấy file đầu tiên trong danh sách các file được chọn
+        if (file) {
+        var reader = new FileReader();  // Tạo đối tượng FileReader để đọc file
+        reader.onload = function (e) {
+        document.getElementById('imageppreview').src = e.target.result;  // Cập nhật src của ảnh trong modal
+        document.getElementById('imageppreview').style.display='block';
+        };
+        reader.readAsDataURL(file);  // Đọc file dưới dạng URL dữ liệu (base64)
+        }
+
+        });
+        });
+    </script>
+
 
 
     <style>
         /* css cho logo web đẹp  */
         .container {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            height: 100vh;
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        height: 100vh;
         }
 
         .left {
-            /*  width: 200px;
-                    padding: 20px; */
-            position: sticky; /* Để giữ cột cố định */
-            top: 0; /* Giữ cột ở vị trí trên cùng khi cuộn */
-            width: 20%;
-            height: 100vh;
-            background-color: #f0f0f0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            border-right: 1px solid #ddd; /* Thêm đường viền bên phải */
+        /*  width: 200px;
+        padding: 20px; */
+        position: sticky; /* Để giữ cột cố định */
+        top: 0; /* Giữ cột ở vị trí trên cùng khi cuộn */
+        width: 20%;
+        height: 100vh;
+        background-color: #f0f0f0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border-right: 1px solid #ddd; /* Thêm đường viền bên phải */
         }
 
         .Logo {
-            text-align: center;
-            margin-bottom: 20px;
+        text-align: center;
+        margin-bottom: 20px;
         }
 
-            .Logo img {
-                max-width: 50%; /* Đảm bảo ảnh co giãn theo chiều rộng của container */
-                height: auto; /* Giữ tỷ lệ ảnh */
-                border-radius: 50%; /* Nếu bạn muốn ảnh có dạng tròn */
-            }
+        .Logo img {
+        max-width: 50%; /* Đảm bảo ảnh co giãn theo chiều rộng của container */
+        height: auto; /* Giữ tỷ lệ ảnh */
+        border-radius: 50%; /* Nếu bạn muốn ảnh có dạng tròn */
+        }
 
         #imagePreview {
-            max-width: 100%; /* Giới hạn kích thước ảnh không vượt quá 100% chiều rộng của modal */
-            max-height: 200px; /* Giới hạn chiều cao của ảnh nếu ảnh quá lớn */
-            margin: 0 auto; /* Căn giữa ảnh trong modal */
-            display: none; /* Đảm bảo ảnh được hiển thị dưới dạng block element */
-            border-radius: 8px; /* Bo tròn góc của ảnh */
+        max-width: 100%; /* Giới hạn kích thước ảnh không vượt quá 100% chiều rộng của modal */
+        max-height: 200px; /* Giới hạn chiều cao của ảnh nếu ảnh quá lớn */
+        margin: 0 auto; /* Căn giữa ảnh trong modal */
+        display: none; /* Đảm bảo ảnh được hiển thị dưới dạng block element */
+        border-radius: 8px; /* Bo tròn góc của ảnh */
         }
 
         #imageppreview {
-            max-width: 100%; /* Giới hạn kích thước ảnh không vượt quá 100% chiều rộng của modal */
-            max-height: 200px; /* Giới hạn chiều cao của ảnh nếu ảnh quá lớn */
-            margin: 0 auto; /* Căn giữa ảnh trong modal */
-            display: none; /* Đảm bảo ảnh được hiển thị dưới dạng block element */
-            border-radius: 8px; /* Bo tròn góc của ảnh */
+        max-width: 100%; /* Giới hạn kích thước ảnh không vượt quá 100% chiều rộng của modal */
+        max-height: 200px; /* Giới hạn chiều cao của ảnh nếu ảnh quá lớn */
+        margin: 0 auto; /* Căn giữa ảnh trong modal */
+        display: none; /* Đảm bảo ảnh được hiển thị dưới dạng block element */
+        border-radius: 8px; /* Bo tròn góc của ảnh */
         }
     </style>
-    
+
 
     @* modal comment *@
     <style>
         /* Modal overlay */
         .custom-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* Nền tối */
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Nền tối */
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         }
 
         /* Modal content */
         .custom-modal-content {
-            background: #fff;
-            width: 90%;
-            height: 90%;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            border-radius: 8px;
-            overflow: hidden;
+        background: #fff;
+        width: 90%;
+        height: 90%;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
         }
 
         /* Modal body */
         .custom-modal-body {
-            display: flex;
-            height: 100%;
+        display: flex;
+        height: 100%;
         }
 
         /* Phần ảnh (65%) */
         .post-image-container {
-            flex: 65%;
-            background-color: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        flex: 65%;
+        background-color: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         }
 
-            .post-image-container img {
-                max-width: 100%;
-                max-height: 100%;
-            }
+        .post-image-container img {
+        /* max-width: 100%; */
+        /* max-height: 100%; */
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        }
 
         /* Phần thông tin (35%) */
         .post-details-container {
-            flex: 35%;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            background: #f9f9f9;
+        flex: 35%;
+        padding: 20px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        background: #f9f9f9;
         }
 
         /* Nút đóng */
         .close-modal {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 24px;
-            color: #000;
-            cursor: pointer;
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        color: #000;
+        cursor: pointer;
         }
 
         /* Cuộn nội dung */
         #modalComments {
-            margin-top: 20px;
+        margin-top: 20px;
         }
 
         .comment {
-            border-bottom: 1px solid #ddd;
-            padding: 10px 0;
+        border-bottom: 1px solid #ddd;
+        padding: 10px 0;
         }
 
         .form-control {
-            width: 100%;
-            height:50px;
-            resize: none;
+        width: 100%;
+        height:50px;
+        resize: none;
         }
 
         .btn-primary {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            margin-top: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        margin-top: 10px;
         }
 
-            .btn-primary:hover {
-                background-color: #0056b3;
-            }
+        .btn-primary:hover {
+        background-color: #0056b3;
+        }
 
 
- </style>
+    </style>
     <link href="~/css/CommentModal_Mobile.css" rel="stylesheet" />
     <link href="~/css/Home_forMobile.css" rel="stylesheet" />
-   
-  
+
+
 
 
 
@@ -265,17 +268,17 @@
             <div class="Search">
                 <!-- <span>Tìm kiếm</span> -->
                 <input type="search"
-                       name="Tìm kiếm"
-                       id="Search"
-                       placeholder="Tìm kiếm" />
+                name="Tìm kiếm"
+                id="Search"
+                placeholder="Tìm kiếm" />
             </div>
             <div class="Funtion">
                 <div class="Home">
                     <a asp-action="Index" asp-controller="Home" style="text-decoration:none"> Trang chủ</a>
                 </div>
-                
+
                 <div class="Mess">
-                    <a href="#" style="text-decoration:none">Nhắn tin</a>
+                    <a  asp-action="Mess" asp-controller="Messenger" style="text-decoration:none">Nhắn tin</a>
                 </div>
                 <div class="Notify">
                     <a href="#" style="text-decoration:none">Thông báo</a>
@@ -286,11 +289,19 @@
                 <div class="Friend">
                     <a asp-action="Index" asp-controller="Friend" style="text-decoration:none">Bạn bè</a>
                 </div>
-                
+
             </div>
             <div class="MyAcc">
+                @{
+                    var userName = Context.Session.GetString("UserName");
+                }
 
-                <a asp-action="Index" asp-controller="YourAccount" style="text-decoration:none">Tài khoản của bạn</a>
+                @if (!string.IsNullOrEmpty(userName))
+                {
+                    <a asp-action="Index" asp-controller="YourAccount" style="text-decoration:none;font-weight:bold;font-size:20px;">
+                        @userName
+                    </a>
+                }
 
             </div>
         </div>
@@ -339,7 +350,7 @@
                                         <img src="~/Avatar/454849238_800890952251701_8841246141296174912_n.jpg" alt="Avatar" style="border-radius:50%; width:50px; height:50px; object-fit:cover; " />
                                     }
                                 </a>
-                                <a id="userName-@post.Id" class="username" style="text-transform: capitalize; margin:10px;font-size:20px; cursor:pointer; text-decoration:none;" href="@Url.Action("Index", "UserAccount",new { id = post.UserId })" onclick="event.stopPropagation()">@post.UserName</a>
+                                <a id="userName-@post.Id" data-userr-id="@post.UserId" class="username" style="text-transform: capitalize; margin:10px;font-size:20px; cursor:pointer; text-decoration:none;" href="@Url.Action("Index", "UserAccount",new { id = post.UserId })" onclick="event.stopPropagation()">@post.UserName</a>
                             </div>                          
                             
                             @if (currentUserId != null && Model.FirstOrDefault(p => p.Id == post.Id)?.UserId.ToString() == currentUserId)
@@ -384,41 +395,40 @@
                 
            
                  //modal comment và đổng bọn 
-                         <div id="postModal" class="custom-modal" style="display: none;">
-                              <div class="custom-modal-content">
-                                 <div class="custom-modal-body">
-                                     <!-- Phần ảnh (65%) -->
-                                 <div class="post-image-container">
-                                     <img id="modalImage" src="" alt="Hình ảnh bài viết" />
-                                 </div>
-                                 <!-- Phần thông tin bài viết (35%) -->
-                                   <div class="post-details-container">
-                                   <div id="modalPostInfo">
-                          <h5 id="modalUserName"></h5>
-                          <p id="modalCreatedAt" class="text-muted"></p>
-                          <p id="modalContent"></p>
-                          <span id="modalStatus" class="badge"></span>
-                      </div>
-                      <hr />
-                      <div id="modalComments">
-                          <!-- Bình luận -->
-                          <h6 style="font-size:16px; margin-bottom:10px;">Bình luận:</h6>                       
-                      </div>
-                      <div>
-                          <textarea id="commentInput" class="form-control mt-3" rows="2" placeholder="Viết bình luận..."></textarea>
-                          <button id="submitComment" class="btn-primary" onclick="submitComment()">Gửi</button>
-                       
+                    <div id="postModal" class="custom-modal" style="display: none;">
+                        <div class="custom-modal-content">
+                            <div class="custom-modal-body">
+                                <!-- Phần ảnh (65%) -->
+                                <div class="post-image-container">
+                                    <img id="modalImage" src="" alt="Hình ảnh bài viết" />
+                                </div>
+                                <!-- Phần thông tin bài viết (35%) -->
+                                <div class="post-details-container">
+                                    <div id="modalPostInfo">
+                                        <a id="modalUserName" style="text-decoration:none; font-size:20px;font-weight:bold"></a>
+                                        <p id="modalCreatedAt" class="text-muted" style="font-size:15px; color: #9c9c9c;"></p>
+                                        <span id="modalStatus" class="badge" style="font-size:15px;color: #9c9c9c;"></span>
+                                        <p id="modalContent" style="font-size:25px"></p>
 
-                      </div>
-                      <div id="commentsList">
-                            <!-- Các bình luận sẽ được thêm vào đây -->                            
-                      </div>
-                  </div>
-                 </div>
-                  <!-- Nút đóng -->
-               <span class="close-modal" onclick="closeModalds()">×</span>
-              </div>
-         </div>
+                                    </div>
+                                    <hr />
+                                    <div id="modalComments">
+                                        <!-- Bình luận -->
+                                        <h6 style="font-size:16px; margin-bottom:10px;">Bình luận:</h6>
+                                    </div>
+                                    <div>
+                                        <textarea id="commentInput" class="form-control mt-3" rows="2" placeholder="Viết bình luận..."></textarea>
+                                        <button id="submitComment" class="btn-primary" style="width:100%;border-radius:5px;" onclick="submitComment()">Gửi</button>
+                                    </div>
+                                    <div id="commentsList">
+                                        <!-- Các bình luận sẽ được thêm vào đây -->
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Nút đóng -->
+                            <span class="close-modal" onclick="closeModalds()">×</span>
+                        </div>
+                    </div>
            
                     <script>
                         function deleteComment(commentId) {
@@ -488,7 +498,9 @@
                         var showicondeletee=showDeleteButton || showDeletpostUserr;
                         commentDiv.innerHTML = `
                             <div style="display: flex; justify-content: space-between;">
-                                <strong>${userName}:</strong> 
+                            <a style="text-transform: capitalize; font-weight:bold;font-size:16px; cursor:pointer; text-decoration:none;" href="/UserAccount/Index?id=${userId}">
+                               ${userName}
+                            </a>
                                 ${
                                 showicondeletee
                                  ? `<span style="font-size:20px; font-weight:bold;cursor:pointer;" onclick="deleteComment(${commentId})">...</span>`
@@ -544,16 +556,46 @@
                             // Lấy dữ liệu từ DOM dựa trên ID bài viết
                         const content = document.getElementById(`content-${currentPostId}`).innerText;
                         const status = document.getElementById(`status-${currentPostId}`).innerText;
-                        const imageUrl = document.getElementById(`image-${currentPostId}`)?.src || "";
+                       // const imageUrl = document.getElementById(`image-${currentPostId}`)?.src || "";
+
+                        const imageElement = document.getElementById(`image-${currentPostId}`); // Lấy thẻ img
+                        const imageUrl = imageElement ? imageElement.src : ""; // Kiểm tra xem thẻ img có tồn tại không
+
                         const createdAt = document.getElementById(`createdAt-${currentPostId}`)?.innerText || "";
-                        const userName = document.getElementById(`userName-${currentPostId}`)?.innerText || "Người dùng";
+                        // const userName = document.getElementById(`userName-${currentPostId}`)?.innerText || "Người dùng";
+
+                        // Lấy username và userid từ thẻ tương ứng
+                        const userNameElement = document.getElementById(`userName-${currentPostId}`);
+                        const userName = userNameElement?.innerText || "Người dùng"; // Tên người dùng
+                        const commentUserId = userNameElement?.getAttribute("data-userr-id"); // Lấy userId từ thuộc tính data
 
                             // Đổ dữ liệu vào modal
                             document.getElementById("modalContent").innerText = content;
                             document.getElementById("modalStatus").innerText = status;
-                            document.getElementById("modalImage").src = imageUrl;
+                            //document.getElementById("modalImage").src = imageUrl;
                             document.getElementById("modalCreatedAt").innerText = createdAt;
-                            document.getElementById("modalUserName").innerText = userName;
+                          //  document.getElementById("modalUserName").innerText = userName;
+
+                            const modalUserName = document.getElementById("modalUserName");
+                            modalUserName.innerText = userName;
+                            if (commentUserId) {
+                                modalUserName.href = `/UserAccount/Index?id=${commentUserId}`;
+                            } else {
+                                modalUserName.removeAttribute("href"); // Nếu không có userId, xóa href
+                            }
+
+                           // Xử lý ảnh
+                            const modalImageContainer = document.querySelector(".post-image-container");
+                            const modalImage = document.getElementById("modalImage");
+
+                            if (imageUrl) {
+                                modalImage.src = imageUrl; // Gán URL hình ảnh
+                                modalImageContainer.style.display = "block"; // Hiển thị container ảnh
+                            } else {
+                                modalImage.src="/Icon_Plafom/454849238_800890952251701_8841246141296174912_n.jpg";
+                                modalImageContainer.style.display = "block"; // Ẩn container nếu không có ảnh
+                            }
+
 
                             // Lấy các bình luận của bài viết
                             const commentsContainer = document.getElementById(`comments-${currentPostId}`);
@@ -585,7 +627,9 @@
                                     // Tạo HTML cho mỗi bình luận
                                  commentDiv.innerHTML =
                                 `<div style="display: flex; justify-content: space-between;">
-                                <strong>${commentUserName}:</strong> 
+                                 <a style="text-transform: capitalize; font-weight:bold;font-size:16px; cursor:pointer; text-decoration:none;" href="/UserAccount/Index?id=${commentUserId}">
+                                  ${commentUserName}
+                                 </a>
                                 ${
                                  showDeleteIcon
                                 ? `<span style="font-size:20px; font-weight:bold;cursor:pointer;" onclick="deleteComment(${commentId})">...</span>`
@@ -652,10 +696,10 @@
                                 // const userId = "@Context.Session.GetString("UserId")"; Lấy userId từ session
                                 const createdAt = new Date().toISOString();
 
-                                console.log("postId:", postId);
-                                console.log("userId:", userId);
-                                console.log("commentContent:", commentContent);
-                                console.log("createdAt:", createdAt);
+                                // console.log("postId:", postId);
+                                // console.log("userId:", userId);
+                                // console.log("commentContent:", commentContent);
+                                // console.log("createdAt:", createdAt);
 
                                 // Gửi bình luận qua SignalR đến Hub
                                 connection.invoke("SendComment", postId, userId, commentContent, createdAt)

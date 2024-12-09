@@ -15,22 +15,15 @@ namespace Net7_Social_Net.Controllers
         public IActionResult Index()
         {
             // Lấy UserId từ Session
-            var userIdss = HttpContext.Session.GetString("UserId");
-            if (userIdss == null)
-            {
-                // Nếu chưa đăng nhập, chuyển hướng về trang Login
-                TempData["Error"] = "Vui lòng đăng nhập hoặc đăng ký";
-                return RedirectToAction("Index", "Login");
-            }
-            // Lấy userId từ session
-            int userId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
-            if (userId == null)
-            {
-                // Nếu chưa đăng nhập, chuyển hướng về trang Login
-                TempData["Error"] = "Vui lòng đăng nhập hoặc đăng ký";
-                return RedirectToAction("Index", "Login");
-            }
+            var useId = HttpContext.Session.GetString("UserId");
 
+            if (useId == null)
+            {
+                TempData["Error"] = "Vui lòng đăng nhập hoặc đăng ký";
+                return RedirectToAction("Index", "Login");
+            }
+            // Lấy userId từ session          
+            int userId = int.Parse(useId);
             // Lấy các yêu cầu kết bạn chỉ khi FriendID là userId hiện tại
             var pendingRequests = db.Friends
                 .Where(f => f.FriendId == userId && f.Status == "Pending")
@@ -85,25 +78,34 @@ namespace Net7_Social_Net.Controllers
         {
             int userId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
 
-            // Cập nhật trạng thái kết bạn
-            var friendRequest = db.Friends.FirstOrDefault(f => f.FriendId == userId && f.UserId == friendId && f.Status == "Pending");
+            // Tìm yêu cầu kết bạn có trạng thái "Pending"
+            var friendRequest = db.Friends.FirstOrDefault(f => (f.UserId == userId && f.FriendId == friendId || f.UserId == friendId && f.FriendId == userId) && f.Status == "Pending");
+
             if (friendRequest != null)
             {
+                // Cập nhật trạng thái của yêu cầu kết bạn thành "Friend"
                 friendRequest.Status = "Friend";
                 db.SaveChanges();
 
-                // Lấy thông tin bạn bè
-                var user = db.Users.FirstOrDefault(u => u.UserId == friendId);
-                return Json(new
+                // Lấy thông tin người bạn
+                var user = db.Users.FirstOrDefault(u => u.UserId == (friendRequest.UserId == userId ? friendRequest.FriendId : friendRequest.UserId));
+
+                if (user != null)
                 {
-                    username = user?.Username,
-                    profilePicture = user?.ProfilePicture,
-                    bio = user?.Bio
-                });
+                    // Trả về thông tin người bạn đã được xác nhận kết bạn
+                    return Json(new
+                    {
+                        friendId = user.UserId,  // Trả về friendId
+                        username = user.Username,
+                        profilePicture = user.ProfilePicture,
+                        bio = user.Bio
+                    });
+                }
             }
 
-            return BadRequest();
+            return BadRequest("Yêu cầu kết bạn không hợp lệ.");
         }
+
 
         [HttpPost]
         public IActionResult DeclineRequest(int friendId)
@@ -121,5 +123,26 @@ namespace Net7_Social_Net.Controllers
 
             return BadRequest();
         }
+        
+    [HttpPost]
+        public IActionResult Unfriend(int friendId)
+        {
+            int userId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+
+            // Tìm bạn bè trong bảng Friends
+            var friendship = db.Friends.FirstOrDefault(f =>
+                (f.UserId == userId && f.FriendId == friendId && f.Status == "Friend") ||
+                (f.UserId == friendId && f.FriendId == userId && f.Status == "Friend"));
+
+            if (friendship != null)
+            {
+                db.Friends.Remove(friendship);
+                db.SaveChanges();
+                return Ok(); // Trả về thành công
+            }
+
+            return BadRequest(); // Trả về lỗi nếu không tìm thấy
+        }
+
     }
 }
