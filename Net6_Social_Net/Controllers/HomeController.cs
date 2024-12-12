@@ -8,6 +8,7 @@ using Net6_Social_Net.Models;
 using Net7_Social_Net.Controllers;
 using Net7_Social_Net.Models;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace Social_Network.Controllers
 {
@@ -21,7 +22,7 @@ namespace Social_Network.Controllers
             // Lấy UserId từ Session
             var userId = HttpContext.Session.GetString("UserId");
             if (userId == null)
-            {
+            { 
                 // Nếu chưa đăng nhập, chuyển hướng về trang Login
                 TempData["Error"] = "Vui lòng đăng nhập hoặc đăng ký";
                 return RedirectToAction("Index", "Login");
@@ -71,6 +72,43 @@ namespace Social_Network.Controllers
             // Trả về danh sách bài viết cho View
             return View(postsList);
         }
+
+
+
+        [HttpGet]
+        public JsonResult GetCommentsByPostId(int postId)
+        {
+            try
+            {
+                var userIdd = HttpContext.Session.GetString("UserId");
+                int userId = int.Parse(userIdd);
+                var comments = db.Comments
+                    .Where(c => c.PostId == postId)
+                    .Select(c => new
+                    {
+                        commentId = c.CommentId,
+                        userId = c.UserId,
+                        userName = c.User.Username,
+                        content = c.Content,
+                        createdAt = c.CreatedAt ?? DateTime.UtcNow,
+                        canDelete = c.UserId == userId || c.Post.UserId == userId
+                    })
+                    .OrderBy(c => c.createdAt)
+                    .ToList();
+
+                return Json(comments);
+            }
+            catch (Exception ex)
+            {
+                // Ghi log lỗi
+                Console.WriteLine("Error: " + ex.Message);
+                return Json(new { error = "An error occurred while fetching comments." });
+            }
+        }
+
+
+
+
 
 
         [HttpPost]

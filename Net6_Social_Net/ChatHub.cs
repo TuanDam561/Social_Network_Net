@@ -94,11 +94,6 @@
         }
 
 
-
-
-
-
-
         // Khi client kết nối, liên kết với userId trong group SignalR
         public override async Task OnConnectedAsync()
         {

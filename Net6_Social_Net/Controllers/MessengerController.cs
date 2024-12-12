@@ -125,21 +125,6 @@ namespace Net7_Social_Net.Controllers
         {
             // Trả về đường dẫn Avatar từ bảng Users
             return _context.Users.FirstOrDefault(u => u.UserId == userId)?.ProfilePicture;
-        }
-    /*    [HttpGet]
-        public IActionResult SreachFriend(string friendName)
-        {
-            if (friendName == null)
-            {
-                return Json(new { status = "error", message = "Không tìn thấy bạn bè" });
-            }
-            var friend = _context.Friends.FindAsync(friendName);
-            if (friend == null)
-            {
-                return Json(new { status = "error", message = "Không tìn thấy bạn bè" });
-            }
-            var friendname = _context.Friends
-                .Where(f=>(friendName ==f.friendName));
-        }*/
+        }    
     }
 }

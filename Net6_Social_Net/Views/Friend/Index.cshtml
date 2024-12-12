@@ -45,32 +45,61 @@
         <!-- Phần bên trái -->
         <div class="left">
             <div class="search-bar">
-                <input type="text" placeholder="Tìm kiếm bạn bè" />
-                <button>🔍</button>
+                <input id="input-sreach" type="text" placeholder="Tìm kiếm bạn bè" />
+                <button id="btn-sreach">🔍</button>
             </div>
 
             <!-- Hiển thị danh sách bạn bè -->
             @foreach (var friend in Model.Where(m => m.Status == "Friend"))
             {
-                <div class="card">
-                   @if(friend.ProfilePicture==null){
-
+                <div class="card" data-friend-name="@friend.Username.ToLower()">
+                    @if (friend.ProfilePicture == null)
+                    {
                         <img src="~/Avatar/454849238_800890952251701_8841246141296174912_n.jpg" alt="Avatar" />
-                   }
-                   else{
+                    }
+                    else
+                    {
                         <img src="@friend.ProfilePicture" alt="Avatar" />
-                   }                   
+                    }
                     <div class="info">
-                        <div class="name" >
-                            <a style="text-transform: capitalize; margin:10px;font-size:20px; cursor:pointer; text-decoration:none;" href="@Url.Action("Index", "UserAccount",new { id = friend.FriendID })"> @friend.Username</a>
+                        <div class="name">
+                            <a style="text-transform: capitalize; margin: 10px; font-size: 20px; cursor: pointer; text-decoration: none;"
+                               href="@Url.Action("Index", "UserAccount", new { id = friend.FriendID })">
+                                @friend.Username
+                            </a>
                         </div>
                         <div class="status">Bio: @friend.Bio</div>
                     </div>
+                    <div class="actionss">
+                        <button class="decline77" data-id="@friend.FriendID" style="border-radius: 5px; color: white; background: #137fff; height: 40px; border: none; width: 80px;"
+                                onclick="window.location.href='@Url.Action("Mess", "Messenger")';">
+                            Nhắn tin
+                        </button>
+                    </div>
                     <div class="actions">
-                        <button class="decline" data-id="@friend.FriendID" style=" border-radius: 5px; background: #ccc; height: 40px; border: none; width: 80px; ">Hủy kết bạn </button>
+                        <button class="decline" data-id="@friend.FriendID" style="border-radius: 5px; background: #ccc; height: 40px; border: none; width: 80px;">
+                            Hủy kết bạn
+                        </button>
                     </div>
                 </div>
             }
+
+            <script>
+                document.getElementById("input-sreach").addEventListener("input", function () {
+                    var searchQuery = this.value.trim().toLowerCase();
+                    var cardFriends = document.querySelectorAll(".card"); // Đúng tên class
+                    cardFriends.forEach(function (card) {
+                        var friendName = card.getAttribute('data-friend-name'); // Lấy từ đúng thẻ
+                        if (friendName.includes(searchQuery)) {
+                            card.style.display = "flex"; // Hiển thị nếu khớp
+                        } else {
+                            card.style.display = "none"; // Ẩn nếu không khớp
+                        }
+                    });
+                });
+            </script>
+
+
             <script>
                   function attachDeclineEvent() {
                     $(".decline").off("click").on("click", function () {

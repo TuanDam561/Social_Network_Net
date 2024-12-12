@@ -120,7 +120,8 @@
 
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.9/signalr.min.js"></script>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/js/AjaxChat.js"></script>
 </head>
 <body>
     @{
@@ -149,21 +150,23 @@
     <div class="container">
         <div class="right">
             <div class="sreach">
-                <input placeholder="Tìm kiếm tin nhắn" type="text" name="" id="" />
-                <button type="button">🔍</button>
+                <input placeholder="Tìm kiếm bạn bè" type="text" id="search-input" />
+                <button type="button" id="search-button">🔍</button>
             </div>
-            <div class="user">
+            <div class="user" id="all-friends" style="display:block;">
                 @if (Model != null && Model.Any())
                 {
                     foreach (var friend in Model)
                     {
-                        <div class="Card-friend" data-friend-id="@friend.FriendID">
-                           @if(friend.ProfilePicture==null){
+                        <div class="Card-friend" data-friend-id="@friend.FriendID" data-friend-name="@friend.Username">
+                            @if (friend.ProfilePicture == null)
+                            {
                                 <img src="~/Avatar/454849238_800890952251701_8841246141296174912_n.jpg" alt="Avatar hình ảnh" />
-                           }
-                           else{
+                            }
+                            else
+                            {
                                 <img src="@friend.ProfilePicture" alt="Avatar hình ảnh" />
-                           }
+                            }
                             <a href="#">@friend.Username</a>
                         </div>
                     }
@@ -174,6 +177,22 @@
                 }
             </div>
         </div>
+        <script>
+            document.getElementById('search-input').addEventListener('input', function() {
+                var searchQuery = this.value.trim().toLowerCase(); // Lấy giá trị nhập vào và chuyển thành chữ thường
+                var allCards = document.querySelectorAll('.Card-friend');
+
+                allCards.forEach(function(card) {
+                    var friendName = card.getAttribute('data-friend-name').toLowerCase(); // Lấy tên bạn bè
+                    if (friendName.includes(searchQuery)) {
+                        card.style.display = "flex"; // Hiển thị thẻ nếu tên bạn bè trùng với từ khóa
+                    } else {
+                        card.style.display = "none"; // Ẩn thẻ nếu không khớp
+                    }
+                });
+            });
+        </script>
+
         <div class="left">
             <div class="inforuser">
                 <div class="UserName" style=" font-weight: bold; font-size: 20px; "></div>
@@ -197,8 +216,8 @@
                 <button class="butionGui" type="submit">Gửi</button>
             </div>
         </div>
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="~/js/AjaxChat.js"></script>
+       
+     
 
      @*  Finall *@
         <script>
@@ -250,7 +269,7 @@
                     messageElement.setAttribute("data-messenger-id", messengerId);
 
                     const avatar = document.createElement("img");
-                    avatar.src = profilePicture || "/Avatar/454849238_800890952251701_8841246141296174912_n.jpg";;
+                    avatar.src = profilePicture || "/Avatar/454849238_800890952251701_8841246141296174912_n.jpg";
                     avatar.alt = "Avatar";
 
                     const chat = document.createElement("div");
@@ -307,15 +326,31 @@
                         }
                     }
                 });
-
                 // **6. Chọn bạn bè**
-                document.querySelectorAll(".Card-friend").forEach(card => {
-                    card.addEventListener("click", function () {
-                        document.querySelectorAll(".Card-friend").forEach(c => c.classList.remove("selected"));
-                        this.classList.add("selected");
-                        messenger.innerHTML = ""; // Xóa tin nhắn cũ khi chọn bạn mới
-                    });
-                });
+              // document.querySelectorAll(".Card-friend").forEach(card => {
+              //       card.addEventListener("click", function () {
+              //           document.querySelectorAll(".Card-friend").forEach(c => c.classList.remove("selected"));
+              //           this.classList.add("selected");
+              //           messenger.innerHTML = ""; 
+              //       });
+              //   });
+                document.addEventListener("click", function (event) {
+                const card = event.target.closest(".Card-friend");
+                if (!card) return; // Nếu không phải Card-friend thì bỏ qua
+
+                // Bỏ class 'selected' khỏi tất cả các thẻ
+                document.querySelectorAll(".Card-friend").forEach(c => c.classList.remove("selected"));
+
+                // Thêm class 'selected' cho thẻ được click
+                card.classList.add("selected");
+
+                // Xóa nội dung cũ trong messenger (nếu cần)
+                const messenger = document.querySelector(".messenger");
+                if (messenger) {
+                    messenger.innerHTML = "";
+                }
+            });
+
             });
 
         </script>

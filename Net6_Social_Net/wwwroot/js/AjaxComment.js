@@ -1,4 +1,5 @@
 ﻿
+//KẾ SCRIPT BAO GỒM KẾ THỪA THÀNH PHẦN COMMNET ,XÓA COMMNET,REALTIME COMMNET
                     function deleteComment(commentId) {
                         // Gửi yêu cầu xóa bình luận qua SignalR đến Hub
                         const userId = parseInt("@Context.Session.GetString("UserId")", 10);

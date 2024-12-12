@@ -1,10 +1,10 @@
 ﻿
     document.addEventListener("DOMContentLoaded", function () {
-                const friendCards = document.querySelectorAll(".Card-friend");
+    const friendCards = document.querySelectorAll(".Card-friend");
     const messenger = document.querySelector(".messenger");
     const userNameDiv = document.querySelector(".UserName");
 
-                friendCards.forEach((card) => {
+        friendCards.forEach((card) => {
         card.addEventListener("click", function () {
             const friendId = this.getAttribute("data-friend-id");
 
@@ -14,6 +14,7 @@
                 .then((data) => {
                     // Hiển thị tên người dùng trong phần UserName
                     const friendName = data.length > 0 ? data[0].friendName : this.getAttribute("data-friend-name");
+                    console.log(friendName);
                     userNameDiv.textContent = friendName || "Người dùng";
 
                     // Xóa nội dung cũ trong messenger
@@ -35,12 +36,6 @@
 
                             deleteButton.addEventListener("click", function () {
                                 const messengerId = messageElement.getAttribute("data-messenger-id");
-
-                                // if (confirm("Bạn có chắc chắn muốn xóa tin nhắn này?")) {
-                                //     Gọi SignalR để xóa tin nhắn
-                                //     connection.invoke("DeleteMessage", parseInt(messengerId))
-                                //         .catch(err => console.error("Error deleting message:", err));
-                                // }
                             });
 
                             messageElement.appendChild(deleteButton);
@@ -67,6 +62,121 @@
                 .catch(err => console.error("Error fetching messages:", err));
         });
                 });
-            });
+   });
 
 
+
+//function updateMessengerUI(data, card) {
+//    const messenger = document.querySelector(".messenger");
+//    const userNameDiv = document.querySelector(".UserName");
+
+//    // Hiển thị tên người dùng
+//    const friendName = data.length > 0 ? data[0].friendName : card.getAttribute("data-friend-name");
+//    userNameDiv.textContent = friendName || "Người dùng";
+
+//    // Xóa nội dung cũ trong messenger
+//    messenger.innerHTML = "";
+
+//    // Duyệt qua danh sách tin nhắn và hiển thị
+//    data.forEach((message) => {
+//        const messageElement = document.createElement("div");
+//        messageElement.classList.add(message.isSender ? "MyMess" : "friendMess");
+
+//        if (message.isSender) {
+//            // Tạo nút xóa tin nhắn
+//            const deleteButton = document.createElement("span");
+//            deleteButton.classList.add("deletemymess");
+//            deleteButton.textContent = "...";
+//            deleteButton.style.margin = "7px";
+//            deleteButton.style.cursor = "pointer";
+
+//            deleteButton.addEventListener("click", function () {
+//                const messengerId = messageElement.getAttribute("data-messenger-id");
+//                console.log("Delete messenger:", messengerId);
+//            });
+
+//            messageElement.appendChild(deleteButton);
+//        } else {
+//            // Tạo avatar cho tin nhắn của người nhận
+//            const avatar = document.createElement("img");
+//            avatar.src = message.avatar || "/Avatar/454849238_800890952251701_8841246141296174912_n.jpg";
+//            avatar.alt = "Avatar";
+//            messageElement.appendChild(avatar);
+//        }
+
+//        // Tạo nội dung tin nhắn
+//        const chat = document.createElement("div");
+//        chat.textContent = message.content;
+//        chat.classList.add(message.isSender ? "myChat" : "friendChat");
+
+//        messageElement.appendChild(chat);
+//        messenger.appendChild(messageElement);
+//    });
+
+//    // Cuộn tới cuối cùng
+//    messenger.scrollTop = messenger.scrollHeight;
+//}
+
+
+//document.addEventListener("DOMContentLoaded", function () {
+//    const allFriendsContainer = document.getElementById("all-friends");
+//    const searchResultsContainer = document.getElementById("search-results");
+//    const messenger = document.querySelector(".messenger");
+//    const userNameDiv = document.querySelector(".UserName");
+
+//    function handleCardClick(event) {
+//        const card = event.target.closest(".Card-friend"); // Kiểm tra xem phần tử được click có phải là Card-friend không
+//        if (!card) return;
+
+//        const friendId = card.getAttribute("data-friend-id");
+//        fetch(`/Messenger/GetMessages?friendId=${friendId}`)
+//            .then((response) => response.json())
+//            .then((data) => {
+//                const friendName = data.length > 0 ? data[0].friendName : card.getAttribute("data-friend-name");
+//                userNameDiv.textContent = friendName || "Người dùng";
+
+//                messenger.innerHTML = "";
+
+//                data.forEach((message) => {
+//                    const messageElement = document.createElement("div");
+//                    messageElement.classList.add(message.isSender ? "MyMess" : "friendMess");
+//                    messageElement.setAttribute("data-messenger-id", message.messengerId);
+                   
+//                    if (message.isSender) {
+//                        const deleteButton = document.createElement("span");
+//                        deleteButton.classList.add("deletemymess");
+//                        deleteButton.textContent = "...";
+//                        deleteButton.style.margin = "7px";
+//                        deleteButton.style.cursor = "pointer";
+
+//                        deleteButton.addEventListener("click", function () {
+//                            const messengerId = messageElement.getAttribute("data-messenger-id");
+//                            console.log("Delete messenger:", messengerId);
+//                        });
+
+//                        messageElement.appendChild(deleteButton);
+//                    } else {
+//                        const avatar = document.createElement("img");
+//                        avatar.src = message.avatar || "/Avatar/454849238_800890952251701_8841246141296174912_n.jpg";
+//                        avatar.alt = "Avatar";
+//                        messageElement.appendChild(avatar);
+//                    }
+
+
+//                    const chat = document.createElement("div");
+//                    chat.textContent = message.content;
+//                    chat.classList.add(message.isSender ? "myChat" : "friendChat");
+
+//                    messageElement.appendChild(chat);
+//                    messenger.appendChild(messageElement);
+//                });
+
+//                messenger.scrollTop = messenger.scrollHeight;
+//            })
+//            .catch((err) => console.error("Error fetching messages:", err));
+//    }
+
+//    // Gắn sự kiện click cho tất cả thẻ Card-friend (cả ở all-friends và search-results)
+//    allFriendsContainer.addEventListener("click", handleCardClick);
+//    searchResultsContainer.addEventListener("click", handleCardClick);
+//});
