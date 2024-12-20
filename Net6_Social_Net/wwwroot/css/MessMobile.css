@@ -1,0 +1,154 @@
+﻿/* CSS cơ bản */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* HOME - xếp dọc khi thu nhỏ */
+.home {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-bottom: 1px solid #ccc;
+}
+
+.menu-toggle {
+    display: none; /* Ẩn trên desktop */
+    font-size: 24px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: #007bff;
+}
+
+.logout-btn {
+    text-decoration: none;
+    color: red;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+/* Media query cho mobile */
+@media screen and (max-width: 768px) {
+    .menu-toggle {
+        display: block; /* Hiện nút ba gạch */
+    }
+
+    .home {
+        flex-direction: column; /* Xếp dọc */
+        
+    }
+
+    .logo img {
+        margin-bottom: 10px;
+        display: flex;
+        width: 70px;
+        height: 70px;
+    }
+
+    .sreachbox {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .logout-btn {
+        margin-top: 0;
+    }
+
+    /* Danh sách bạn bè (right panel) */
+    .right {
+        position: fixed;
+        top: 0;
+        left: -100%; /* Ẩn bên ngoài màn hình */
+        width: 70%; /* Chiều rộng panel */
+        height: 100%;
+        background-color: #fff;
+        z-index: 1000;
+        box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+        transition: left 0.3s ease-in-out; /* Animation trượt */
+    }
+
+        .right.show {
+            left: 0; /* Hiện panel từ phải vào */
+        }
+
+    /* Overlay */
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+    /* Phần tin nhắn (Messenger) */
+    .messenger {
+        padding: 10px;
+        font-size: 14px;
+        height: calc(100vh - 120px);
+    }
+
+    .friendChat, .myChat {
+        max-width: 80%;
+        font-size: 13px;
+    }
+
+    .inputmess input {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    .inputmess button {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    /* Chỉnh menu thành Flexbox và đẩy hai phần tử về hai phía */
+    .menu {
+        width:100%;
+        display: flex; /* Kích hoạt Flexbox */
+        justify-content: space-between; /* Đẩy các phần tử ra hai bên */
+        align-items: center; /* Căn giữa theo chiều dọc */
+        padding: 10px 15px; /* Khoảng cách lề bên trong */
+        background-color: #f9f9f9; /* Màu nền menu */
+        border-bottom: 1px solid #ddd; /* Viền dưới */
+    }
+
+    /* Nút ba gạch */
+    .menu-toggle {
+        font-size: 24px; /* Kích thước biểu tượng */
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #007bff; /* Màu xanh */
+    }
+
+    /* Đăng xuất */
+    #logout {
+        text-decoration: none;
+        color: red;
+        font-size: 18px;
+    }
+}
+

@@ -10,7 +10,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Nhắn tin</title>
     <link rel="stylesheet" href="~/css/MessCss.css" />
     <link href="~/Icon_Plafom/iconWeb.png" rel="icon" />
     <style>
@@ -118,17 +118,24 @@
             color: #fff;
         }
 
+
     </style>
+    <link href="~/css/MessMobile.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.9/signalr.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="~/js/AjaxChat.js"></script>
+    <script>
+        function confirmLogout() {
+            return confirm("Bạn có chắc chắn muốn đăng xuất?");
+        }
+    </script>
 </head>
 <body>
     @{
         ViewBag.CurrentUserId = Context.Session.GetString("UserId");
     }
-
     <div class="home">
+        
         <div class="logo">
             <a href="@Url.Action("Index","Home")">
                 <img src="~/Icon_Plafom/454849238_800890952251701_8841246141296174912_n.jpg" alt="Logo Web" />
@@ -140,15 +147,18 @@
                 <img src="~/Icon_Plafom/Search-icon.png" alt="Search Icon" class="search-icon" />
             </div>
         </div>
-        <a id="logout" onclick="return confirmLogout()" style="text-decoration: none; color: red; font-size: 20px;" asp-action="Logout" asp-controller="Login">Đăng xuất</a>
-        <script>
-            function confirmLogout() {
-                return confirm("Bạn có chắc chắn muốn đăng xuất?");
-            }
-        </script>
+        <div class="menu">  
+            <button class="menu-toggle" id="menu-toggle">☰</button> <!-- Nút ba gạch -->
+            <a id="logout" onclick="return confirmLogout()" style="text-decoration: none; color: red; font-size: 20px;" asp-action="Logout" asp-controller="Login">Đăng xuất</a>
+        </div>
+       
     </div>
+
+    <div class="overlay" id="overlay"></div> <!-- Lớp phủ mờ -->
+
     <div class="container">
-        <div class="right">
+        <!-- Danh sách bạn bè -->
+        <div class="right" id="right-panel">
             <div class="sreach">
                 <input placeholder="Tìm kiếm bạn bè" type="text" id="search-input" />
                 <button type="button" id="search-button">🔍</button>
@@ -177,22 +187,7 @@
                 }
             </div>
         </div>
-        <script>
-            document.getElementById('search-input').addEventListener('input', function() {
-                var searchQuery = this.value.trim().toLowerCase(); // Lấy giá trị nhập vào và chuyển thành chữ thường
-                var allCards = document.querySelectorAll('.Card-friend');
-
-                allCards.forEach(function(card) {
-                    var friendName = card.getAttribute('data-friend-name').toLowerCase(); // Lấy tên bạn bè
-                    if (friendName.includes(searchQuery)) {
-                        card.style.display = "flex"; // Hiển thị thẻ nếu tên bạn bè trùng với từ khóa
-                    } else {
-                        card.style.display = "none"; // Ẩn thẻ nếu không khớp
-                    }
-                });
-            });
-        </script>
-
+        <!-- Phần tin nhắn -->
         <div class="left">
             <div class="inforuser">
                 <div class="UserName" style=" font-weight: bold; font-size: 20px; "></div>
@@ -200,162 +195,189 @@
             </div>
             <div class="messenger">
                 <div class="friendMess">
-                    <img src="~/Avatar/454849238_800890952251701_8841246141296174912_n.jpg"
-                         alt="" />
+                    <img src="~/Avatar/454849238_800890952251701_8841246141296174912_n.jpg" alt="" />
                     <div class="friendChat">Hello bạn</div>
                 </div>
-               
-                <div class="MyMess"> 
-                    <span class="deletemymess" style="margin:7px">...</span>
-                    <div class="myChat">Hi</div> 
-               </div> 
-
+                <div class="MyMess">
+                    <div class="myChat">Hi</div>
+                </div>
             </div>
             <div class="inputmess">
                 <input class="input-form" type="text" placeholder="Nhập vào tin nhắn" />
                 <button class="butionGui" type="submit">Gửi</button>
             </div>
         </div>
-       
-     
-
-     @*  Finall *@
-        <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                const currentUserId = parseInt("@ViewBag.CurrentUserId"); // Lấy ID người dùng hiện tại
-
-                // Kết nối SignalR
-                const connection = new signalR.HubConnectionBuilder()
-                    .withUrl(`/chathub?userId=${currentUserId}`)
-                    .build();
-
-                connection.start().catch(err => console.error("SignalR connection error:", err));
-
-                const messenger = document.querySelector(".messenger");
-                const sendButton = document.querySelector(".butionGui");
-                const inputField = document.querySelector(".input-form");
-
-                // **1. Gửi tin nhắn**
-                sendButton.addEventListener("click", function () {
-                    const message = inputField.value.trim();
-                    const selectedFriend = document.querySelector(".Card-friend.selected");
-
-                    if (!selectedFriend) {
-                        alert("Vui lòng chọn một người bạn để gửi tin nhắn.");
-                        return;
-                    }
-
-                    const receiverId = parseInt(selectedFriend.getAttribute("data-friend-id"));
-
-                    if (message && receiverId) {
-                        connection.invoke("SendMessage", currentUserId, receiverId, message)
-                            .then(() => {
-                                inputField.value = ""; // Xóa nội dung nhập
-                                messenger.scrollTop = messenger.scrollHeight; // Cuộn xuống cuối
-                            })
-                            .catch(err => console.error("Error sending message:", err));
-                    }
-                });
-
-                // **2. Nhận tin nhắn của người nhận**
-                connection.on("ReceiveMessage", function (senderId, profilePicture, message, messengerId) {
-                    const selectedFriend = document.querySelector(".Card-friend.selected");
-                    if (!selectedFriend || parseInt(selectedFriend.getAttribute("data-friend-id")) !== senderId) {
-                        return;
-                    }
-
-                    const messageElement = document.createElement("div");
-                    messageElement.classList.add("friendMess");
-                    messageElement.setAttribute("data-messenger-id", messengerId);
-
-                    const avatar = document.createElement("img");
-                    avatar.src = profilePicture || "/Avatar/454849238_800890952251701_8841246141296174912_n.jpg";
-                    avatar.alt = "Avatar";
-
-                    const chat = document.createElement("div");
-                    chat.classList.add("friendChat");
-                    chat.textContent = message;
-
-                    messageElement.appendChild(avatar);
-                    messageElement.appendChild(chat);
-                    messenger.appendChild(messageElement);
-
-                    messenger.scrollTop = messenger.scrollHeight; // Cuộn xuống cuối
-                });
-
-                // **3. Nhận tin nhắn của người gửi**
-                connection.on("MyReceiveMessage", function (senderId, profilePicture, message, messengerId) {
-                    const myMessageElement = document.createElement("div");
-                    myMessageElement.classList.add("MyMess");
-                    myMessageElement.setAttribute("data-messenger-id", messengerId);
-
-                    const deleteSpan = document.createElement("span");
-                    deleteSpan.classList.add("deletemymess");
-                    deleteSpan.style.margin = "7px";
-                    deleteSpan.textContent = "...";
-
-                    const myChat = document.createElement("div");
-                    myChat.classList.add("myChat");
-                    myChat.textContent = message;
-
-                    myMessageElement.appendChild(deleteSpan);
-                    myMessageElement.appendChild(myChat);
-                    messenger.appendChild(myMessageElement);
-
-                    messenger.scrollTop = messenger.scrollHeight; // Cuộn xuống cuối
-                });
-
-                // **4. Lắng nghe sự kiện xóa tin nhắn từ server**
-                connection.on("MessageDeleted", function (messengerId) {
-                    const messageElement = document.querySelector(`[data-messenger-id="${messengerId}"]`);
-                    if (messageElement) {
-                        messageElement.remove(); // Xóa tin nhắn khỏi giao diện
-                        console.log(`Tin nhắn với ID ${messengerId} đã được xóa từ server.`);
-                    }
-                });
-
-                // **5. Gửi yêu cầu xóa tin nhắn**
-                messenger.addEventListener("click", function (event) {
-                    if (event.target.classList.contains("deletemymess")) {
-                        const myMessageElement = event.target.closest(".MyMess");
-                        const messengerId = parseInt(myMessageElement.getAttribute("data-messenger-id"));
-
-                        if (confirm("Bạn có chắc chắn muốn xóa tin nhắn này?")) {
-                            connection.invoke("DeleteMessage", messengerId)
-                                .catch(err => console.error("Error deleting message:", err));
-                        }
-                    }
-                });
-                // **6. Chọn bạn bè**
-              // document.querySelectorAll(".Card-friend").forEach(card => {
-              //       card.addEventListener("click", function () {
-              //           document.querySelectorAll(".Card-friend").forEach(c => c.classList.remove("selected"));
-              //           this.classList.add("selected");
-              //           messenger.innerHTML = ""; 
-              //       });
-              //   });
-                document.addEventListener("click", function (event) {
-                const card = event.target.closest(".Card-friend");
-                if (!card) return; // Nếu không phải Card-friend thì bỏ qua
-
-                // Bỏ class 'selected' khỏi tất cả các thẻ
-                document.querySelectorAll(".Card-friend").forEach(c => c.classList.remove("selected"));
-
-                // Thêm class 'selected' cho thẻ được click
-                card.classList.add("selected");
-
-                // Xóa nội dung cũ trong messenger (nếu cần)
-                const messenger = document.querySelector(".messenger");
-                if (messenger) {
-                    messenger.innerHTML = "";
-                }
-            });
-
-            });
-
-        </script>
-    
     </div>
 </body>
 </html>
+<script>
+        const menuToggle = document.getElementById("menu-toggle");
+    const rightPanel = document.getElementById("right-panel");
+    const overlay = document.getElementById("overlay");
+
+    // Hiện phần bên trái và overlay
+    menuToggle.addEventListener("click", function () {
+        rightPanel.classList.add("show");
+        overlay.classList.add("active");
+    });
+
+    // Ẩn phần bên trái khi ấn ra ngoài
+    overlay.addEventListener("click", function () {
+        rightPanel.classList.remove("show");
+        overlay.classList.remove("active");
+    });
+
+</script>
+
+
+<script>
+    document.getElementById('search-input').addEventListener('input', function() {
+        var searchQuery = this.value.trim().toLowerCase(); // Lấy giá trị nhập vào và chuyển thành chữ thường
+        var allCards = document.querySelectorAll('.Card-friend');
+
+        allCards.forEach(function(card) {
+            var friendName = card.getAttribute('data-friend-name').toLowerCase(); // Lấy tên bạn bè
+            if (friendName.includes(searchQuery)) {
+                card.style.display = "flex"; // Hiển thị thẻ nếu tên bạn bè trùng với từ khóa
+            } else {
+                card.style.display = "none"; // Ẩn thẻ nếu không khớp
+            }
+        });
+    });
+</script>
+@*  Finall *@
+<script>
+        document.addEventListener("DOMContentLoaded", function () {
+        const currentUserId = parseInt("@ViewBag.CurrentUserId"); // Lấy ID người dùng hiện tại
+
+        // Kết nối SignalR
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl(`/chathub?userId=${currentUserId}`)
+            .build();
+
+        connection.start().catch(err => console.error("SignalR connection error:", err));
+
+        const messenger = document.querySelector(".messenger");
+        const sendButton = document.querySelector(".butionGui");
+        const inputField = document.querySelector(".input-form");
+
+        // **1. Gửi tin nhắn**
+        sendButton.addEventListener("click", function () {
+            const message = inputField.value.trim();
+            const selectedFriend = document.querySelector(".Card-friend.selected");
+
+            if (!selectedFriend) {
+                alert("Vui lòng chọn một người bạn để gửi tin nhắn.");
+                return;
+            }
+
+            const receiverId = parseInt(selectedFriend.getAttribute("data-friend-id"));
+
+            if (message && receiverId) {
+                connection.invoke("SendMessage", currentUserId, receiverId, message)
+                    .then(() => {
+                        inputField.value = ""; // Xóa nội dung nhập
+                        messenger.scrollTop = messenger.scrollHeight; // Cuộn xuống cuối
+                    })
+                    .catch(err => console.error("Error sending message:", err));
+            }
+        });
+
+        // **2. Nhận tin nhắn của người nhận**
+        connection.on("ReceiveMessage", function (senderId, profilePicture, message, messengerId) {
+            const selectedFriend = document.querySelector(".Card-friend.selected");
+            if (!selectedFriend || parseInt(selectedFriend.getAttribute("data-friend-id")) !== senderId) {
+                return;
+            }
+
+            const messageElement = document.createElement("div");
+            messageElement.classList.add("friendMess");
+            messageElement.setAttribute("data-messenger-id", messengerId);
+
+            const avatar = document.createElement("img");
+            avatar.src = profilePicture || "/Avatar/454849238_800890952251701_8841246141296174912_n.jpg";
+            avatar.alt = "Avatar";
+
+            const chat = document.createElement("div");
+            chat.classList.add("friendChat");
+            chat.textContent = message;
+
+            messageElement.appendChild(avatar);
+            messageElement.appendChild(chat);
+            messenger.appendChild(messageElement);
+
+            messenger.scrollTop = messenger.scrollHeight; // Cuộn xuống cuối
+        });
+
+        // **3. Nhận tin nhắn của người gửi**
+        connection.on("MyReceiveMessage", function (senderId, profilePicture, message, messengerId) {
+            const myMessageElement = document.createElement("div");
+            myMessageElement.classList.add("MyMess");
+            myMessageElement.setAttribute("data-messenger-id", messengerId);
+
+            const deleteSpan = document.createElement("span");
+            deleteSpan.classList.add("deletemymess");
+            deleteSpan.style.margin = "7px";
+            deleteSpan.textContent = "...";
+
+            const myChat = document.createElement("div");
+            myChat.classList.add("myChat");
+            myChat.textContent = message;
+
+            myMessageElement.appendChild(deleteSpan);
+            myMessageElement.appendChild(myChat);
+            messenger.appendChild(myMessageElement);
+
+            messenger.scrollTop = messenger.scrollHeight; // Cuộn xuống cuối
+        });
+
+        // **4. Lắng nghe sự kiện xóa tin nhắn từ server**
+        connection.on("MessageDeleted", function (messengerId) {
+            const messageElement = document.querySelector(`[data-messenger-id="${messengerId}"]`);
+            if (messageElement) {
+                messageElement.remove(); // Xóa tin nhắn khỏi giao diện
+               // console.log(`Tin nhắn với ID ${messengerId} đã được xóa từ server.`);
+            }
+        });
+
+        // **5. Gửi yêu cầu xóa tin nhắn**
+        messenger.addEventListener("click", function (event) {
+            if (event.target.classList.contains("deletemymess")) {
+                const myMessageElement = event.target.closest(".MyMess");
+                const messengerId = parseInt(myMessageElement.getAttribute("data-messenger-id"));
+
+                if (confirm("Bạn có chắc chắn muốn xóa tin nhắn này?")) {
+                    connection.invoke("DeleteMessage", messengerId)
+                        .catch(err => console.error("Error deleting message:", err));
+                }
+            }
+        });
+        // **6. Chọn bạn bè**
+      // document.querySelectorAll(".Card-friend").forEach(card => {
+      //       card.addEventListener("click", function () {
+      //           document.querySelectorAll(".Card-friend").forEach(c => c.classList.remove("selected"));
+      //           this.classList.add("selected");
+      //           messenger.innerHTML = "";
+      //       });
+      //   });
+        document.addEventListener("click", function (event) {
+        const card = event.target.closest(".Card-friend");
+        if (!card) return; // Nếu không phải Card-friend thì bỏ qua
+
+        // Bỏ class 'selected' khỏi tất cả các thẻ
+        document.querySelectorAll(".Card-friend").forEach(c => c.classList.remove("selected"));
+
+        // Thêm class 'selected' cho thẻ được click
+        card.classList.add("selected");
+
+        // Xóa nội dung cũ trong messenger (nếu cần)
+        const messenger = document.querySelector(".messenger");
+        if (messenger) {
+            messenger.innerHTML = "";
+        }
+    });
+
+    });
+
+</script>
 

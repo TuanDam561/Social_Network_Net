@@ -5,10 +5,10 @@
                         const userId = parseInt("@Context.Session.GetString("UserId")", 10);
                         connection.invoke("DeleteComment", commentId,userId)
                             .then(function () {
-                                console.log("Comment deleted successfully.");
+                                //console.log("Comment deleted successfully.");
                             })
                             .catch(function (err) {
-                                console.error("Error while deleting comment: " + err.toString());
+                             //   console.error("Error while deleting comment: " + err.toString());
                             });
                                 // Lắng nghe sự kiện khi xóa bình luận thất bại
                     connection.on("DeleteCommentFailed", function (errorMessage) {
@@ -84,7 +84,7 @@
                             `;
                             hiddenCommentsContainer.appendChild(hiddenCommentDiv);
                         } else {
-                            console.error(`Element with id 'comments-${postId}' not found!`);
+                           // console.error(`Element with id 'comments-${postId}' not found!`);
                         }
                     });
 
@@ -98,7 +98,7 @@
                         // Gửi yêu cầu tham gia nhóm
                         connection.invoke("JoinPostGroup", parseInt(currentPostId, 10))
                             .catch(function (err) {
-                                console.error("Failed to join group:", err.toString());
+                               // console.error("Failed to join group:", err.toString());
                             });
 
                             // Lấy dữ liệu từ DOM dựa trên ID bài viết
@@ -167,7 +167,7 @@
                             // Gửi yêu cầu rời nhóm
                             connection.invoke("LeavePostGroup", parseInt(currentPostId, 10))
                                 .catch(function (err) {
-                                    console.error("Failed to leave group:", err.toString());
+                                 //   console.error("Failed to leave group:", err.toString());
                                 });
                         }
                         // Reset postId
@@ -189,7 +189,7 @@
 
                             // Kiểm tra nếu postId không hợp lệ
                             if (isNaN(postId)) {
-                                console.error("Invalid postId");
+                              //  console.error("Invalid postId");
                                 return;
                             }
                                 // Lấy userId từ session và chuyển đổi thành int
@@ -197,22 +197,22 @@
 
                                 // Kiểm tra nếu userId hợp lệ
                                 if (isNaN(userId)) {
-                                    console.error("Invalid userId");
+                                   // console.error("Invalid userId");
                                     return;
                                 }
                               
                                 // const userId = "@Context.Session.GetString("UserId")"; Lấy userId từ session
                                 const createdAt = new Date().toISOString();
 
-                                console.log("postId:", postId);
-                                console.log("userId:", userId);
-                                console.log("commentContent:", commentContent);
-                                console.log("createdAt:", createdAt);
+                              //  console.log("postId:", postId);
+                              //  console.log("userId:", userId);
+                              //  console.log("commentContent:", commentContent);
+                              //  console.log("createdAt:", createdAt);
 
                                 // Gửi bình luận qua SignalR đến Hub
                                 connection.invoke("SendComment", postId, userId, commentContent, createdAt)
                                     .catch(function (err) {
-                                        return console.error(err.toString());
+                                       // return console.error(err.toString());
                                     });
 
                                 // Xóa giá trị trong ô nhập liệu sau khi gửi
@@ -221,6 +221,6 @@
                         }
                         // Kết nối SignalR khi trang được tải
                         connection.start().catch(function (err) {
-                            return console.error(err.toString());
+                           // return console.error(err.toString());
                         });
                     

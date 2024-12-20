@@ -1,0 +1,53 @@
+﻿/* Thêm phần CSS cho việc ẩn menu bên phải */
+.menu-toggle {
+    display: none;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+/* Ẩn phần menu bên phải khi chưa kích hoạt */
+.right {
+    display: none;
+}
+
+    /* Khi nhấn vào menu 3 gạch, hiển thị phần bên phải */
+    .right.active {
+        display: block;
+    }
+
+/* Responsive cho điện thoại */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block;
+        position: absolute;
+        top: 10px;
+        right: 20px;
+    }
+
+    .container {
+        flex-direction: column;
+    }
+
+    .left, .right {
+        width: 100%;
+    }
+
+    /* Khi menu bên phải được hiển thị */
+    .right {
+        display: none;
+        position: absolute;
+        top: 0;
+        right: 0;
+        background-color: white;
+        width: 70%;
+        height: 100vh;
+        padding: 20px;
+        box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+        z-index: 999;
+        transition: transform 0.3s ease-in-out;
+    }
+
+        .right.active {
+            transform: translateX(0);
+        }
+}
