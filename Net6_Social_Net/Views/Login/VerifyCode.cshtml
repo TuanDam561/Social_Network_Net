@@ -10,27 +10,6 @@
     <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/css/VerifyCode_Register.css"/>
     <link href="~/Icon_Plafom/iconWeb.png" rel="icon" />
-   @*  <script>
-        function disapbleBtn() {
-            const resendButton = document.getElementById("resendcode");
-                resendButton.disabled = true;
-
-                let timeLeft = 60;
-                resendButton.textContent = `Gửi lại mã (${timeLeft}s)`;
-
-                const timer = setInterval(() => {
-                    timeLeft--;
-                    resendButton.textContent = `Gửi lại mã (${timeLeft}s)`;
-
-                    if (timeLeft <= 0) {
-                        clearInterval(timer);
-                        resendButton.disabled = false;
-                        resendButton.textContent = "Gửi lại mã";
-                    }
-                }, 1000);
-            }
-        
-    </script> *@
 </head>
 <body>
     <div class="container">
@@ -58,7 +37,42 @@
                 <form method="post" asp-action="SendVerificationCode" asp-controller="Login" style="display:inline;">
                 <button type="submit" class="resend-button" id="resendcode" >Gửi lại mã</button>
                 </form>
-            </div>       
+            </div>   
+            <script>
+            const resend=document.getElementById("resendcode");
+            const locKey="resendcodeLocktime";
+
+            const lockTime=localStorage.getItem(locKey);
+            if(lockTime){
+                const now=Date.now();
+                const timeleft=Math.floor((lockTime-now)/1000);
+                if(timeleft>0){
+                    startCountdown(resend,timeleft);
+                }
+                 else {
+                localStorage.removeItem(locKey); 
+                }
+            }
+            const form=resend.closest("form");
+            form.onsubmit=function(){
+                const newlockTime=Date.now()+30*1000;
+                localStorage.setItem(locKey,newlockTime);
+            };
+            function startCountdown(button,timeleft){
+                button.disabled=true;
+                button.textContent=`Gửi lại mã (${timeleft}s)`
+
+                const timer=setInterval(()=>{
+                    timeleft--;
+                    button.textContent=`Gửi lại mã (${timeleft}s)`
+                if (timeleft <= 0) {
+                clearInterval(timer);
+                button.disabled = false;
+                button.textContent = "Gửi lại mã";
+            }
+                },1000);
+            }         
+            </script>
     </div>
 </body>
 </html>

@@ -194,15 +194,15 @@
                 <div>Trạng thái</div>
             </div>
             <div class="messenger">
-                <div class="friendMess">
+               @*  <div class="friendMess">
                     <img src="~/Avatar/454849238_800890952251701_8841246141296174912_n.jpg" alt="" />
                     <div class="friendChat">Hello bạn</div>
                 </div>
                 <div class="MyMess">
                     <div class="myChat">Hi</div>
-                </div>
+                </div> *@
             </div>
-            <div class="inputmess">
+            <div class="inputmess" id="iputmess" style="display:none">
                 <input class="input-form" type="text" placeholder="Nhập vào tin nhắn" />
                 <button class="butionGui" type="submit">Gửi</button>
             </div>
@@ -229,7 +229,7 @@
 
 </script>
 
-
+@* Sreach friend *@
 <script>
     document.getElementById('search-input').addEventListener('input', function() {
         var searchQuery = this.value.trim().toLowerCase(); // Lấy giá trị nhập vào và chuyển thành chữ thường
@@ -249,6 +249,7 @@
 <script>
         document.addEventListener("DOMContentLoaded", function () {
         const currentUserId = parseInt("@ViewBag.CurrentUserId"); // Lấy ID người dùng hiện tại
+       
 
         // Kết nối SignalR
         const connection = new signalR.HubConnectionBuilder()
@@ -361,6 +362,8 @@
       //       });
       //   });
         document.addEventListener("click", function (event) {
+        const messinput=document.getElementById("iputmess");
+        messinput.style.display='flex';
         const card = event.target.closest(".Card-friend");
         if (!card) return; // Nếu không phải Card-friend thì bỏ qua
 

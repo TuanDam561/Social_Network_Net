@@ -160,8 +160,8 @@ namespace Social_Network.Controllers
                 Content = Content,
                 ImageUrl = imageUrl,
                 Status = StatusPost,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
             };
 
             db.Posts.Add(post);
@@ -235,7 +235,7 @@ namespace Social_Network.Controllers
             // Cập nhật nội dung và trạng thái
             post.Content = Content;
             post.Status = StatusPost;
-            post.UpdatedAt = DateTime.Now;
+            post.UpdatedAt = DateTime.UtcNow;
 
             // Xử lý cập nhật ảnh (nếu có)
             if (ImageFile != null && ImageFile.Length > 0)

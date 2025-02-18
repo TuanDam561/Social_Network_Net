@@ -32,7 +32,7 @@
         .post-image-container img {
             max-width: 100%; /* Đảm bảo ảnh không vượt quá chiều rộng màn hình */
             max-height: 300px; /* Đặt chiều cao tối đa cho ảnh */
-            object-fit: cover; /* Đảm bảo ảnh hiển thị tốt */
+           /* object-fit: cover; */
         }
 
     /* Phần thông tin bài viết */

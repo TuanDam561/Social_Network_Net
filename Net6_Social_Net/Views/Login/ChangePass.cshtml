@@ -84,10 +84,44 @@
         <div class="resend">
             Bạn chưa nhận được mã?
             <form method="post" asp-action="SendVerificationCodeChangePass" asp-controller="Login" style="display:inline;">
-                <button type="submit" class="resend-button">Gửi lại mã</button>
+                <button type="submit" class="resend-button" id="resendcode">Gửi lại mã</button>
             </form>
-        </div>   
-        
+        </div>
+        <script>
+            const resend=document.getElementById("resendcode");
+            const locKey="resendcodeLocktime";
+
+            const lockTime=localStorage.getItem(locKey);
+            if(lockTime){
+                const now=Date.now();
+                const timeleft=Math.floor((lockTime-now)/1000);
+                if(timeleft>0){
+                    startCountdown(resend,timeleft);
+                }
+                 else {
+                localStorage.removeItem(locKey);
+                }
+            }
+            const form=resend.closest("form");
+            form.onsubmit=function(){
+                const newlockTime=Date.now()+30*1000;
+                localStorage.setItem(locKey,newlockTime);
+            };
+            function startCountdown(button,timeleft){
+                button.disabled=true;
+                button.textContent=`Gửi lại mã (${timeleft}s)`
+
+                const timer=setInterval(()=>{
+                    timeleft--;
+                    button.textContent=`Gửi lại mã (${timeleft}s)`
+                if (timeleft <= 0) {
+                clearInterval(timer);
+                button.disabled = false;
+                button.textContent = "Gửi lại mã";
+            }
+                },1000);
+            }
+        </script>
     </div>
 </body>
 </html>

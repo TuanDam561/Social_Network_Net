@@ -115,10 +115,11 @@ namespace Social_Network.Controllers
             }
 
             int dem1=HttpContext.Session.GetInt32("SendCount").GetValueOrDefault(0);
-            if (dem1 >= 5)
-            {
+            if (dem1 >= 3)
+            {                  
                 TempData["Error"] = "Số lần xác thực của bạn đã vượt quá! Vui lòng đăng nhập hoặc đăng ký";
                 HttpContext.Session.Remove("SendCount");
+                HttpContext.Session.Remove("VerifyCode");
                 return RedirectToAction("Index");
 
             }
