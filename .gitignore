@@ -5,12 +5,12 @@ appsettings.json
 appsettings.*.json
 
 #Bỏ qua các folder mà chưa Img 
-wwwroot/Banner_Profile
-wwwroot/Comment_Img
-wwwroot/Post_Image
-wwwroot/Profile_Avatars
-wwwroot/Profile_Banners
-wwwroot/Avatar
+Net6_Social_Net/wwwroot/Banner_Profile
+Net6_Social_Net/wwwroot/Comment_Img
+Net6_Social_Net/wwwroot/Post_Image
+Net6_Social_Net/wwwroot/Profile_Avatars
+Net6_Social_Net/wwwroot/Profile_Banners
+Net6_Social_Net/wwwroot/Avatar
 obj/
 bin/
 
