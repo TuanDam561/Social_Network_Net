@@ -14,6 +14,7 @@ builder.Services.AddControllersWithViews();
 // Cấu hình DbContext với chuỗi kết nối từ appsettings.json
 /*builder.Services.AddDbContext<SocialNetworkContext>(options =>
 {
+//helle
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")!);
 });*/
 
