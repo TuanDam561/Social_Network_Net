@@ -16,8 +16,12 @@ builder.Services.AddControllersWithViews();
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")!);
 });*/
+
+// Cấu hình DbContext cho DatabaseDoAnContext
 builder.Services.AddDbContext<SocialNetworkContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 
 // Đăng nhập với Google
 builder.Services.AddAuthentication(options =>

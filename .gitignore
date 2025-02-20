@@ -1,6 +1,7 @@
 ﻿# Bỏ qua thư mục .vs của Visual Studio
 .vs/
 # Bỏ qua file appsettings.json và các biến thể của nó
+appsettings.json
 appsettings.*.json
 
 #Bỏ qua các folder mà chưa Img 
