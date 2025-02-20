@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.EntityFrameworkCore;
 using Net6_Social_Net.Data;
 using Net7_Social_Net;
+using Net7_Social_Net.Class;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,17 +12,10 @@ builder.Services.AddSignalR();
 // Thêm dịch vụ MVC
 builder.Services.AddControllersWithViews();
 
-// Cấu hình DbContext với chuỗi kết nối từ appsettings.json
-/*builder.Services.AddDbContext<SocialNetworkContext>(options =>
-{
-//helle
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")!);
-});*/
-
 // Cấu hình DbContext cho DatabaseDoAnContext
 builder.Services.AddDbContext<SocialNetworkContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")!);
 });
 
 // Đăng nhập với Google
@@ -38,6 +32,13 @@ builder.Services.AddAuthentication(options =>
 });
 
 
+//Cấu hình SMTP
+var configuration = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .Build();
+
+var smtpSettings = configuration.GetSection("SmtpSettings").Get<SmtpSettings>();
 
 
 // Cấu hình bộ nhớ cache cho Session

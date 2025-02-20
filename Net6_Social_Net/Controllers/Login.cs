@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
+using Net7_Social_Net.Class;
 
 namespace Social_Network.Controllers
 {
@@ -19,8 +20,9 @@ namespace Social_Network.Controllers
         public IActionResult Index()
         {
             return View();
-        }    
+        }
         [HttpPost]
+
         public async Task<IActionResult> LoginFuntion(string gmail, string password)
         {
             // Kiểm tra nếu gmail hoặc password là null hoặc trống
@@ -165,34 +167,46 @@ namespace Social_Network.Controllers
             db.VerifyCodes.Add(emailVerification);
             await db.SaveChangesAsync();
 
+
+            //Cấu hình SMTP
+
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
+
+            var smtpSettings = configuration.GetSection("SmtpSettings").Get<SmtpSettings>();
+
+
             string body = $"<h2 style='text-align: center;'>Mã xác nhận của bạn là: {verificationCode}</h2>";
 
-            var smtpClient = new SmtpClient("smtp.gmail.com")
+            //Đọc ra từ appsettings.json
+            using (var smtpClient = new SmtpClient(smtpSettings.Server))
             {
-                Port = 587,
-                Credentials = new NetworkCredential("mxhdiawnoreply@gmail.com", "fafu xhmb pkrr xjed"),
-                EnableSsl = true,
-            };
+                smtpClient.Port = smtpSettings.Port;
+                smtpClient.Credentials = new NetworkCredential(smtpSettings.Username, smtpSettings.Password);
+                smtpClient.EnableSsl = smtpSettings.EnableSsl;
 
-            var mailMessage = new MailMessage
-            {
-                From = new MailAddress("mxhdiawnoreply@gmail.com"),
-                Subject = subject,
-                Body = body,
-                IsBodyHtml = true,
-            };
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress(smtpSettings.FromEmail),
+                    Subject = subject,
+                    Body = body,
+                    IsBodyHtml = true,
+                };
 
-            mailMessage.To.Add(email);
+                mailMessage.To.Add(email);
 
-            try
-            {
-                await smtpClient.SendMailAsync(mailMessage);
-                return verificationCode; // Trả mã xác thực để lưu vào TempData
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = $"Lỗi khi gửi mã: {ex.Message}";
-                return null;
+                try
+                {
+                    await smtpClient.SendMailAsync(mailMessage);
+                    return verificationCode; // Trả mã xác thực để lưu vào TempData
+                }
+                catch (Exception ex)
+                {
+                    TempData["Error"] = $"Lỗi khi gửi mã: {ex.Message}";
+                    return null;
+                }
             }
         }
         public IActionResult VerifyCode()
