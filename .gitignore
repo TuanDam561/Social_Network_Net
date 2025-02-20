@@ -1,6 +1,15 @@
 ﻿# Bỏ qua thư mục .vs của Visual Studio
 .vs/
+# Bỏ qua file appsettings.json và các biến thể của nó
+appsettings.*.json
 
+#Bỏ qua các folder mà chưa Img 
+wwwroot/Banner_Profile
+wwwroot/Comment_Img
+wwwroot/Post_Image
+wwwroot/Profile_Avatars
+wwwroot/Profile_Banners
+wwwroot/Avatar
 obj/
 bin/
 
