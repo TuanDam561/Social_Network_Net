@@ -600,7 +600,7 @@
             </div>
            
             <script>
-                                function submitEditPost() {
+                    function submitEditPost() {
                     var formData = new FormData(document.getElementById("editPostForm"));
 
                     fetch('/Home/UpdatePost', {
@@ -640,11 +640,11 @@
                                         }
                                     }
                                 }
-
                                 // Kiểm tra trạng thái mới của bài viết, nếu là Private thì ẩn bài viết
                                 var postElement = document.querySelector(`#post-${postId}`);
                                 if (newStatus === "Private") {
-                                    postElement.style.display = "none";  // Ẩn bài viết nếu trạng thái là Private
+                                  //  postElement.style.display = "none";  // Ẩn bài viết nếu trạng thái là Private
+                                  postElement.remove();
                                 } else {
                                     postElement.style.display = "block"; // Hiển thị lại bài viết nếu trạng thái là Public
                                 }
@@ -659,7 +659,6 @@
                             console.error('Error:', error);
                         });
                 }
-
             </script>
         </div>
 

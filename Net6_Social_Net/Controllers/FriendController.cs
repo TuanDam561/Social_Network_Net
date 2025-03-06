@@ -12,6 +12,7 @@ namespace Net7_Social_Net.Controllers
             db = context;
         }
 
+
         public IActionResult Index()
         {
             // Lấy UserId từ Session
@@ -22,53 +23,28 @@ namespace Net7_Social_Net.Controllers
                 TempData["Error"] = "Vui lòng đăng nhập hoặc đăng ký";
                 return RedirectToAction("Index", "Login");
             }
-            // Lấy userId từ session          
             int userId = int.Parse(useId);
-            // Lấy các yêu cầu kết bạn chỉ khi FriendID là userId hiện tại
-            var pendingRequests = db.Friends
-                .Where(f => f.FriendId == userId && f.Status == "Pending")
-                .Select(f => new
+
+          
+
+            //lấy dữ liệu nạp vào database
+            var model = db.Friends
+               .Where(f => (f.UserId == userId || f.FriendId == userId) ||
+                           (f.FriendId == userId && f.Status == "Pending"))
+              .Join(db.Users,
+                f => f.UserId == userId ? f.FriendId : f.UserId,
+                u => u.UserId,
+                (f, u) => new FriendViewModel
                 {
-                    FriendID = f.UserId,
+                    FriendID = u.UserId,
+                    Username = u.Username,
+                    Email = u.Email,
+                    ProfilePicture = u.ProfilePicture,
+                    Bio = u.Bio,
                     Status = f.Status,
-                    CreatedAt = f.CreatedAt
+                    CreatedAt = f.CreatedAt ?? DateTime.MinValue,
                 })
-                .ToList();
-
-            // Lấy thông tin chi tiết về lời mời kết bạn
-            var pendingRequestsDetails = pendingRequests.Select(pf => new FriendViewModel
-            {
-                FriendID = pf.FriendID,
-                Username = db.Users.Where(u => u.UserId == pf.FriendID).Select(u => u.Username).FirstOrDefault()!,
-                Email = db.Users.Where(u => u.UserId == pf.FriendID).Select(u => u.Email).FirstOrDefault()!,
-                ProfilePicture = db.Users.Where(u => u.UserId == pf.FriendID).Select(u => u.ProfilePicture).FirstOrDefault()!,
-                Bio = db.Users.Where(u => u.UserId == pf.FriendID).Select(u => u.Bio).FirstOrDefault()!,
-                Status = pf.Status,
-                CreatedAt = pf.CreatedAt ?? DateTime.MinValue
-            }).ToList();
-
-            // Lấy danh sách bạn bè đã kết bạn
-            var friends = db.Friends
-                .Where(f => (f.UserId == userId || f.FriendId == userId) && f.Status == "Friend")
-                .Select(f => new
-                {
-                    FriendID = f.UserId == userId ? f.FriendId : f.UserId,
-                    Status = f.Status
-                })
-                .ToList();
-
-            var friendsDetails = friends.Select(f => new FriendViewModel
-            {
-                FriendID = f.FriendID,
-                Username = db.Users.Where(u => u.UserId == f.FriendID).Select(u => u.Username).FirstOrDefault(),
-                Email = db.Users.Where(u => u.UserId == f.FriendID).Select(u => u.Email).FirstOrDefault(),
-                ProfilePicture = db.Users.Where(u => u.UserId == f.FriendID).Select(u => u.ProfilePicture).FirstOrDefault(),
-                Bio = db.Users.Where(u => u.UserId == f.FriendID).Select(u => u.Bio).FirstOrDefault(),
-                Status = f.Status
-            }).ToList();
-
-            // Gộp danh sách bạn bè và lời mời kết bạn
-            var model = friendsDetails.Concat(pendingRequestsDetails).ToList();
+               .ToList();
 
             return View(model);
         }
@@ -123,8 +99,8 @@ namespace Net7_Social_Net.Controllers
 
             return BadRequest();
         }
-        
-    [HttpPost]
+
+        [HttpPost]
         public IActionResult Unfriend(int friendId)
         {
             int userId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));

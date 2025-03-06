@@ -49,10 +49,13 @@
                 <input id="input-sreach" type="text" placeholder="Tìm kiếm bạn bè" />
                 <button id="btn-sreach">🔍</button>
             </div>
-
+           
+            @* <div class="nunber-friend"> Số lượng bạn bè(cả chờ): @Model.Count </div> *@
+          
             <!-- Hiển thị danh sách bạn bè -->
             @foreach (var friend in Model.Where(m => m.Status == "Friend"))
             {
+                
                 <div class="card" data-friend-name="@friend.Username.ToLower()">
                     @if (friend.ProfilePicture == null)
                     {

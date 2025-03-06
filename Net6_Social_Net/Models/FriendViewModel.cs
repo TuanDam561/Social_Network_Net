@@ -11,6 +11,7 @@ namespace Net7_Social_Net.Models
         public string Bio { get; set; }
         public string Status { get; set; }
         public DateTime CreatedAt { get; set; }
+ 
     }
 
 }
